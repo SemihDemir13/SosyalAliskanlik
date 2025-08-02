@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Auth\Auth.Web\Auth.Web.csproj" />
     <ProjectReference Include="..\Modules\Habit\Habit.Web\Habit.Web.csproj" />
+    <ProjectReference Include="..\Modules\Notification\Notification.Web\Notification.Web.csproj" />
     <ProjectReference Include="..\Configurations\Configurations\Configurations.csproj" />
     <ProjectReference Include="..\Persistence\Persistence\Persistence.csproj" />
     <ProjectReference Include="..\Shared\Shared\Shared.csproj" />
