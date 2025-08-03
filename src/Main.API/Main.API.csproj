@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
@@ -15,9 +19,9 @@
     <ProjectReference Include="..\Modules\Auth\Auth.Web\Auth.Web.csproj" />
     <ProjectReference Include="..\Modules\Habit\Habit.Web\Habit.Web.csproj" />
     <ProjectReference Include="..\Modules\Notification\Notification.Web\Notification.Web.csproj" />
-    <ProjectReference Include="..\Configurations\Configurations\Configurations.csproj" />
-    <ProjectReference Include="..\Persistence\Persistence\Persistence.csproj" />
-    <ProjectReference Include="..\Shared\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared\SosyalAliskanlikApp.Shared.csproj" />
+    <ProjectReference Include="..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
+    <ProjectReference Include="..\Configurations\SosyalAliskanlikApp.Configurations.csproj" />
   </ItemGroup>
 
 </Project>
