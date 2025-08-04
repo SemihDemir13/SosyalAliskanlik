@@ -289,6 +289,19 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Auth.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Auth.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Auth.Domain.dll": {}
+        }
+      },
       "Notification.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -319,6 +332,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Auth.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "SosyalAliskanlikApp.Shared": "1.0.0"
         },
@@ -783,6 +797,11 @@
         "system.diagnostics.diagnosticsource.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "Auth.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Auth/Auth.Domain/Auth.Domain.csproj",
+      "msbuildProject": "../../Auth/Auth.Domain/Auth.Domain.csproj"
     },
     "Notification.Application/1.0.0": {
       "type": "project",
