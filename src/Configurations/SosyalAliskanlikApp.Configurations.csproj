@@ -1,15 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
-    <ProjectReference Include="..\Shared\SosyalAliskanlikApp.Shared.csproj" />
-    <ProjectReference Include="..\Modules\Auth\Auth.Application\Auth.Application.csproj" /> 
-  </ItemGroup>
-
+  <!-- MEVCUT PROPERTYGROUP BÖLÜMÜ -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <!-- === YENİ EKLENECEK BÖLÜM === -->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <!-- ============================== -->
+
+  <!-- MEVCUT PROJECTREFERENCE BÖLÜMÜ -->
+  <ItemGroup>
+    <ProjectReference Include="..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
+    <ProjectReference Include="..\Shared\SosyalAliskanlikApp.Shared.csproj" />
+    <ProjectReference Include="..\Modules\Auth\Auth.Application\Auth.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+  </ItemGroup>
 
 </Project>
