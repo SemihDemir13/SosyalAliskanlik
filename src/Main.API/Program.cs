@@ -1,19 +1,26 @@
 using SosyalAliskanlikApp.Configurations;
-
+using SosyalAliskanlikApp.Modules.Auth.Web.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// ------------------- SERVİS KAYITLARI -------------------
+
+// Merkezi servislerimizi kaydediyoruz.
+builder.Services.AddPersistence(builder.Configuration);
+builder.Services.AddAuthModule();
+
+// Sadece Controller'ları ve Auth modülünün assembly'sini tanıtıyoruz.
+builder.Services.AddControllers()
+    .AddApplicationPart(typeof(AuthController).Assembly);
+
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddPersistence(builder.Configuration);
-
+// ------------------- UYGULAMA PİPELINE'I -------------------
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -22,11 +29,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
 app.MapControllers();
 
-
-
 app.Run();
-
-

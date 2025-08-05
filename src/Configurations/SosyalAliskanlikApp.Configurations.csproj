@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
     <ProjectReference Include="..\Shared\SosyalAliskanlikApp.Shared.csproj" />
+    <ProjectReference Include="..\Modules\Auth\Auth.Application\Auth.Application.csproj" /> 
   </ItemGroup>
 
   <PropertyGroup>
