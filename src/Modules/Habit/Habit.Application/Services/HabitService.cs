@@ -19,7 +19,7 @@ public class HabitService : IHabitService
 
     public async Task<HabitDto> CreateHabitAsync(CreateHabitRequestDto request, Guid userId)
     {
-        var habit = new HabitEntity 
+        var habit = new HabitEntity
         {
             Name = request.Name,
             Description = request.Description,
@@ -50,5 +50,76 @@ public class HabitService : IHabitService
                 CreatedAt = h.CreatedAt
             })
             .ToListAsync();
+    }
+    public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
+    {
+        // 1. Güncellenecek alışkanlığı veritabanından bul.
+        var habitToUpdate = await _context.Habits.FindAsync(habitId);
+
+        // 2. Alışkanlık var mı VE bu alışkanlık isteği yapan kullanıcıya mı ait? KONTROL ET.
+        if (habitToUpdate == null || habitToUpdate.UserId != userId)
+        {
+            // Eğer alışkanlık bulunamazsa veya başkasına aitse, null dönerek başarısız olduğunu belirt.
+            return null;
+        }
+
+        // 3. Bilgileri güncelle.
+        habitToUpdate.Name = request.Name;
+        habitToUpdate.Description = request.Description;
+        habitToUpdate.UpdatedAt = DateTime.UtcNow; // Güncellenme tarihini ayarla
+
+        // 4. Değişiklikleri kaydet.
+        await _context.SaveChangesAsync();
+
+        // 5. Güncellenmiş veriyi DTO olarak geri dön.
+        return new HabitDto
+        {
+            Id = habitToUpdate.Id,
+            Name = habitToUpdate.Name,
+            Description = habitToUpdate.Description,
+            CreatedAt = habitToUpdate.CreatedAt
+        };
+    }
+
+    public async Task<bool> DeleteHabitAsync(Guid habitId, Guid userId)
+    {
+        //silinecek alışkanlık
+        var habitToDelete = await _context.Habits.FindAsync(habitId);
+
+        //kontrol
+        if (habitToDelete == null || habitToDelete.UserId != userId)
+        {
+            return false;
+        }
+
+        //sil
+        _context.Habits.Remove(habitToDelete);
+
+        //kaydet 
+        await _context.SaveChangesAsync();
+
+        return true;
+
+    }
+
+    public async Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId)
+    {   
+        //kontrol
+        var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+
+        if (habit == null)
+        {
+            return null;
+        }
+
+        return new HabitDto
+        {
+            Id = habit.Id,
+            Name = habit.Name,
+            Description = habit.Description,
+            CreatedAt = habit.CreatedAt
+        };
+
+        
     }
 }

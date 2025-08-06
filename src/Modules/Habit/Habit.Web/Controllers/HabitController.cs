@@ -25,7 +25,20 @@ public class HabitController : ControllerBase
     {
         var userId = GetCurrentUserId();
         var createdHabit = await _habitService.CreateHabitAsync(request, userId);
-        return CreatedAtAction(nameof(GetHabits), new { id = createdHabit.Id }, createdHabit);
+        return CreatedAtAction(nameof(GetHabitById), new { id = createdHabit.Id }, createdHabit);
+    }
+    [HttpGet("{id}")] // Route: GET /api/habits/{alışkanlık_id}
+    public async Task<IActionResult> GetHabitById(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        var habit = await _habitService.GetHabitByIdAsync(id, userId);
+
+        if (habit == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(habit);
     }
 
     [HttpGet]
@@ -35,4 +48,36 @@ public class HabitController : ControllerBase
         var habits = await _habitService.GetHabitsByUserIdAsync(userId);
         return Ok(habits);
     }
+    [HttpPut("{id}")] // Route: PUT /api/habits/{alışkanlık_id}
+    public async Task<IActionResult> UpdateHabit(Guid id, [FromBody] UpdateHabitRequestDto request)
+    {
+        var userId = GetCurrentUserId();
+        var updatedHabit = await _habitService.UpdateHabitAsync(id, request, userId);
+
+        if (updatedHabit == null)
+        {
+            // Servis null döndüyse, bu ya kaynak bulunamadı (404 Not Found)
+            // ya da kullanıcının bu kaynağa erişim izni yok (403 Forbidden) demektir.
+            // Güvenlik açısından 404 dönmek daha iyidir, saldırgana ipucu vermez.
+            return NotFound();
+        }
+
+        return Ok(updatedHabit); // Başarılı olursa 200 OK ve güncellenmiş veriyi dön.
+    }
+
+    [HttpDelete("{id}")] // Route: DELETE /api/habits/{alışkanlık_id}
+    public async Task<IActionResult> DeleteHabit(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        var success = await _habitService.DeleteHabitAsync(id, userId);
+
+        if (!success)
+        {
+            return NotFound();
+
+        }
+
+        return NoContent();
+    }
+    
 }
