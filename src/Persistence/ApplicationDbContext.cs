@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
+using SosyalAliskanlikApp.Modules.Habit.Domain.Entities;
 using System.Reflection;
 
 namespace SosyalAliskanlikApp.Persistence;
@@ -12,6 +13,8 @@ public class ApplicationDbContext : DbContext
 
     // Auth modülünün User entity'sini "Users" adıyla bir tabloya eşle.
     public DbSet<User> Users { get; set; }
+    public DbSet<Habit> Habits { get; set; } 
+
     
     
 
@@ -21,7 +24,7 @@ public class ApplicationDbContext : DbContext
         // IEntityTypeConfiguration dosyalarını otomatik olarak bulup uygular.
         // Bu, DbContext'i temiz tutan çok iyi bir pratiktir.
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-        
+
         base.OnModelCreating(modelBuilder);
     }
 }

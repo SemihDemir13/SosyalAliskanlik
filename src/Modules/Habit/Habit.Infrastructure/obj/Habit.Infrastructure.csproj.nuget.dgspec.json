@@ -104,6 +104,9 @@
             "projectReferences": {
               "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
+              },
+              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
               }
             }
           }
@@ -314,6 +317,9 @@
             "projectReferences": {
               "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+              },
+              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
               },
               "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"

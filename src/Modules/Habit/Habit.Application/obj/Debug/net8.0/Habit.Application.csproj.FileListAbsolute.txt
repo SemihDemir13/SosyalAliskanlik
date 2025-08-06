@@ -16,3 +16,7 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\obj\Debug
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\refint\Habit.Application.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\Habit.Application.pdb
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\ref\Habit.Application.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Auth.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Auth.Domain.pdb

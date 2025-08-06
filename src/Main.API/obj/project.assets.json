@@ -1256,9 +1256,39 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Habit.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Habit.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Persistence": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Habit.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Habit.Application.dll": {}
+        }
+      },
+      "Habit.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Habit.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Habit.Domain.dll": {}
+        }
+      },
       "Habit.Web/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Habit.Application": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Habit.Web.dll": {}
         },
@@ -1287,6 +1317,7 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Auth.Application": "1.0.0",
+          "Habit.Application": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.7",
           "SosyalAliskanlikApp.Persistence": "1.0.0",
           "SosyalAliskanlikApp.Shared": "1.0.0"
@@ -1306,6 +1337,7 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Auth.Domain": "1.0.0",
+          "Habit.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "SosyalAliskanlikApp.Shared": "1.0.0"
         },
@@ -3815,6 +3847,16 @@
       "type": "project",
       "path": "../Modules/Auth/Auth.Web/Auth.Web.csproj",
       "msbuildProject": "../Modules/Auth/Auth.Web/Auth.Web.csproj"
+    },
+    "Habit.Application/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Habit/Habit.Application/Habit.Application.csproj",
+      "msbuildProject": "../Modules/Habit/Habit.Application/Habit.Application.csproj"
+    },
+    "Habit.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj",
+      "msbuildProject": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj"
     },
     "Habit.Web/1.0.0": {
       "type": "project",

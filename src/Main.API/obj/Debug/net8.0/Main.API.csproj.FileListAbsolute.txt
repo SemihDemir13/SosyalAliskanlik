@@ -159,3 +159,7 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\System.Identity
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Domain.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Application.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Application.pdb

@@ -10,3 +10,15 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\refint\Habit.Web.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\Habit.Web.pdb
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\ref\Habit.Web.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Auth.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Habit.Application.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Habit.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Habit.Application.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Auth.Domain.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Habit.Domain.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\Habit.Web.csproj.AssemblyReference.cache
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Web\obj\Debug\net8.0\Habit.Web.csproj.Up2Date
