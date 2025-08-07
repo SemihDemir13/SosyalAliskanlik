@@ -22,3 +22,5 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrast
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\refint\Notification.Infrastructure.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\Notification.Infrastructure.pdb
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\ref\Notification.Infrastructure.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrastructure\bin\Debug\net8.0\Habit.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Notification\Notification.Infrastructure\bin\Debug\net8.0\Habit.Domain.pdb

@@ -20,3 +20,5 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\obj\Debu
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\obj\Debug\net8.0\refint\Auth.Infrastructure.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\obj\Debug\net8.0\Auth.Infrastructure.pdb
 C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\obj\Debug\net8.0\ref\Auth.Infrastructure.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\bin\Debug\net8.0\Habit.Domain.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Auth\Auth.Infrastructure\bin\Debug\net8.0\Habit.Domain.pdb

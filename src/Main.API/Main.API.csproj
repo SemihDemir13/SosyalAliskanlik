@@ -23,6 +23,7 @@
     <ProjectReference Include="..\Shared\SosyalAliskanlikApp.Shared.csproj" />
     <ProjectReference Include="..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
     <ProjectReference Include="..\Configurations\SosyalAliskanlikApp.Configurations.csproj" />
+    <ProjectReference Include="..\Modules\Statistics\Web\SosyalAliskanlikApp.Modules.Statistics.Web.csproj" />
 
   </ItemGroup>
 

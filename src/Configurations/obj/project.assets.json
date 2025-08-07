@@ -491,6 +491,19 @@
           "bin/placeholder/Habit.Domain.dll": {}
         }
       },
+      "SosyalAliskanlikApp.Modules.Statistics.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SosyalAliskanlikApp.Persistence": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Statistics.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Statistics.Application.dll": {}
+        }
+      },
       "SosyalAliskanlikApp.Persistence/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -1194,6 +1207,11 @@
       "path": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj",
       "msbuildProject": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj"
     },
+    "SosyalAliskanlikApp.Modules.Statistics.Application/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Statistics/Application/SosyalAliskanlikApp.Modules.Statistics.Application.csproj",
+      "msbuildProject": "../Modules/Statistics/Application/SosyalAliskanlikApp.Modules.Statistics.Application.csproj"
+    },
     "SosyalAliskanlikApp.Persistence/1.0.0": {
       "type": "project",
       "path": "../Persistence/SosyalAliskanlikApp.Persistence.csproj",
@@ -1210,6 +1228,7 @@
       "Auth.Application >= 1.0.0",
       "Habit.Application >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.7",
+      "SosyalAliskanlikApp.Modules.Statistics.Application >= 1.0.0",
       "SosyalAliskanlikApp.Persistence >= 1.0.0",
       "SosyalAliskanlikApp.Shared >= 1.0.0"
     ]
@@ -1252,6 +1271,9 @@
             },
             "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj"
+            },
+            "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Statistics\\Application\\SosyalAliskanlikApp.Modules.Statistics.Application.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Statistics\\Application\\SosyalAliskanlikApp.Modules.Statistics.Application.csproj"
             },
             "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"

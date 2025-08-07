@@ -163,3 +163,7 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Domain.dl
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Domain.pdb
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Application.dll
 C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\Habit.Application.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Statistics.Application.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Statistics.Web.dll
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Statistics.Web.pdb
+C:\Users\yunus\SosyalAliskanlikApp\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Statistics.Application.pdb

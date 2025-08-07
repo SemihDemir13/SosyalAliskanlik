@@ -11,4 +11,6 @@ public class Habit : BaseEntity
 
     // Bu alışkanlığın hangi kullanıcıya ait olduğunu belirtir.
     public Guid UserId { get; set; }
+
+    public ICollection<HabitCompletion> HabitCompletions { get; set; } = new List<HabitCompletion>();
 }
