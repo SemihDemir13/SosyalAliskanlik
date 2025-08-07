@@ -122,4 +122,72 @@ public class HabitService : IHabitService
 
         
     }
+
+    public async Task<HabitCompletionDto?> MarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId)
+    {
+        //kontrol
+        var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+
+        if (habit == null)
+        {
+            return null; // Alışkanlık bulunamadı veya kullanıcıya ait değil.
+        }
+        //bu tarihte zaten tamamlanma kaydı var mı kontrolü 
+        var existingCompletion = await _context.HabitCompletions
+            .FirstOrDefaultAsync(hc => hc.HabitId == habitId && hc.CompletionDate == date);
+
+        if (existingCompletion != null)
+        {
+            // Zaten işaretlenmişse, mevcut kaydı dön. Hiçbir şey yapma.
+            return new HabitCompletionDto { Id = existingCompletion.Id, HabitId = existingCompletion.HabitId, CompletionDate = existingCompletion.CompletionDate };
+        }
+        
+        // 3. Yeni bir tamamlama kaydı oluştur ve veritabanına ekle.
+        var newCompletion = new HabitCompletion
+        {
+            HabitId = habitId,
+            CompletionDate = date
+        };
+
+        await _context.HabitCompletions.AddAsync(newCompletion);
+        await _context.SaveChangesAsync();
+
+        return new HabitCompletionDto { Id = newCompletion.Id, HabitId = newCompletion.HabitId, CompletionDate = newCompletion.CompletionDate };
+    }
+
+    public async Task<bool> UnmarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId)
+    {
+         // Silme işlemi için önce alışkanlığın kullanıcıya ait olduğunu doğrulamamız gerekmez,
+        // çünkü HabitCompletion kaydını sorgularken zaten HabitId üzerinden dolaylı bir kontrol yapmış olacağız.
+        var completionToDelete = await _context.HabitCompletions
+            .Include(hc => hc.Habit) // Habit'i de sorguya dahil etme
+            .FirstOrDefaultAsync(hc => hc.HabitId == habitId && hc.CompletionDate == date && hc.Habit.UserId == userId);
+
+        if (completionToDelete == null)
+        {
+            return false; 
+        }
+
+        _context.HabitCompletions.Remove(completionToDelete);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async  Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId)
+    {
+          //  alışkanlığın kullanıcıya ait olduğunu doğrula
+        var habitExists = await _context.Habits.AnyAsync(h => h.Id == habitId && h.UserId == userId);
+        if (!habitExists)
+        {
+            // Eğer alışkanlık kullanıcıya ait değilse, boş liste
+           
+            return Enumerable.Empty<DateOnly>();
+        }
+
+        return await _context.HabitCompletions
+            .Where(hc => hc.HabitId == habitId)
+            .Select(hc => hc.CompletionDate)
+            .OrderBy(d => d) 
+            .ToListAsync();
+    }
 }

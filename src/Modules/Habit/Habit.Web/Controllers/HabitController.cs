@@ -79,5 +79,45 @@ public class HabitController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost("{id}/completions")]
+    public async Task<IActionResult> MarkCompletion(Guid id, [FromBody] MarkCompletionRequestDto request)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _habitService.MarkHabitAsCompletedAsync(id, request.CompletionDate, userId);
+
+        if (result == null)
+        {
+            return NotFound("Habit not found or you don't have permission to access it.");
+        }
+
+        return Ok(result);
+    }
+    
+    // Bir alışkanlığın tamamlanma işaretini kaldırır.
+    // DELETE /api/habits/{id}/completions/{date}
+    [HttpDelete("{id}/completions/{date}")]
+    public async Task<IActionResult> UnmarkCompletion(Guid id, DateOnly date)
+    {
+        var userId = GetCurrentUserId();
+        var success = await _habitService.UnmarkHabitAsCompletedAsync(id, date, userId);
+
+        if (!success)
+        {
+            return NotFound("Completion record not found for the specified date.");
+        }
+
+        return NoContent();
+    }
+
+    // Bir alışkanlığın tüm tamamlanma tarihlerini getirir.
+    // GET /api/habits/{id}/completions
+    [HttpGet("{id}/completions")]
+    public async Task<IActionResult> GetCompletions(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        var dates = await _habitService.GetHabitCompletionsAsync(id, userId);
+        return Ok(dates);
+    }
     
 }
