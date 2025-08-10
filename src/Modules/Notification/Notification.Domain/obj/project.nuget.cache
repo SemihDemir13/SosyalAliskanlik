@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "JAF1d+NZBF4=",
+  "dgSpecHash": "v020DlAiAII=",
   "success": true,
-  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Notification\\Notification.Domain\\Notification.Domain.csproj",
+  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Domain\\Notification.Domain.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lp4TfNmPceE=",
+  "dgSpecHash": "Ry4HVk9V7NE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Notification\\Notification.Infrastructure\\Notification.Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Infrastructure\\Notification.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\yunus\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.1\\microsoft.entityframeworkcore.9.0.1.nupkg.sha512",
     "C:\\Users\\yunus\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.1\\microsoft.entityframeworkcore.abstractions.9.0.1.nupkg.sha512",

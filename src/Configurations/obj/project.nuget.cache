@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nbWb2RLOXsw=",
+  "dgSpecHash": "xax6r9Ai3PE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Configurations\\SosyalAliskanlikApp.Configurations.csproj",
+  "projectFilePath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Configurations\\SosyalAliskanlikApp.Configurations.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\yunus\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\yunus\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.7\\microsoft.aspnetcore.authentication.jwtbearer.8.0.7.nupkg.sha512",

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces; // Bu satırı ekleyin
 using SosyalAliskanlikApp.Modules.Auth.Application.DTOs;
+using Microsoft.AspNetCore.Authorization; // Bu using ifadesini en üste eklediğinden emin ol
+using System.Security.Claims; 
 
 namespace SosyalAliskanlikApp.Modules.Auth.Web.Controllers;
 
@@ -18,24 +20,59 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
     {
-        await _authService.RegisterUserAsync(request);
-        return Ok(new { Message = "kulanıcı kaydı başarılı!" });
+        var result = await _authService.RegisterUserAsync(request);
+
+        if (result.IsFailure)
+        {
+            // Servis bir hata döndürdüyse, 400 Bad Request ve hata mesajını dön.
+            return BadRequest(new { message = result.Error });
+        }
+
+        // Başarılı ise 200 OK dön.
+        return Ok(new { message = "User registered successfully!" });
     }
 
-    // YENİ EKLENEN ENDPOINT
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
-        try
-        {
-            var response = await _authService.LoginAsync(request);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return Unauthorized(new { message = ex.Message });
-        }
-    }
+        var result = await _authService.LoginAsync(request);
 
+        if (result.IsFailure)
+        {
+            // Servis bir hata döndürdüyse, bu sefer 401 Unauthorized dönelim.
+            return Unauthorized(new { message = result.Error });
+        }
+
+        // Başarılı ise 200 OK ve token'ı dön.
+        return Ok(result.Value);
+    }
+     [HttpGet("profile")]
+    [Authorize] // Bu endpoint'e sadece geçerli bir token ile erişilebilir.
+    public IActionResult GetProfile()
+    {
+        // [Authorize] attribute'ü sayesinde, bu metoda gelindiğinde
+        // User nesnesinin içi token'dan gelen bilgilerle doldurulmuş olur.
+
+        // Token'ın içindeki 'sub' (subject) claim'inden kullanıcı ID'sini oku.
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Eğer bir sebepten ötürü token'da ID bulunamazsa (çok nadir), hata dön.
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+        
+        // Diğer bilgileri de oku.
+        var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        var userName = User.FindFirstValue("name"); // Bu, token'ı oluştururken eklediğimiz özel claim.
+
+        // Okunan bilgileri anonim bir nesne olarak frontend'e dön.
+        return Ok(new 
+        { 
+            Id = userId, 
+            Email = userEmail, 
+            Name = userName 
+        });
+    }
     
 }

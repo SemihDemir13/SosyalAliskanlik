@@ -1,40 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj": {}
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj",
         "projectName": "Auth.Domain",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
               }
             }
           }
@@ -69,44 +62,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj",
         "projectName": "Habit.Application",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
               },
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
               }
             }
           }
@@ -141,41 +127,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj",
         "projectName": "Habit.Domain",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
               }
             }
           }
@@ -210,44 +189,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj",
         "projectName": "Habit.Infrastructure",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Infrastructure\\Habit.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Application\\Habit.Application.csproj"
               },
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
               }
             }
           }
@@ -282,47 +254,40 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj",
         "projectName": "SosyalAliskanlikApp.Persistence",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Persistence\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj"
               },
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
               },
-              "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
-                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
               }
             }
           }
@@ -363,33 +328,26 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
+    "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj",
+        "projectUniqueName": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj",
         "projectName": "SosyalAliskanlikApp.Shared",
-        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj",
+        "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj",
         "packagesPath": "C:\\Users\\yunus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlikApp\\src\\Shared\\obj\\",
+        "outputPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\yunus\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -428,7 +386,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

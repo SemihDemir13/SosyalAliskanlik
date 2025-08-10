@@ -8,6 +8,7 @@ using SosyalAliskanlikApp.Modules.Auth.Application.DTOs;
 using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
 using SosyalAliskanlikApp.Persistence;
+using SosyalAliskanlikApp.Shared; 
 
 namespace SosyalAliskanlikApp.Modules.Auth.Application.Services;
 
@@ -22,12 +23,13 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task RegisterUserAsync(RegisterRequestDto request)
+     public async Task<Result> RegisterUserAsync(RegisterRequestDto request)
     {
         var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (existingUser != null)
         {
-            throw new Exception("This email is already registered.");
+           
+            return Result.Failure("Bu email'e kayıtlı hesap var.");
         }
         
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -41,20 +43,27 @@ public class AuthService : IAuthService
 
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
+
+        return Result.Success(); // Başarılı ise Success result'ı dönüyoruz.
     }
 
-    public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+    public async Task<Result<LoginResponseDto>> LoginAsync(LoginRequestDto request)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            throw new Exception("Invalid email or password.");
+            // Hata durumunda Failure result'ı dönüyoruz.
+            return Result.Failure<LoginResponseDto>("Invalid email or password.");
         }
 
         var token = GenerateJwtToken(user);
+        var response = new LoginResponseDto { AccessToken = token };
 
-        return new LoginResponseDto { AccessToken = token };
+        // Başarılı ise veriyi içeren bir Success result'ı dönüyoruz.
+        return Result.Success(response);
     }
+
+    
 
     private string GenerateJwtToken(User user)
     {
