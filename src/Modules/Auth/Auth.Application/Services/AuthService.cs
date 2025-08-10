@@ -53,7 +53,7 @@ public class AuthService : IAuthService
         if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
             // Hata durumunda Failure result'ı dönüyoruz.
-            return Result.Failure<LoginResponseDto>("Invalid email or password.");
+            return Result.Failure<LoginResponseDto>("Yanlış email veya şifre girdiniz.");
         }
 
         var token = GenerateJwtToken(user);
