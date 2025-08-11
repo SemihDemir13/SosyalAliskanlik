@@ -3,22 +3,24 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { List, ListItem, ListItemText, Typography, Paper, Divider, Checkbox, IconButton } from '@mui/material';
+import { List, ListItem, ListItemText, Typography, Paper, Divider, Checkbox, IconButton, Box } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditHabitModal from './EditHabitModal'; 
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 
 // Dashboard'dan gelecek olan alışkanlık verisinin tipi
 interface Habit {
   id: string;
   name: string;
   description: string | null;
-  completions: string[]; // Bu, alışkanlığın tamamlandığı tarihleri içerir
+  completions: string[];
 }
 
 // Bu bileşenin Dashboard'dan alacağı props'lar
 interface HabitListProps {
   habits: Habit[];
-  onHabitUpdated: () => void; // Bir alışkanlık güncellendiğinde (örn: tamamlandığında) Dashboard'a haber vermek için
+  onHabitUpdated: () => void; // Liste değiştiğinde Dashboard'a haber vermek için
 }
 
 // Sadece bugünün tarihini YYYY-AA-GG formatında döndüren bir yardımcı fonksiyon
@@ -26,18 +28,20 @@ const getTodayDateString = () => new Date().toISOString().split('T')[0];
 
 export default function HabitList({ habits, onHabitUpdated }: HabitListProps) {
   // Bu state, SADECE arayüzdeki checkbox'ların durumunu yönetmek için vardır.
-  // Başlangıç değeri, Dashboard'dan gelen veriye göre belirlenir.
   const [completions, setCompletions] = useState<Set<string>>(() => {
     const today = getTodayDateString();
     const initialCompletions = new Set<string>();
     habits.forEach(habit => {
-      // Eğer alışkanlığın tamamlanma tarihleri arasında bugün varsa, set'e ekle
       if (habit.completions.includes(today)) {
         initialCompletions.add(habit.id);
       }
     });
     return initialCompletions;
   });
+
+  // Düzenleme ve silme modallarının durumunu yöneten state'ler
+  const [habitToEdit, setHabitToEdit] = useState<Habit | null>(null);
+  const [habitToDelete, setHabitToDelete] = useState<Habit | null>(null);
 
   // Checkbox'a tıklandığında çalışacak olan fonksiyon
   const handleToggleCompletion = async (habitId: string) => {
@@ -46,8 +50,7 @@ export default function HabitList({ habits, onHabitUpdated }: HabitListProps) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const isCurrentlyCompleted = completions.has(habitId);
 
-    // 1. İyimser Arayüz Güncellemesi (Optimistic UI Update):
-    // API cevabını beklemeden arayüzü anında güncelleyerek kullanıcıya hızlı bir geri bildirim veriyoruz.
+    // İyimser Arayüz Güncellemesi
     const newCompletions = new Set(completions);
     if (isCurrentlyCompleted) {
       newCompletions.delete(habitId);
@@ -56,28 +59,34 @@ export default function HabitList({ habits, onHabitUpdated }: HabitListProps) {
     }
     setCompletions(newCompletions);
 
-    // 2. API İsteğini Gönderme
     try {
       if (isCurrentlyCompleted) {
-        // İşaretliydi, işareti kaldırıyoruz (DELETE)
-        await axios.delete(`${apiUrl}/api/Habit/${habitId}/completions/${today}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.delete(`${apiUrl}/api/Habit/${habitId}/completions/${today}`, { headers: { Authorization: `Bearer ${token}` } });
       } else {
-        // İşaretli değildi, işaretliyoruz (POST)
-        await axios.post(`${apiUrl}/api/Habit/${habitId}/completions`,
-          { completionDate: today },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await axios.post(`${apiUrl}/api/Habit/${habitId}/completions`, { completionDate: today }, { headers: { Authorization: `Bearer ${token}` } });
       }
-      // 3. Başarılı olursa, Dashboard'a haber vererek tüm verinin en güncel halini çekmesini sağla.
-      // Bu, özellikle seri (streak) gibi hesaplamaları doğru tutmak için önemlidir.
-      onHabitUpdated();
+      onHabitUpdated(); // Tüm veriyi yeniden çekmek için Dashboard'a haber ver
     } catch (error) {
       console.error("Tamamlama durumu güncellenirken hata oluştu:", error);
-      // Hata durumunda arayüzü eski haline geri al
-      setCompletions(completions); 
+      setCompletions(completions); // Hata durumunda state'i geri al
       alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+    }
+  };
+
+  // Silme diyaloğunda "Sil" butonuna basıldığında çalışır
+  const handleDeleteConfirm = async () => {
+    if (!habitToDelete) return;
+    try {
+      const token = localStorage.getItem('accessToken');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      await axios.delete(`${apiUrl}/api/Habit/${habitToDelete.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setHabitToDelete(null); // Diyaloğu kapat
+      onHabitUpdated(); // Listeyi yenile
+    } catch (error) {
+      console.error("Alışkanlık silinirken hata oluştu:", error);
+      alert('Alışkanlık silinirken bir hata oluştu.');
     }
   };
 
@@ -94,36 +103,56 @@ export default function HabitList({ habits, onHabitUpdated }: HabitListProps) {
 
   // Alışkanlık listesinin render edildiği kısım
   return (
-    <Paper elevation={3}>
-      <List>
-        {habits.map((habit, index) => (
-          <div key={habit.id}>
-            <ListItem
-              secondaryAction={
-                <>
-                  <IconButton edge="end" aria-label="edit">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                </>
-              }
-            >
-              <Checkbox
-                edge="start"
-                checked={completions.has(habit.id)} // İşaretli olup olmadığı state'e göre belirlenir
-                onChange={() => handleToggleCompletion(habit.id)}
-              />
-              <ListItemText 
-                primary={habit.name} 
-                secondary={habit.description || 'Açıklama yok'} 
-              />
-            </ListItem>
-            {index < habits.length - 1 && <Divider />}
-          </div>
-        ))}
-      </List>
-    </Paper>
+    <>
+      <Paper elevation={3}>
+        <List>
+          {habits.map((habit, index) => (
+            <div key={habit.id}>
+              <ListItem
+                secondaryAction={
+                  <Box>
+                    <IconButton edge="end" aria-label="edit" onClick={() => setHabitToEdit(habit)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete" onClick={() => setHabitToDelete(habit)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </Box>
+                }
+              >
+                <Checkbox
+                  edge="start"
+                  checked={completions.has(habit.id)}
+                  onChange={() => handleToggleCompletion(habit.id)}
+                />
+                <ListItemText 
+                  primary={habit.name} 
+                  secondary={habit.description || 'Açıklama yok'} 
+                />
+              </ListItem>
+              {index < habits.length - 1 && <Divider />}
+            </div>
+          ))}
+        </List>
+      </Paper>
+
+      {/* Düzenleme ve Silme için kullanılacak olan, görünmez bileşenler */}
+      <EditHabitModal 
+        habit={habitToEdit}
+        open={!!habitToEdit}
+        onClose={() => setHabitToEdit(null)}
+        onHabitUpdated={() => {
+          setHabitToEdit(null); // Modal'ı kapat
+          onHabitUpdated(); // Listeyi yenile
+        }}
+      />
+      <DeleteConfirmationDialog 
+        open={!!habitToDelete}
+        onClose={() => setHabitToDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        title="Alışkanlığı Sil"
+        message={`'${habitToDelete?.name}' adlı alışkanlığı kalıcı olarak silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`}
+      />
+    </>
   );
 }
