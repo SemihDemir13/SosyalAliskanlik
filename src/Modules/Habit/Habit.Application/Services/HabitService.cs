@@ -40,17 +40,20 @@ public class HabitService : IHabitService
 
     public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
     {
-        return await _context.Habits
-            .Where(h => h.UserId == userId)
-            .Select(h => new HabitDto
-            {
-                Id = h.Id,
-                Name = h.Name,
-                Description = h.Description,
-                CreatedAt = h.CreatedAt
-            })
-            .ToListAsync();
-    }
+    return await _context.Habits
+        .Where(h => h.UserId == userId)
+        .Include(h => h.HabitCompletions) // <-- İLİŞKİLİ VERİYİ ÇEKMEK İÇİN BU ÇOK ÖNEMLİ
+        .Select(h => new HabitDto
+        {
+            Id = h.Id,
+            Name = h.Name,
+            Description = h.Description,
+            CreatedAt = h.CreatedAt,
+            // İlişkili HabitCompletions listesini tarihlere çevirip DTO'ya ekle
+            Completions = h.HabitCompletions.Select(hc => hc.CompletionDate).ToList()
+        })
+        .ToListAsync();
+}
     public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
     {
         // 1. Güncellenecek alışkanlığı veritabanından bul.

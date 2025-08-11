@@ -5,18 +5,20 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddHabitModal from '@/components/AddHabitModal';
+import HabitList from '@/components/HabitList'; // Yeni bileşeni import ediyoruz
 
 // MUI Bileşenleri
-import { Container, Typography, Box, CircularProgress, Alert, List, ListItem, ListItemText, Fab, Paper, Divider } from '@mui/material';
+import { Container, Typography, Box, CircularProgress, Alert, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CssBaseline from '@mui/material/CssBaseline'; // Koyu tema arkaplanı için
+import CssBaseline from '@mui/material/CssBaseline'; // Koyu/Açık tema arkaplanını uygular
 
-// Alışkanlık verisinin tip tanımı
+// Backend'den gelen alışkanlık verisinin tipini tanımlıyoruz
 interface Habit {
   id: string;
   name: string;
   description: string | null;
   createdAt: string;
+   completions: string[];
 }
 
 export default function DashboardPage() {
@@ -27,8 +29,30 @@ export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
 
-  const fetchHabits = useCallback(async (token: string) => {
+  // Alışkanlıkları ve kullanıcı bilgilerini çeken fonksiyon.
+  // useCallback ile sarmalayarak gereksiz yeniden oluşturulmasını önlüyoruz.
+  const fetchData = useCallback(async () => {
     setLoading(true);
+    setError(null);
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    // Token'dan kullanıcı adını ayrıştırma (basit yöntem)
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUserName(payload.name);
+    } catch (e) {
+        console.error("Token ayrıştırılamadı:", e);
+        // Geçersiz token durumunda kullanıcıyı login'e yönlendirebiliriz
+        localStorage.removeItem('accessToken');
+        router.push('/login');
+        return;
+    }
+
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.get(`${apiUrl}/api/Habit`, {
@@ -37,29 +61,21 @@ export default function DashboardPage() {
       setHabits(response.data);
     } catch (err) {
       setError('Alışkanlıklar yüklenirken bir hata oluştu.');
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        localStorage.removeItem('accessToken');
+        router.push('/login');
+      }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]); // router, bu fonksiyonun bağımlılığıdır.
 
+  // Sayfa ilk yüklendiğinde verileri çekmek için useEffect kullanıyoruz.
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-    
-    // Token'dan kullanıcı adını ayrıştırma (basit yöntem)
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUserName(payload.name);
-    } catch (e) {
-        console.error("Token ayrıştırılamadı:", e);
-    }
+    fetchData();
+  }, [fetchData]); // fetchData fonksiyonu değiştiğinde (ilk yüklemede) çalışır.
 
-    fetchHabits(token);
-  }, [router, fetchHabits]);
-
+  // Veri yüklenirken gösterilecek olan içerik
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -70,53 +86,43 @@ export default function DashboardPage() {
   
   return (
     <>
-      <CssBaseline /> {/* Koyu tema için arkaplan rengini uygular */}
+      <CssBaseline /> {/* Seçtiğimiz temaya göre (light/dark) arkaplan rengini otomatik uygular */}
       <Container maxWidth="md">
         <Box sx={{ my: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom>
             Hoş Geldin, {userName || 'Kullanıcı'}!
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
-            İşte bugünkü alışkanlıkların.
+            Bugün harika bir gün olacak. İşte alışkanlıkların.
           </Typography>
           
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           
-          <Paper elevation={3}>
-            {habits.length > 0 ? (
-              <List>
-                {habits.map((habit, index) => (
-                  <div key={habit.id}>
-                    <ListItem>
-                      <ListItemText 
-                        primary={habit.name} 
-                        secondary={habit.description || 'Açıklama yok'} 
-                      />
-                      {/* TODO: Alışkanlık tamamlama butonu buraya gelecek */}
-                    </ListItem>
-                    {index < habits.length - 1 && <Divider />}
-                  </div>
-                ))}
-              </List>
-            ) : (
-              <Typography sx={{ p: 3, textAlign: 'center' }}>
-                Henüz bir alışkanlık eklemedin. Başlamak için sağ alttaki '+' butonuna tıkla!
-              </Typography>
-            )}
-          </Paper>
+          {/* Listeleme mantığını artık HabitList bileşeni hallediyor.
+              Ona sadece alışkanlık listesini prop olarak gönderiyoruz. */}
+              <HabitList habits={habits} onHabitUpdated={fetchData} />
+
+          
         </Box>
       </Container>
 
-      <Fab color="secondary" aria-label="add" sx={{ position: 'fixed', bottom: 32, right: 32 }} onClick={() => setIsModalOpen(true)}>
+      {/* Sağ altta sabit duran, yeni alışkanlık ekleme butonu */}
+      <Fab 
+        color="secondary" 
+        aria-label="add" 
+        sx={{ position: 'fixed', bottom: 32, right: 32 }}
+        onClick={() => setIsModalOpen(true)}
+      >
         <AddIcon />
       </Fab>
 
+      {/* Yeni alışkanlık ekleme modal'ı */}
       <AddHabitModal 
         open={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         onHabitAdded={() => {
-          const token = localStorage.getItem('accessToken');
-          if (token) fetchHabits(token);
+          setIsModalOpen(false); // Modal'ı kapat
+          fetchData(); // Liste anında güncellensin diye verileri yeniden çek
         }}
       />
     </>
