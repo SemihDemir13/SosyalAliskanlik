@@ -1,16 +1,14 @@
-// Dosya: client/src/app/(app)dashboard/page.tsx
+// Dosya: client/src/app/(app)/dashboard/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddHabitModal from '@/components/AddHabitModal';
-import HabitList from '@/components/HabitList'; // Yeni bileşeni import ediyoruz
+import HabitList from '@/components/HabitList';
 
 // MUI Bileşenleri
-import { Container, Typography, Box, CircularProgress, Alert, Fab } from '@mui/material';
+import { Typography, Box, CircularProgress, Alert, Fab, Container } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CssBaseline from '@mui/material/CssBaseline'; // Koyu/Açık tema arkaplanını uygular
 
 // Backend'den gelen alışkanlık verisinin tipini tanımlıyoruz
 interface Habit {
@@ -18,41 +16,40 @@ interface Habit {
   name: string;
   description: string | null;
   createdAt: string;
-   completions: string[];
+  completions: string[];
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
 
-  // Alışkanlıkları ve kullanıcı bilgilerini çeken fonksiyon.
-  // useCallback ile sarmalayarak gereksiz yeniden oluşturulmasını önlüyoruz.
+  // Bu sayfa artık AuthGuard tarafından korunduğu için, buraya ulaşıldığında
+  // token'ın var olduğu varsayılabilir.
   const fetchData = useCallback(async () => {
-    setLoading(true);
+    // Veri çekme işlemi başlamadan önce hata mesajını temizle ve yükleme durumunu başlat.
     setError(null);
+    setLoading(true);
+
     const token = localStorage.getItem('accessToken');
 
+    // AuthGuard zaten yönlendirme yapsa da, token'ın olmama ihtimaline karşı bir kontrol.
     if (!token) {
-      router.push('/login');
+      setLoading(false);
       return;
     }
 
-    // Token'dan kullanıcı adını ayrıştırma (basit yöntem)
+    // Token'dan kullanıcı adını ayrıştırarak Hoş Geldin mesajını kişiselleştir.
     try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setUserName(payload.name);
     } catch (e) {
         console.error("Token ayrıştırılamadı:", e);
-        // Geçersiz token durumunda kullanıcıyı login'e yönlendirebiliriz
-        localStorage.removeItem('accessToken');
-        router.push('/login');
-        return;
     }
 
+    // Alışkanlıkları API'den çek.
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.get(`${apiUrl}/api/Habit`, {
@@ -60,53 +57,46 @@ export default function DashboardPage() {
       });
       setHabits(response.data);
     } catch (err) {
-      setError('Alışkanlıklar yüklenirken bir hata oluştu.');
-      if (axios.isAxiosError(err) && err.response?.status === 401) {
-        localStorage.removeItem('accessToken');
-        router.push('/login');
-      }
+      // API'den veri çekilirken bir hata olursa kullanıcıyı bilgilendir.
+      setError('Alışkanlıklar yüklenirken bir hata oluştu. Lütfen sayfayı yenileyin.');
     } finally {
+      // Her durumda (başarılı veya hatalı) yükleme durumunu sonlandır.
       setLoading(false);
     }
-  }, [router]); // router, bu fonksiyonun bağımlılığıdır.
+  }, []); // Bu fonksiyonun dışarıdan bir bağımlılığı olmadığı için dizi boş.
 
-  // Sayfa ilk yüklendiğinde verileri çekmek için useEffect kullanıyoruz.
+  // Component ilk yüklendiğinde verileri çekmek için useEffect kullanıyoruz.
   useEffect(() => {
     fetchData();
-  }, [fetchData]); // fetchData fonksiyonu değiştiğinde (ilk yüklemede) çalışır.
+  }, [fetchData]);
 
   // Veri yüklenirken gösterilecek olan içerik
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: 'calc(100vh - 64px)' }}>
+        {/* 64px, Navbar'ın yaklaşık yüksekliğidir. Animasyonu ortalar. */}
         <CircularProgress />
       </Box>
     );
   }
   
   return (
+    // <Container> artık AppLayout'ta olduğu için burada tekrar kullanmıyoruz.
     <>
-      <CssBaseline /> {/* Seçtiğimiz temaya göre (light/dark) arkaplan rengini otomatik uygular */}
-      <Container maxWidth="md">
-        <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Hoş Geldin, {userName || 'Kullanıcı'}!
-          </Typography>
-          <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
-            Bugün harika bir gün olacak. İşte alışkanlıkların.
-          </Typography>
-          
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-          
-          {/* Listeleme mantığını artık HabitList bileşeni hallediyor.
-              Ona sadece alışkanlık listesini prop olarak gönderiyoruz. */}
-              <HabitList habits={habits} onHabitUpdated={fetchData} />
-
-          
-        </Box>
-      </Container>
-
-      {/* Sağ altta sabit duran, yeni alışkanlık ekleme butonu */}
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Hoş Geldin, {userName || 'Kullanıcı'}!
+        </Typography>
+        <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
+          Bugün harika bir gün olacak. İşte alışkanlıkların.
+        </Typography>
+        
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        
+        <HabitList habits={habits} onHabitUpdated={fetchData} />
+      </Box>
+      
+      {/* Sabit Ekleme Butonu ve Modal */}
       <Fab 
         color="secondary" 
         aria-label="add" 
@@ -116,12 +106,11 @@ export default function DashboardPage() {
         <AddIcon />
       </Fab>
 
-      {/* Yeni alışkanlık ekleme modal'ı */}
       <AddHabitModal 
         open={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         onHabitAdded={() => {
-          setIsModalOpen(false); // Modal'ı kapat
+          setIsModalOpen(false);
           fetchData(); // Liste anında güncellensin diye verileri yeniden çek
         }}
       />

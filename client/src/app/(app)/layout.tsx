@@ -1,5 +1,7 @@
 // Dosya: client/src/app/(app)/layout.tsx
 import Navbar from "@/components/Navbar";
+import AuthGuard from "@/components/AuthGuard"; 
+import { CssBaseline } from "@mui/material"; 
 
 export default function AppLayout({
   children,
@@ -7,9 +9,10 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <AuthGuard>
+      <CssBaseline />
       <Navbar />
       <main>{children}</main>
-    </div>
+    </AuthGuard>
   );
 }
