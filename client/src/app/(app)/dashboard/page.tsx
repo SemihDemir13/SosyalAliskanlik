@@ -1,4 +1,4 @@
-// Dosya: client/src/app/dashboard/page.tsx
+// Dosya: client/src/app/(app)dashboard/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
