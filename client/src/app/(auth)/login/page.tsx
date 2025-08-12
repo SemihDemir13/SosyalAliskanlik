@@ -7,11 +7,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 
-// MUI Bileşenleri
-import { Box, Button, Container, TextField, Typography, Link, Alert } from '@mui/material';
+// MUI Bileşenleri (Paper eklendi)
+import { Box, Button, Container, TextField, Typography, Link, Alert, Paper } from '@mui/material';
 import { useState } from 'react';
 
-// Sadece Login için Zod şeması
+// Zod şeması
 const loginSchema = z.object({
   email: z.string().email('Geçerli bir e-posta girin.'),
   password: z.string().min(1, 'Şifre alanı boş bırakılamaz.'),
@@ -48,47 +48,54 @@ export default function LoginPage() {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography component="h1" variant="h5" gutterBottom>
           Giriş Yap
         </Typography>
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
-          <TextField
-            variant="outlined" // En önemli kısım
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="E-posta Adresi"
-            autoComplete="email"
-            autoFocus
-            {...register('email')}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-          />
-          <TextField
-            variant="outlined" // En önemli kısım
-            margin="normal"
-            required
-            fullWidth
-            label="Şifre"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            {...register('password')}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-          />
-          
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-          
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isSubmitting}>
-            {isSubmitting ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
-          </Button>
-          <Box textAlign="center">
-            <Link href="/register" variant="body2">
-              Hesabın yok mu? Kayıt Ol
-            </Link>
+
+        {/* --- YAPIYI DEĞİŞTİRİYORUZ --- */}
+        {/* Formu ve içeriğini Paper bileşeni ile sarmalıyoruz */}
+        <Paper elevation={3} sx={{ p: 4, width: '100%', mt: 2 }}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="E-posta Adresi"
+              autoComplete="email"
+              autoFocus
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              label="Şifre"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
+            
+            {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+            
+            <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isSubmitting}>
+              {isSubmitting ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
+            </Button>
           </Box>
+        </Paper>
+        {/* --- DEĞİŞİKLİK BİTTİ --- */}
+
+        <Box textAlign="center" sx={{ mt: 2 }}>
+          <Link href="/register" variant="body2">
+            Hesabın yok mu? Kayıt Ol
+          </Link>
         </Box>
       </Box>
     </Container>
