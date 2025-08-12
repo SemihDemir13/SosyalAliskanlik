@@ -1,61 +1,40 @@
 // Dosya: client/src/app/(auth)/login/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 
 // MUI Bileşenleri
-import { TextField, Button, Container, Typography, Box, Alert, Link } from '@mui/material';
+import { Box, Button, Container, TextField, Typography, Link, Alert } from '@mui/material';
+import { useState } from 'react';
 
-// 1. Zod ile login formu için doğrulama şeması
+// Sadece Login için Zod şeması
 const loginSchema = z.object({
-  email: z.string().email('Lütfen geçerli bir e-posta adresi girin.'),
-  password: z.string().min(1, 'Şifre alanı boş bırakılamaz.'), // Sadece varlığını kontrol ediyoruz
+  email: z.string().email('Geçerli bir e-posta girin.'),
+  password: z.string().min(1, 'Şifre alanı boş bırakılamaz.'),
 });
 
-// 2. TypeScript tipi
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
-
-  // 3. react-hook-form'u başlatma
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormInputs>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
   });
 
-  // 4. Form gönderildiğinde çalışacak fonksiyon
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     setError(null);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.post(`${apiUrl}/api/Auth/login`, data);
-      
-      // API'den dönen token'ı al
-      const { accessToken } = response.data;
-
-      // Token'ı tarayıcının yerel deposuna (localStorage) kaydet
-      localStorage.setItem('accessToken', accessToken);
-
-      // Kullanıcıyı dashboard'a yönlendir
+      localStorage.setItem('accessToken', response.data.accessToken);
       router.push('/dashboard');
-
     } catch (err: any) {
-      if (axios.isAxiosError(err) && err.response) {
-        // Backend'den gelen 401 Unauthorized hatası
-        setError(err.response.data.message || 'Giriş başarısız. Bilgilerinizi kontrol edin.');
-      } else {
-        setError('Beklenmedik bir hata oluştu. Lütfen tekrar deneyin.');
-      }
+      setError(err.response?.data?.message || 'Giriş başarısız oldu.');
     }
   };
 
@@ -74,6 +53,7 @@ export default function LoginPage() {
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 1 }}>
           <TextField
+            variant="outlined" // En önemli kısım
             margin="normal"
             required
             fullWidth
@@ -86,6 +66,7 @@ export default function LoginPage() {
             helperText={errors.email?.message}
           />
           <TextField
+            variant="outlined" // En önemli kısım
             margin="normal"
             required
             fullWidth
@@ -97,19 +78,12 @@ export default function LoginPage() {
             error={!!errors.password}
             helperText={errors.password?.message}
           />
-
-          {error && <Alert severity="error" sx={{ mt: 2, width: '100%' }}>{error}</Alert>}
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-            disabled={isSubmitting}
-          >
+          
+          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+          
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} disabled={isSubmitting}>
             {isSubmitting ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
           </Button>
-          
           <Box textAlign="center">
             <Link href="/register" variant="body2">
               Hesabın yok mu? Kayıt Ol

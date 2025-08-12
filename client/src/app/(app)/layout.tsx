@@ -12,7 +12,6 @@ export default function AppLayout({
 }) {
   return (
     <AuthGuard>
-      <CssBaseline />
       <Navbar />
       <main>
         {/* --- YENİ EKLENEN SARMALAYICI --- */}
@@ -23,7 +22,6 @@ export default function AppLayout({
             {children}
           </Box>
         </Container>
-        {/* --- BİTTİ --- */}
       </main>
     </AuthGuard>
   );
