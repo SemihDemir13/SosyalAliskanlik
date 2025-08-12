@@ -21,16 +21,18 @@ export default function Navbar() {
           Alışkanlık Takipçisi
         </Typography>
         <Box>
-          <Button color="inherit" onClick={() => router.push('/dashboard')}>
-            Anasayfa
-          </Button>
-          {/* TODO: İstatistikler ve Profil sayfaları eklendiğinde buraya linkleri gelecek */}
-          {/* <Button color="inherit" onClick={() => router.push('/statistics')}>İstatistikler</Button> */}
-          {/* <Button color="inherit" onClick={() => router.push('/profile')}>Profil</Button> */}
-          <Button color="inherit" onClick={handleLogout}>
-            Çıkış Yap
-          </Button>
-        </Box>
+  <Button color="inherit" onClick={() => router.push('/dashboard')}>
+    Anasayfa
+  </Button>
+  {/* Bu satırın yorumunu kaldır */}
+  <Button color="inherit" onClick={() => router.push('/statistics')}>
+    İstatistikler
+  </Button>
+  {/* <Button color="inherit" onClick={() => router.push('/profile')}>Profil</Button> */}
+  <Button color="inherit" onClick={handleLogout}>
+    Çıkış Yap
+  </Button>
+</Box>
       </Toolbar>
     </AppBar>
   );
