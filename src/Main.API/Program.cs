@@ -2,6 +2,7 @@ using SosyalAliskanlikApp.Configurations;
 using SosyalAliskanlikApp.Modules.Auth.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Habit.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Statistics.Web.Controllers;
+using SosyalAliskanlikApp.Modules.Friends.Web.Controllers;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,12 +27,14 @@ builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddAuthModule(builder.Configuration);
 builder.Services.AddHabitModule();
 builder.Services.AddStatisticsModule();
+builder.Services.AddFriendsModule();
 
 // Sadece Controller'ları ve Auth modülünün assembly'sini tanıtıyoruz.
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AuthController).Assembly)
     .AddApplicationPart(typeof(HabitController).Assembly)
-    .AddApplicationPart(typeof(StatisticsController).Assembly);
+    .AddApplicationPart(typeof(StatisticsController).Assembly)
+    .AddApplicationPart(typeof(FriendsController).Assembly);
 
 
 builder.Services.AddAuthorization();

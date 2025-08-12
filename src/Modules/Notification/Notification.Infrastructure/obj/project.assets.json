@@ -341,6 +341,20 @@
           "bin/placeholder/Notification.Domain.dll": {}
         }
       },
+      "SosyalAliskanlikApp.Modules.Friends.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Auth.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Friends.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Friends.Domain.dll": {}
+        }
+      },
       "SosyalAliskanlikApp.Persistence/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -348,6 +362,7 @@
           "Auth.Domain": "1.0.0",
           "Habit.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
+          "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Shared": "1.0.0"
         },
         "compile": {
@@ -831,6 +846,11 @@
       "type": "project",
       "path": "../Notification.Domain/Notification.Domain.csproj",
       "msbuildProject": "../Notification.Domain/Notification.Domain.csproj"
+    },
+    "SosyalAliskanlikApp.Modules.Friends.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Friends/Domain/SosyalAliskanlikApp.Modules.Friends.Domain.csproj",
+      "msbuildProject": "../../Friends/Domain/SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
     },
     "SosyalAliskanlikApp.Persistence/1.0.0": {
       "type": "project",

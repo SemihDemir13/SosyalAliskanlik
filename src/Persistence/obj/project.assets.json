@@ -315,6 +315,20 @@
           "bin/placeholder/Habit.Domain.dll": {}
         }
       },
+      "SosyalAliskanlikApp.Modules.Friends.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Auth.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Friends.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SosyalAliskanlikApp.Modules.Friends.Domain.dll": {}
+        }
+      },
       "SosyalAliskanlikApp.Shared/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -780,6 +794,11 @@
       "path": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj",
       "msbuildProject": "../Modules/Habit/Habit.Domain/Habit.Domain.csproj"
     },
+    "SosyalAliskanlikApp.Modules.Friends.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Friends/Domain/SosyalAliskanlikApp.Modules.Friends.Domain.csproj",
+      "msbuildProject": "../Modules/Friends/Domain/SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
+    },
     "SosyalAliskanlikApp.Shared/1.0.0": {
       "type": "project",
       "path": "../Shared/SosyalAliskanlikApp.Shared.csproj",
@@ -791,6 +810,7 @@
       "Auth.Domain >= 1.0.0",
       "Habit.Domain >= 1.0.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 9.0.4",
+      "SosyalAliskanlikApp.Modules.Friends.Domain >= 1.0.0",
       "SosyalAliskanlikApp.Shared >= 1.0.0"
     ]
   },
@@ -821,6 +841,9 @@
           "projectReferences": {
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+            },
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"

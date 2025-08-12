@@ -336,3 +336,9 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\refint\Main.API.dl
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\Main.API.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\Main.API.genruntimeconfig.cache
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\ref\Main.API.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Web.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.pdb

@@ -51,6 +51,36 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Friends.Domain.Entities.Friendship", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AddresseeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RequesterId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddresseeId");
+
+                    b.HasIndex("RequesterId");
+
+                    b.ToTable("Friendships");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", b =>
                 {
                     b.Property<Guid>("Id")
@@ -103,15 +133,39 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.ToTable("HabitCompletions");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Friends.Domain.Entities.Friendship", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "Addressee")
+                        .WithMany()
+                        .HasForeignKey("AddresseeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "Requester")
+                        .WithMany()
+                        .HasForeignKey("RequesterId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Addressee");
+
+                    b.Navigation("Requester");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.HabitCompletion", b =>
                 {
                     b.HasOne("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", "Habit")
-                        .WithMany()
+                        .WithMany("HabitCompletions")
                         .HasForeignKey("HabitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Habit");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", b =>
+                {
+                    b.Navigation("HabitCompletions");
                 });
 #pragma warning restore 612, 618
         }
