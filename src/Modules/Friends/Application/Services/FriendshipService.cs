@@ -18,6 +18,60 @@ public class FriendshipService : IFriendshipService
         _context = context;
     }
 
+    public async Task<Result> AcceptRequestAsync(Guid friendshipId, Guid userId)
+     {
+        var friendship = await _context.Friendships
+            .FirstOrDefaultAsync(f => f.Id == friendshipId && f.AddresseeId == userId && f.Status == FriendshipStatus.Pending);
+
+        if (friendship == null)
+        {
+            return Result.Failure("Arkadaşlık isteği bulunamadı veya bu isteği yanıtlama yetkiniz yok.");
+        }
+
+        friendship.Status = FriendshipStatus.Accepted;
+        friendship.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+
+        return Result.Success();
+    }
+
+    public async Task<Result> DeclineRequestAsync(Guid friendshipId, Guid userId)
+    {
+        {
+        var friendship = await _context.Friendships
+            .FirstOrDefaultAsync(f => f.Id == friendshipId && f.AddresseeId == userId && f.Status == FriendshipStatus.Pending);
+
+        if (friendship == null)
+        {
+            return Result.Failure("Arkadaşlık isteği bulunamadı veya bu isteği yanıtlama yetkiniz yok.");
+        }
+
+        friendship.Status = FriendshipStatus.Declined;
+        friendship.UpdatedAt = DateTime.UtcNow;
+        await _context.SaveChangesAsync();
+        
+        return Result.Success();
+    }
+    }
+
+    public async Task<Result<List<FriendRequestDto>>> GetPendingRequestsAsync(Guid userId)
+    {
+        var requests = await _context.Friendships
+        .Where(f => f.AddresseeId == userId && f.Status ==
+        FriendshipStatus.Pending)
+        .Select(f => new FriendRequestDto
+        {
+            FriendshipId = f.Id,
+            RequesterId = f.RequesterId,
+            RequesterName = f.Requester.Name, // İlişkili Requester'ın adını al
+            RequestedAt = f.CreatedAt
+
+        })
+         .ToListAsync();
+
+        return Result.Success(requests);
+    }
+
     public async Task<Result> SendRequestAsync(SendFriendRequestDto request /*isteği alan kişi*/, Guid requesterId /*isteği gönderen kişi*/)
     {
         // 1. Kullanıcı kendine istek gönderemez.

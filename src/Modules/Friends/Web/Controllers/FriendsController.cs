@@ -34,4 +34,46 @@ public class FriendsController : ControllerBase
 
         return Ok(new { message = "Arkadaşlık isteği başarıyla gönderildi." });
     }
+
+    // Gelen arkadaşlık isteklerini listeler
+    // GET /api/friends/requests/pending
+    [HttpGet("requests/pending")]
+    public async Task<IActionResult> GetPendingRequests()
+    {
+        var userId = GetCurrentUserId();
+        var result = await _friendshipService.GetPendingRequestsAsync(userId);
+        return Ok(result.Value);
+    }
+
+    // Bir arkadaşlık isteğini kabul eder
+    // POST /api/friends/requests/{id}/accept
+    [HttpPost("requests/{id}/accept")]
+    public async Task<IActionResult> AcceptRequest(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _friendshipService.AcceptRequestAsync(id, userId);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+        
+        return Ok(new { message = "Arkadaşlık isteği kabul edildi." });
+    }
+
+    // Bir arkadaşlık isteğini reddeder
+    // POST /api/friends/requests/{id}/decline
+    [HttpPost("requests/{id}/decline")]
+    public async Task<IActionResult> DeclineRequest(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _friendshipService.DeclineRequestAsync(id, userId);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+
+        return Ok(new { message = "Arkadaşlık isteği reddedildi." });
+    }
 }

@@ -7,4 +7,7 @@ namespace SosyalAliskanlikApp.Modules.Friends.Application.Interfaces;
 public interface IFriendshipService
 {
     Task<Result> SendRequestAsync(SendFriendRequestDto request, Guid requesterId);
+    Task<Result<List<FriendRequestDto>>> GetPendingRequestsAsync(Guid userId);
+    Task<Result> AcceptRequestAsync(Guid friendshipId, Guid userId);
+    Task<Result> DeclineRequestAsync(Guid friendshipId, Guid userId);
 }
