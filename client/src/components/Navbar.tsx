@@ -24,10 +24,13 @@ export default function Navbar() {
   <Button color="inherit" onClick={() => router.push('/dashboard')}>
     Anasayfa
   </Button>
-  {/* Bu satırın yorumunu kaldır */}
+  
   <Button color="inherit" onClick={() => router.push('/statistics')}>
     İstatistikler
   </Button>
+  <Button color="inherit" onClick={() => router.push('/friends')}>
+    Arkadaşlar
+    </Button>
   {/* <Button color="inherit" onClick={() => router.push('/profile')}>Profil</Button> */}
   <Button color="inherit" onClick={handleLogout}>
     Çıkış Yap

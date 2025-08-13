@@ -19,7 +19,7 @@ public class FriendshipService : IFriendshipService
     }
 
     public async Task<Result> AcceptRequestAsync(Guid friendshipId, Guid userId)
-     {
+    {
         var friendship = await _context.Friendships
             .FirstOrDefaultAsync(f => f.Id == friendshipId && f.AddresseeId == userId && f.Status == FriendshipStatus.Pending);
 
@@ -38,20 +38,20 @@ public class FriendshipService : IFriendshipService
     public async Task<Result> DeclineRequestAsync(Guid friendshipId, Guid userId)
     {
         {
-        var friendship = await _context.Friendships
-            .FirstOrDefaultAsync(f => f.Id == friendshipId && f.AddresseeId == userId && f.Status == FriendshipStatus.Pending);
+            var friendship = await _context.Friendships
+                .FirstOrDefaultAsync(f => f.Id == friendshipId && f.AddresseeId == userId && f.Status == FriendshipStatus.Pending);
 
-        if (friendship == null)
-        {
-            return Result.Failure("Arkadaşlık isteği bulunamadı veya bu isteği yanıtlama yetkiniz yok.");
+            if (friendship == null)
+            {
+                return Result.Failure("Arkadaşlık isteği bulunamadı veya bu isteği yanıtlama yetkiniz yok.");
+            }
+
+            friendship.Status = FriendshipStatus.Declined;
+            friendship.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return Result.Success();
         }
-
-        friendship.Status = FriendshipStatus.Declined;
-        friendship.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync();
-        
-        return Result.Success();
-    }
     }
 
     public async Task<Result<List<FriendRequestDto>>> GetPendingRequestsAsync(Guid userId)
@@ -89,7 +89,7 @@ public class FriendshipService : IFriendshipService
 
         // 3. Bu iki kullanıcı arasında zaten bir ilişki var mı? (Ters yönlü de kontrol et)
         var existingFriendship = await _context.Friendships
-            .FirstOrDefaultAsync(f => 
+            .FirstOrDefaultAsync(f =>
                 (f.RequesterId == requesterId && f.AddresseeId == request.AddresseeId) ||
                 (f.RequesterId == request.AddresseeId && f.AddresseeId == requesterId));
 
@@ -102,7 +102,7 @@ public class FriendshipService : IFriendshipService
             if (existingFriendship.Status == FriendshipStatus.Blocked)
                 return Result.Failure("Bu kullanıcıya istek gönderemezsiniz.");
         }
-        
+
         // 4. Tüm kontrollerden geçtiyse, yeni bir arkadaşlık isteği oluştur.
         var newFriendship = new Friendship
         {
@@ -116,4 +116,22 @@ public class FriendshipService : IFriendshipService
 
         return Result.Success();
     }
+    public async Task<Result<List<FriendDto>>> GetFriendsAsync(Guid userId)
+   {
+    var friendsDto = await _context.Friendships
+        .Where(f => (f.RequesterId == userId || f.AddresseeId == userId) && f.Status == FriendshipStatus.Accepted)
+        // İLİŞKİLİ USER NESNELERİNİ SORGUNUN BAŞINDA ÇEKİYORUZ
+        .Include(f => f.Requester)
+        .Include(f => f.Addressee)
+        // DTO'ya dönüştürme işlemini doğrudan veritabanı sorgusunda yapıyoruz
+        .Select(f => new FriendDto
+        {
+            FriendshipId = f.Id,
+            FriendId = f.RequesterId == userId ? f.AddresseeId : f.RequesterId,
+            FriendName = f.RequesterId == userId ? f.Addressee.Name : f.Requester.Name
+        })
+        .ToListAsync();
+    
+    return Result.Success(friendsDto);
+}
 }

@@ -57,7 +57,7 @@ public class FriendsController : ControllerBase
         {
             return BadRequest(new { message = result.Error });
         }
-        
+
         return Ok(new { message = "Arkadaşlık isteği kabul edildi." });
     }
 
@@ -75,5 +75,19 @@ public class FriendsController : ControllerBase
         }
 
         return Ok(new { message = "Arkadaşlık isteği reddedildi." });
+    }
+     [HttpGet("")] // Route: GET /api/friends
+    public async Task<IActionResult> GetFriends()
+    {
+        var userId = GetCurrentUserId();
+        var result = await _friendshipService.GetFriendsAsync(userId);
+
+        // IsFailure kontrolü eklemek her zaman daha güvenlidir.
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+
+        return Ok(result.Value);
     }
 }
