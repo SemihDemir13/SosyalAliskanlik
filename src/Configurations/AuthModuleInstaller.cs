@@ -15,6 +15,7 @@ public static class AuthModuleInstaller
     public static IServiceCollection AddAuthModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserService, UserService>();
 
         // --- YENİ EKLENEN BÖLÜM ---
         services.AddAuthentication(options =>
