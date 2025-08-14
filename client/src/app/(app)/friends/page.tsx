@@ -53,7 +53,8 @@ export default function FriendsPage() {
         <Box sx={{ flexGrow: 1 }}>
           <Stack spacing={3}>
             <FriendRequests requests={requests} onAction={fetchData} />
-            <FriendList friends={friends} />
+            <FriendList friends={friends} onAction={fetchData} />
+
           </Stack>
         </Box>
         <Box sx={{ width: { xs: '100%', md: '320px' }, flexShrink: 0 }}>

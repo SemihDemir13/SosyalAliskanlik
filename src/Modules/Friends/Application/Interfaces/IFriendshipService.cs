@@ -11,4 +11,5 @@ public interface IFriendshipService
     Task<Result> AcceptRequestAsync(Guid friendshipId, Guid userId);
     Task<Result> DeclineRequestAsync(Guid friendshipId, Guid userId);
     Task<Result<List<FriendDto>>> GetFriendsAsync(Guid userId);
+    Task<Result> RemoveFriendAsync(Guid friendshipId, Guid currentUserId); 
 }

@@ -117,21 +117,49 @@ public class FriendshipService : IFriendshipService
         return Result.Success();
     }
     public async Task<Result<List<FriendDto>>> GetFriendsAsync(Guid userId)
-   {
-    var friendsDto = await _context.Friendships
-        .Where(f => (f.RequesterId == userId || f.AddresseeId == userId) && f.Status == FriendshipStatus.Accepted)
-        // İLİŞKİLİ USER NESNELERİNİ SORGUNUN BAŞINDA ÇEKİYORUZ
-        .Include(f => f.Requester)
-        .Include(f => f.Addressee)
-        // DTO'ya dönüştürme işlemini doğrudan veritabanı sorgusunda yapıyoruz
-        .Select(f => new FriendDto
+    {
+        var friendsDto = await _context.Friendships
+            .Where(f => (f.RequesterId == userId || f.AddresseeId == userId) && f.Status == FriendshipStatus.Accepted)
+            // İLİŞKİLİ USER NESNELERİNİ SORGUNUN BAŞINDA ÇEKİYORUZ
+            .Include(f => f.Requester)
+            .Include(f => f.Addressee)
+            // DTO'ya dönüştürme işlemini doğrudan veritabanı sorgusunda yapıyoruz
+            .Select(f => new FriendDto
+            {
+                FriendshipId = f.Id,
+                FriendId = f.RequesterId == userId ? f.AddresseeId : f.RequesterId,
+                FriendName = f.RequesterId == userId ? f.Addressee.Name : f.Requester.Name
+            })
+            .ToListAsync();
+
+        return Result.Success(friendsDto);
+    }
+     public async Task<Result> RemoveFriendAsync(Guid friendshipId, Guid currentUserId)
+    {
+        // 1. Silinecek arkadaşlık ilişkisini bul.
+        var friendship = await _context.Friendships.FindAsync(friendshipId);
+
+        if (friendship == null)
         {
-            FriendshipId = f.Id,
-            FriendId = f.RequesterId == userId ? f.AddresseeId : f.RequesterId,
-            FriendName = f.RequesterId == userId ? f.Addressee.Name : f.Requester.Name
-        })
-        .ToListAsync();
-    
-    return Result.Success(friendsDto);
-}
+            return Result.Failure("Arkadaşlık kaydı bulunamadı.");
+        }
+
+        // 2. Güvenlik Kontrolü: Bu işlemi yapmaya çalışan kişi, bu arkadaşlığın taraflarından biri mi?
+        if (friendship.RequesterId != currentUserId && friendship.AddresseeId != currentUserId)
+        {
+            return Result.Failure("Bu işlemi yapma yetkiniz yok.");
+        }
+        
+        // 3. Durumun "Kabul Edilmiş" olduğundan emin ol. (İsteğe bağlı ama iyi bir kontrol)
+        if (friendship.Status != FriendshipStatus.Accepted)
+        {
+            return Result.Failure("Bu kayıt, onaylanmış bir arkadaşlık değildir.");
+        }
+
+        // 4. Kaydı sil.
+        _context.Friendships.Remove(friendship);
+        await _context.SaveChangesAsync();
+
+        return Result.Success();
+    }
 }

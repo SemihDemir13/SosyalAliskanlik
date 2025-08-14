@@ -76,7 +76,7 @@ public class FriendsController : ControllerBase
 
         return Ok(new { message = "Arkadaşlık isteği reddedildi." });
     }
-     [HttpGet("")] // Route: GET /api/friends
+    [HttpGet("")] // Route: GET /api/friends
     public async Task<IActionResult> GetFriends()
     {
         var userId = GetCurrentUserId();
@@ -89,5 +89,19 @@ public class FriendsController : ControllerBase
         }
 
         return Ok(result.Value);
+    }
+    [HttpDelete("{friendshipId}")] // Route: DELETE /api/friends/{friendshipId}
+    public async Task<IActionResult> RemoveFriend(Guid friendshipId)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _friendshipService.RemoveFriendAsync(friendshipId, userId);
+
+        if (result.IsFailure)
+        {
+            
+            return BadRequest(new { message = result.Error });
+        }
+
+        return Ok(new { message = "Arkadaş başarıyla silindi." });
     }
 }
