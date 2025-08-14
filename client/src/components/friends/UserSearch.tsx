@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { Box, TextField, List, ListItem, ListItemText, Button, CircularProgress, Typography, Paper } from '@mui/material';
+import { Box, TextField, List, ListItem, ListItemText, Button, CircularProgress, Typography, Paper ,Alert } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
 interface User {
@@ -15,10 +15,12 @@ export default function UserSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const handleSearch = async (term: string) => {
     setSearchTerm(term);
+    setFeedback(null); // Yeni bir arama yapıldığında eski mesajları temizle
     if (term.length < 2) {
       setResults([]);
       return;
@@ -40,6 +42,7 @@ export default function UserSearch() {
   };
   
   const handleAddFriend = async (addresseeId: string) => {
+    setFeedback(null); // Butona basıldığında eski mesajı temizle
     try {
       const token = localStorage.getItem('accessToken');
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -47,9 +50,11 @@ export default function UserSearch() {
         { addresseeId }, 
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      enqueueSnackbar('Arkadaşlık isteği gönderildi!', { variant: 'success' });
+      // Başarı durumunda feedback state'ini ayarla
+      setFeedback({ type: 'success', message: 'Arkadaşlık isteği gönderildi!' });
     } catch (error: any) {
-      enqueueSnackbar(error.response?.data?.message || 'İstek gönderilemedi.', { variant: 'error' });
+      // Hata durumunda feedback state'ini ayarla
+      setFeedback({ type: 'error', message: error.response?.data?.message || 'İstek gönderilemedi.' });
     }
   };
 
@@ -66,7 +71,15 @@ export default function UserSearch() {
           endAdornment: loading && <CircularProgress size={20} />,
         }}
       />
-      <List sx={{ mt: 2 }}>
+      
+      {/* --- YENİ EKLENEN ALERT BÖLÜMÜ --- */}
+      {feedback && (
+        <Alert severity={feedback.type} sx={{ mt: 2 }}>
+          {feedback.message}
+        </Alert>
+      )}
+
+      <List sx={{ mt: 1 }}>
         {results.map((user) => (
           <ListItem key={user.id} secondaryAction={
             <Button variant="contained" size="small" onClick={() => handleAddFriend(user.id)}>
