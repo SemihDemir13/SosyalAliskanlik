@@ -72,50 +72,69 @@ public class FriendshipService : IFriendshipService
         return Result.Success(requests);
     }
 
-    public async Task<Result> SendRequestAsync(SendFriendRequestDto request /*isteği alan kişi*/, Guid requesterId /*isteği gönderen kişi*/)
+    public async Task<Result> SendRequestAsync(SendFriendRequestDto request, Guid requesterId)
+{
+    if (requesterId == request.AddresseeId)
     {
-        // 1. Kullanıcı kendine istek gönderemez.
-        if (requesterId == request.AddresseeId)
-        {
-            return Result.Failure("Kendinize arkadaşlık isteği gönderemezsiniz.");
-        }
+        return Result.Failure("Kendinize arkadaşlık isteği gönderemezsiniz.");
+    }
 
-        // 2. İsteğin gönderileceği kullanıcı gerçekten var mı?
-        var addresseeExists = await _context.Users.AnyAsync(u => u.Id == request.AddresseeId);
-        if (!addresseeExists)
-        {
-            return Result.Failure("İstek gönderilecek kullanıcı bulunamadı.");
-        }
+    var addresseeExists = await _context.Users.AnyAsync(u => u.Id == request.AddresseeId);
+    if (!addresseeExists)
+    {
+        return Result.Failure("İstek gönderilecek kullanıcı bulunamadı.");
+    }
 
-        // 3. Bu iki kullanıcı arasında zaten bir ilişki var mı? (Ters yönlü de kontrol et)
-        var existingFriendship = await _context.Friendships
-            .FirstOrDefaultAsync(f =>
-                (f.RequesterId == requesterId && f.AddresseeId == request.AddresseeId) ||
-                (f.RequesterId == request.AddresseeId && f.AddresseeId == requesterId));
+    // İki kullanıcı arasındaki ilişkiyi, yönüne bakmaksızın bul.
+    var friendship = await _context.Friendships
+        .FirstOrDefaultAsync(f => 
+            (f.RequesterId == requesterId && f.AddresseeId == request.AddresseeId) ||
+            (f.RequesterId == request.AddresseeId && f.AddresseeId == requesterId));
 
-        if (existingFriendship != null)
+    if (friendship != null)
+    {
+        // Mevcut bir ilişki varsa, durumuna göre işlem yap.
+        switch (friendship.Status)
         {
-            if (existingFriendship.Status == FriendshipStatus.Accepted)
+            case FriendshipStatus.Accepted:
                 return Result.Failure("Bu kullanıcıyla zaten arkadaşsınız.");
-            if (existingFriendship.Status == FriendshipStatus.Pending)
-                return Result.Failure("Bu kullanıcıya zaten bir arkadaşlık isteği gönderilmiş.");
-            if (existingFriendship.Status == FriendshipStatus.Blocked)
-                return Result.Failure("Bu kullanıcıya istek gönderemezsiniz.");
+            case FriendshipStatus.Pending:
+                // İsteği kimin gönderdiğini kontrol et. Eğer ben göndermemişsem, isteği kabul etmem beklenir.
+                if (friendship.RequesterId == requesterId)
+                    return Result.Failure("Bu kullanıcıya zaten bir istek gönderdiniz.");
+                else
+                    return Result.Failure("Bu kullanıcı size zaten bir istek göndermiş. Lütfen isteklerinizi kontrol edin.");
+            case FriendshipStatus.Blocked:
+                return Result.Failure("Bu kullanıcıya istek gönderemezsiniz veya bu kullanıcı tarafından engellendiniz.");
+            
+            case FriendshipStatus.Declined:
+                // Eğer daha önce reddedilmişse, mevcut kaydı YENİDEN AKTİF HALE GETİR.
+                // İsteği bu sefer kimin gönderdiğine göre Requester/Addressee rollerini güncelle.
+                friendship.RequesterId = requesterId;
+                friendship.AddresseeId = request.AddresseeId;
+                friendship.Status = FriendshipStatus.Pending;
+                friendship.CreatedAt = DateTime.UtcNow; // Tarihi güncelle
+                friendship.UpdatedAt = null;
+                break; // Switch'ten çık ve SaveChanges'e git.
         }
-
-        // 4. Tüm kontrollerden geçtiyse, yeni bir arkadaşlık isteği oluştur.
-        var newFriendship = new Friendship
+    }
+    else
+    {
+        // Hiçbir ilişki yoksa, yeni bir tane oluştur.
+        friendship = new Friendship
         {
             RequesterId = requesterId,
             AddresseeId = request.AddresseeId,
-            Status = FriendshipStatus.Pending // Durum başlangıçta "Beklemede"
+            Status = FriendshipStatus.Pending
         };
-
-        await _context.Friendships.AddAsync(newFriendship);
-        await _context.SaveChangesAsync();
-
-        return Result.Success();
+        await _context.Friendships.AddAsync(friendship);
     }
+    
+    // Değişiklikleri veritabanına kaydet.
+    await _context.SaveChangesAsync();
+
+    return Result.Success();
+}
     public async Task<Result<List<FriendDto>>> GetFriendsAsync(Guid userId)
     {
         var friendsDto = await _context.Friendships

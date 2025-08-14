@@ -9,6 +9,7 @@ import { useSnackbar } from 'notistack';
 interface User {
   id: string;
   name: string;
+  friendshipStatus: 'Pending' | 'Accepted' | 'Declined' | 'Blocked' | null;
 }
 
 export default function UserSearch() {
@@ -79,12 +80,22 @@ export default function UserSearch() {
         </Alert>
       )}
 
-      <List sx={{ mt: 1 }}>
+      <List sx={{ mt: 2 }}>
         {results.map((user) => (
           <ListItem key={user.id} secondaryAction={
-            <Button variant="contained" size="small" onClick={() => handleAddFriend(user.id)}>
-              Ekle
-            </Button>
+            // --- KOŞULLU RENDER ETME BÖLÜMÜ ---
+            <>
+              {user.friendshipStatus === 'Accepted' ? (
+                <Typography variant="body2" color="text.secondary">Arkadaş</Typography>
+              ) : user.friendshipStatus === 'Pending' ? (
+                <Typography variant="body2" color="text.secondary">İstek Gönderildi</Typography>
+              ) : (
+                <Button variant="contained" size="small" onClick={() => handleAddFriend(user.id)}>
+                  Ekle
+                </Button>
+              )}
+            </>
+            // --- BİTTİ ---
           }>
             <ListItemText primary={user.name} />
           </ListItem>
