@@ -2,9 +2,10 @@
 'use client';
 
 import axios from 'axios';
-import { Typography, List, ListItem, ListItemText, Paper, IconButton } from '@mui/material';
+import { Typography, List, ListItem, ListItemText, Paper, IconButton, Link as MuiLink } from '@mui/material'; // MUI'nin Link'ini de import ediyoruz
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useSnackbar } from 'notistack';
+import Link from 'next/link'; // Next.js'in Link bileşenini import ediyoruz
 
 export interface Friend {
   friendshipId: string;
@@ -14,27 +15,24 @@ export interface Friend {
 
 interface FriendListProps {
   friends: Friend[];
-  onAction: () => void; // Arkadaş silindiğinde listeyi yenilemek için
+  onAction: () => void;
 }
 
 export default function FriendList({ friends, onAction }: FriendListProps) {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleRemoveFriend = async (friend: Friend) => {
-    // Silmeden önce kullanıcıdan onay al
     if (!window.confirm(`'${friend.friendName}' adlı kişiyi arkadaşlıktan çıkarmak istediğinize emin misiniz?`)) {
       return;
     }
-
     try {
       const token = localStorage.getItem('accessToken');
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       await axios.delete(`${apiUrl}/api/Friends/${friend.friendshipId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
       enqueueSnackbar(`${friend.friendName} arkadaşlıktan çıkarıldı.`, { variant: 'success' });
-      onAction(); // Ana bileşene listeyi yenilemesi için haber ver
+      onAction();
     } catch (error: any) {
       enqueueSnackbar(error.response?.data?.message || 'Bir hata oluştu.', { variant: 'error' });
     }
@@ -54,7 +52,16 @@ export default function FriendList({ friends, onAction }: FriendListProps) {
                 </IconButton>
               }
             >
-              <ListItemText primary={friend.friendName} />
+              {/* --- LİNK KISMININ DOĞRU KULLANIMI --- */}
+              <MuiLink 
+                component={Link} 
+                href={`/friends/${friend.friendId}`} 
+                underline="hover" 
+                color="inherit"
+              >
+                <ListItemText primary={friend.friendName} />
+              </MuiLink>
+              {/* --- BİTTİ --- */}
             </ListItem>
           ))}
         </List>
