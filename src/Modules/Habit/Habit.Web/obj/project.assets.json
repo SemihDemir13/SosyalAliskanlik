@@ -307,6 +307,7 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Habit.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Persistence": "1.0.0"
         },
         "compile": {

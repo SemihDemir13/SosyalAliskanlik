@@ -1,4 +1,5 @@
 using SosyalAliskanlikApp.Modules.Habit.Application.DTOs;
+using SosyalAliskanlikApp.Shared;
 
 namespace SosyalAliskanlikApp.Modules.Habit.Application.Interfaces;
 
@@ -14,8 +15,10 @@ public interface IHabitService
     Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId); //birini listeleme
 
     Task<HabitCompletionDto?> MarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId); //alışkanlığı tamamlandı işaretleme
-    
-     Task<bool> UnmarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId); //yanlışlıkla işaretlenen ,silme
 
-      Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId); //tamamlanma tarihleri
+    Task<bool> UnmarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId); //yanlışlıkla işaretlenen ,silme
+
+    Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId); //tamamlanma tarihleri
+    
+    Task<Result<UserHabitSummaryDto?>> GetUserHabitSummaryAsync(Guid targetUserId, Guid currentUserId);
 }

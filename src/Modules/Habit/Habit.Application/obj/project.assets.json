@@ -830,6 +830,7 @@
   "projectFileDependencyGroups": {
     "net8.0": [
       "Habit.Domain >= 1.0.0",
+      "SosyalAliskanlikApp.Modules.Friends.Domain >= 1.0.0",
       "SosyalAliskanlikApp.Persistence >= 1.0.0"
     ]
   },
@@ -858,6 +859,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
+            },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Domain\\Habit.Domain.csproj"
             },

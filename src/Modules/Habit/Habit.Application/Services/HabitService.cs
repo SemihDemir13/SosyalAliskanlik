@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using SosyalAliskanlikApp.Modules.Friends.Domain.Enums;
 using SosyalAliskanlikApp.Modules.Habit.Application.DTOs;
 using SosyalAliskanlikApp.Modules.Habit.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Habit.Domain.Entities; 
-using SosyalAliskanlikApp.Persistence; 
+using SosyalAliskanlikApp.Persistence;
+using SosyalAliskanlikApp.Shared;
 using HabitEntity = SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit;
 
 
@@ -192,5 +194,48 @@ public class HabitService : IHabitService
             .Select(hc => hc.CompletionDate)
             .OrderBy(d => d) 
             .ToListAsync();
+    }
+
+    public async Task<Result<UserHabitSummaryDto?>> GetUserHabitSummaryAsync(Guid targetUserId, Guid currentUserId)
+    {
+        var areFriends = await _context.Friendships
+            .AnyAsync(f =>
+                f.Status == FriendshipStatus.Accepted &&
+                ((f.RequesterId == currentUserId && f.AddresseeId == targetUserId) ||
+                 (f.RequesterId == targetUserId && f.AddresseeId == currentUserId)));
+
+        if (!areFriends)
+        {
+            // Arkadaş değillerse, yetkileri yok. Hata dönebiliriz veya null.
+            // Null dönmek, "bulunamadı" gibi davranarak daha güvenli olabilir.
+            return Result.Success<UserHabitSummaryDto?>(null);
+        }
+
+        var targetUser = await _context.Users.FindAsync(targetUserId);
+        if (targetUser == null)
+        {
+            return Result.Success<UserHabitSummaryDto?>(null); // Kullanıcı bulunamadı
+        }
+
+        var sevenDaysAgo = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7));
+
+        var habitsWithSummary = await _context.Habits
+            .Where(h => h.UserId == targetUserId)
+            .Select(h => new HabitSummaryDto
+            {
+                Id = h.Id,
+                Name = h.Name,
+                CompletionsLastWeek = h.HabitCompletions
+                                        .Count(hc => hc.CompletionDate >= sevenDaysAgo)
+            })
+            .ToListAsync();
+        
+         var resultDto = new UserHabitSummaryDto
+        {
+            UserName = targetUser.Name,
+            Habits = habitsWithSummary
+        };
+
+        return Result.Success<UserHabitSummaryDto?>(resultDto);
     }
 }
