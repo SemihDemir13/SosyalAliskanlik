@@ -120,7 +120,7 @@ export default function StatisticsPage() {
           sx={{ mb: 4 }} // Alttan boşluk
         >
           <Paper sx={{ p: 2, textAlign: 'center', flexGrow: 1 }}>
-            <Typography variant="h6">Toplam Alışkanlık</Typography>
+            <Typography variant="h6">Güncel Toplam Alışkanlık</Typography>
             <Typography variant="h4" color="primary">{stats?.totalHabits}</Typography>
           </Paper>
           <Paper sx={{ p: 2, textAlign: 'center', flexGrow: 1 }}>
