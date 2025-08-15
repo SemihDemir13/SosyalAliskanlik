@@ -25,16 +25,10 @@ export default function Navbar() {
     Anasayfa
   </Button>
   
-  <Button color="inherit" onClick={() => router.push('/statistics')}>
-    İstatistikler
-  </Button>
-  <Button color="inherit" onClick={() => router.push('/friends')}>
-    Arkadaşlar
-    </Button>
-  {/* <Button color="inherit" onClick={() => router.push('/profile')}>Profil</Button> */}
-  <Button color="inherit" onClick={handleLogout}>
-    Çıkış Yap
-  </Button>
+  <Button color="inherit" onClick={() => router.push('/statistics')}>  İstatistikler</Button>
+  <Button color="inherit" onClick={() => router.push('/friends')}> Arkadaşlar </Button>
+   <Button color="inherit" onClick={() => router.push('/profile')}>Profilim</Button>
+  <Button color="inherit" onClick={handleLogout}>Çıkış Yap </Button>
 </Box>
       </Toolbar>
     </AppBar>

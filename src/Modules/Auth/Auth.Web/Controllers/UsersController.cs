@@ -1,6 +1,7 @@
 // Dosya: src/Modules/Auth/Web/Controllers/UsersController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SosyalAliskanlikApp.Modules.Auth.Application.DTOs;
 using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces;
 using System.Security.Claims;
 
@@ -25,5 +26,31 @@ public class UsersController : ControllerBase
     {
         var users = await _userService.SearchUsersAsync(term, GetCurrentUserId());
         return Ok(users);
+    }
+    [HttpPut("profile")] // Route: PUT /api/users/profile
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto request)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _userService.UpdateProfileAsync(userId, request);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+
+        return Ok(new { message = "Profil başarıyla güncellendi." });
+    }
+     [HttpPut("profile/password")] // Route: PUT /api/users/profile/password
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto request)
+    {
+        var userId = GetCurrentUserId();
+        var result = await _userService.UpdatePasswordAsync(userId, request);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+
+        return Ok(new { message = "Şifre başarıyla güncellendi." });
     }
 }
