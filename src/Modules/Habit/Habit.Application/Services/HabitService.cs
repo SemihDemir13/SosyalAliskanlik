@@ -40,21 +40,73 @@ public class HabitService : IHabitService
         };
     }
 
-    public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
-    {
-    return await _context.Habits
+   public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
+{
+    // Önce veritabanından gerekli tüm verileri çekiyoruz.
+    // Include ile ilişkili tamamlama kayıtlarını da getiriyoruz.
+    var habitsFromDb = await _context.Habits
         .Where(h => h.UserId == userId)
-        .Include(h => h.HabitCompletions) // <-- İLİŞKİLİ VERİYİ ÇEKMEK İÇİN BU ÇOK ÖNEMLİ
-        .Select(h => new HabitDto
+        .Include(h => h.HabitCompletions) 
+        .ToListAsync();
+
+    // Şimdi, çekilen bu veriler üzerinden C# ile hesaplamaları yapıyoruz.
+    var resultDtos = habitsFromDb.Select(h => 
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var oneWeekAgo = today.AddDays(-7);
+        
+        // Son 7 gündeki tamamlanma sayısını hesapla
+        var completionsLastWeek = h.HabitCompletions.Count(c => c.CompletionDate > oneWeekAgo);
+
+        // Mevcut seriyi (streak) hesapla
+        var sortedCompletions = h.HabitCompletions.Select(c => c.CompletionDate).ToList();
+        var currentStreak = CalculateStreak(sortedCompletions);
+
+        return new HabitDto
         {
             Id = h.Id,
             Name = h.Name,
             Description = h.Description,
             CreatedAt = h.CreatedAt,
-            // İlişkili HabitCompletions listesini tarihlere çevirip DTO'ya ekle
-            Completions = h.HabitCompletions.Select(hc => hc.CompletionDate).ToList()
-        })
-        .ToListAsync();
+            Completions = sortedCompletions,
+            CompletionsLastWeek = completionsLastWeek,
+            CurrentStreak = currentStreak
+        };
+    });
+
+    return resultDtos;
+}
+
+// Bu yardımcı metodu da sınıfın içine ekle
+private int CalculateStreak(List<DateOnly> dates)
+{
+    if (!dates.Any()) return 0;
+    
+    var sortedDates = dates.OrderByDescending(d => d).ToList();
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+    
+    // Eğer en son tamamlama bugünden veya dünden daha eskiyse, seri bozulmuştur.
+    if (sortedDates.First() < today.AddDays(-1))
+    {
+        return 0;
+    }
+
+    int streak = 0;
+    var currentDate = sortedDates.First();
+    
+    // Eğer bugün tamamlanmamışsa ama dün tamamlanmışsa, dünden başlat.
+    if (!sortedDates.Contains(today) && sortedDates.Contains(today.AddDays(-1)))
+    {
+        currentDate = today.AddDays(-1);
+    }
+    
+    while (sortedDates.Contains(currentDate))
+    {
+        streak++;
+        currentDate = currentDate.AddDays(-1);
+    }
+    
+    return streak;
 }
     public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
     {
