@@ -21,12 +21,14 @@ public class ApplicationDbContext : DbContext
     {
         // Önce base metodu çağırmak genellikle daha iyi bir pratiktir.
         base.OnModelCreating(modelBuilder);
-        
+
         // Bu, IEntityTypeConfiguration kullanan ayrı konfigürasyon dosyalarını bulur.
         // Henüz böyle bir dosyamız yok ama gelecekte kullanmak için kalabilir.
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         // Friendship ilişkilerini AÇIKÇA ve DOĞRU bir şekilde yapılandırıyoruz.
+
+
         modelBuilder.Entity<Friendship>()
             .HasOne(f => f.Requester)
             .WithMany()
@@ -38,5 +40,11 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(f => f.AddresseeId)
             .OnDelete(DeleteBehavior.Restrict);
+            
+        modelBuilder.Entity<HabitCompletion>()
+        .HasOne(hc => hc.Habit)
+        .WithMany(h => h.HabitCompletions)
+        .HasForeignKey(hc => hc.HabitId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
 }

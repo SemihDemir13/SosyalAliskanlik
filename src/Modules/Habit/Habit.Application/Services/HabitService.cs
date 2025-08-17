@@ -40,35 +40,39 @@ public class HabitService : IHabitService
         };
     }
 
-   public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
+  public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
 {
-    // Önce veritabanından gerekli tüm verileri çekiyoruz.
-    // Include ile ilişkili tamamlama kayıtlarını da getiriyoruz.
+    // 1. Veritabanından, belirli bir kullanıcıya ait olan tüm alışkanlıkları çekiyoruz.
+    // .Include() komutu sayesinde, her bir alışkanlıkla birlikte ona bağlı olan
+    // TÜM HabitCompletion kayıtlarını da tek bir sorguyla verimli bir şekilde getiriyoruz.
     var habitsFromDb = await _context.Habits
         .Where(h => h.UserId == userId)
-        .Include(h => h.HabitCompletions) 
+        .Include(h => h.HabitCompletions)
         .ToListAsync();
 
-    // Şimdi, çekilen bu veriler üzerinden C# ile hesaplamaları yapıyoruz.
-    var resultDtos = habitsFromDb.Select(h => 
+    // 2. Veritabanından gelen bu ham veriyi, frontend'in ihtiyaç duyduğu,
+    // hesaplanmış istatistikleri de içeren DTO'lara dönüştürüyoruz.
+    var resultDtos = habitsFromDb.Select(habit =>
     {
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var oneWeekAgo = today.AddDays(-7);
-        
-        // Son 7 gündeki tamamlanma sayısını hesapla
-        var completionsLastWeek = h.HabitCompletions.Count(c => c.CompletionDate > oneWeekAgo);
+        // Her alışkanlık için tamamlama tarihlerini ayrı bir listeye alalım.
+        var completionDates = habit.HabitCompletions
+                                    .Select(completion => completion.CompletionDate)
+                                    .ToList();
 
-        // Mevcut seriyi (streak) hesapla
-        var sortedCompletions = h.HabitCompletions.Select(c => c.CompletionDate).ToList();
-        var currentStreak = CalculateStreak(sortedCompletions);
+        // Son 7 gündeki tamamlanma sayısını hesapla.
+        var completionsLastWeek = completionDates.Count(date => date > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
 
+        // Mevcut seriyi (streak) hesaplamak için yardımcı metodu çağır.
+        var currentStreak = CalculateStreak(completionDates);
+
+        // Frontend'e göndereceğimiz DTO nesnesini oluştur.
         return new HabitDto
         {
-            Id = h.Id,
-            Name = h.Name,
-            Description = h.Description,
-            CreatedAt = h.CreatedAt,
-            Completions = sortedCompletions,
+            Id = habit.Id,
+            Name = habit.Name,
+            Description = habit.Description,
+            CreatedAt = habit.CreatedAt,
+            Completions = completionDates,
             CompletionsLastWeek = completionsLastWeek,
             CurrentStreak = currentStreak
         };
@@ -77,29 +81,33 @@ public class HabitService : IHabitService
     return resultDtos;
 }
 
-// Bu yardımcı metodu da sınıfın içine ekle
+// Bu yardımcı metot, bir alışkanlığın tamamlanma tarihlerini alıp
+// mevcut serisini (streak) hesaplar.
 private int CalculateStreak(List<DateOnly> dates)
 {
-    if (!dates.Any()) return 0;
-    
+    // Eğer hiç tamamlama kaydı yoksa, seri 0'dır.
+    if (dates == null || !dates.Any())
+    {
+        return 0;
+    }
+
+    // Tarihleri en yeniden en eskiye doğru sırala.
     var sortedDates = dates.OrderByDescending(d => d).ToList();
-    var today = DateOnly.FromDateTime(DateTime.UtcNow);
     
-    // Eğer en son tamamlama bugünden veya dünden daha eskiyse, seri bozulmuştur.
-    if (sortedDates.First() < today.AddDays(-1))
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+    var yesterday = today.AddDays(-1);
+
+    // En son tamamlanan gün, dünden daha eskiyse, seri bozulmuştur.
+    if (sortedDates.First() < yesterday)
     {
         return 0;
     }
 
     int streak = 0;
-    var currentDate = sortedDates.First();
+    // Seriyi saymaya başlayacağımız tarih, ya bugündür ya da dündür.
+    var currentDate = sortedDates.Contains(today) ? today : yesterday;
     
-    // Eğer bugün tamamlanmamışsa ama dün tamamlanmışsa, dünden başlat.
-    if (!sortedDates.Contains(today) && sortedDates.Contains(today.AddDays(-1)))
-    {
-        currentDate = today.AddDays(-1);
-    }
-    
+    // Geçmişe doğru, tarihler listede olduğu sürece sayacı artır.
     while (sortedDates.Contains(currentDate))
     {
         streak++;

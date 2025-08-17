@@ -13,11 +13,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 // Sadeleştirilmiş Habit tipi
 interface Habit {
-  id: string;
-  name: string;
-  description: string | null;
-  createdAt: string;
-  completions: string[]; // Bu, checkbox için hala gerekli
+   id: string;
+   name: string;
+   description: string | null;
+   createdAt: string;
+   completions: string[];
+   completionsLastWeek: number; 
+   currentStreak: number;
 }
 
 export default function DashboardPage() {
