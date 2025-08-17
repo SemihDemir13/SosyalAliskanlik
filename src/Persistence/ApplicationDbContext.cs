@@ -16,6 +16,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Habit> Habits { get; set; }
     public DbSet<HabitCompletion> HabitCompletions { get; set; }
     public DbSet<Friendship> Friendships { get; set; }
+    
+    
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,7 +42,7 @@ public class ApplicationDbContext : DbContext
             .WithMany()
             .HasForeignKey(f => f.AddresseeId)
             .OnDelete(DeleteBehavior.Restrict);
-            
+
         modelBuilder.Entity<HabitCompletion>()
         .HasOne(hc => hc.Habit)
         .WithMany(h => h.HabitCompletions)

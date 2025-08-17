@@ -8,7 +8,7 @@ public class HabitCompletion : BaseEntity
 {
     // Hangi alışkanlığın tamamlandığını gösteren Foreign Key.
     public Guid HabitId { get; set; }
-    public Habit Habit { get; set; } = null!; // Navigation Property
+    public  Habit Habit { get; set; } = null!; // Navigation Property
 
     // Alışkanlığın tamamlandığı tarih. Saat bilgisine ihtiyacımız yok.
     public DateOnly CompletionDate { get; set; }

@@ -40,39 +40,50 @@ public class HabitService : IHabitService
         };
     }
 
-  public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
+public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
 {
-    // 1. Veritabanından, belirli bir kullanıcıya ait olan tüm alışkanlıkları çekiyoruz.
-    // .Include() komutu sayesinde, her bir alışkanlıkla birlikte ona bağlı olan
-    // TÜM HabitCompletion kayıtlarını da tek bir sorguyla verimli bir şekilde getiriyoruz.
-    var habitsFromDb = await _context.Habits
+    // 1. ADIM: Sadece kullanıcının alışkanlıklarını çek. Hiçbir ilişki (Include) yok.
+    var userHabits = await _context.Habits
         .Where(h => h.UserId == userId)
-        .Include(h => h.HabitCompletions)
         .ToListAsync();
 
-    // 2. Veritabanından gelen bu ham veriyi, frontend'in ihtiyaç duyduğu,
-    // hesaplanmış istatistikleri de içeren DTO'lara dönüştürüyoruz.
-    var resultDtos = habitsFromDb.Select(habit =>
+    // Eğer hiç alışkanlık yoksa, hemen boş bir liste dön.
+    if (!userHabits.Any())
     {
-        // Her alışkanlık için tamamlama tarihlerini ayrı bir listeye alalım.
-        var completionDates = habit.HabitCompletions
-                                    .Select(completion => completion.CompletionDate)
-                                    .ToList();
+        return new List<HabitDto>();
+    }
 
-        // Son 7 gündeki tamamlanma sayısını hesapla.
-        var completionsLastWeek = completionDates.Count(date => date > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
+    // 2. ADIM: Çektiğimiz alışkanlıkların ID'lerini bir listeye al.
+    var habitIds = userHabits.Select(h => h.Id).ToList();
 
-        // Mevcut seriyi (streak) hesaplamak için yardımcı metodu çağır.
+    // 3. ADIM: Bu ID'lere ait TÜM tamamlama kayıtlarını AYRI BİR SORGUDAYLA çek.
+    var allCompletions = await _context.HabitCompletions
+        .Where(hc => habitIds.Contains(hc.HabitId))
+        .ToListAsync();
+
+    // 4. ADIM: Tamamlama kayıtlarını, ait oldukları HabitId'ye göre grupla.
+    // Bu, her bir alışkanlığın tamamlamalarına hızlıca erişmemizi sağlar.
+    var completionsByHabitId = allCompletions
+        .GroupBy(hc => hc.HabitId)
+        .ToDictionary(g => g.Key, g => g.Select(hc => hc.CompletionDate).ToList());
+
+    // 5. ADIM: Şimdi, her bir alışkanlık için DTO'yu oluştururken,
+    // bu sözlükten kendi tamamlama kayıtlarını al.
+    var resultDtos = userHabits.Select(habit =>
+    {
+        // Bu alışkanlığa ait tamamlama listesini sözlükten al. Eğer yoksa, boş bir liste kullan.
+        var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
+
+        var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
         var currentStreak = CalculateStreak(completionDates);
 
-        // Frontend'e göndereceğimiz DTO nesnesini oluştur.
         return new HabitDto
         {
             Id = habit.Id,
             Name = habit.Name,
             Description = habit.Description,
             CreatedAt = habit.CreatedAt,
-            Completions = completionDates,
+            Completions = completionDates, // <-- Artık burası dolu olacak!
             CompletionsLastWeek = completionsLastWeek,
             CurrentStreak = currentStreak
         };
@@ -167,26 +178,33 @@ private int CalculateStreak(List<DateOnly> dates)
 
     }
 
-    public async Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId)
-    {   
-        //kontrol
-        var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+   public async Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId)
+{
+    // 1. Veritabanından tek bir alışkanlığı, ilişkili tamamlama kayıtlarıyla birlikte çek.
+    var habit = await _context.Habits
+        .Include(h => h.HabitCompletions) // <-- EKSİK OLAN EN ÖNEMLİ SATIR
+        .FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
 
-        if (habit == null)
-        {
-            return null;
-        }
-
-        return new HabitDto
-        {
-            Id = habit.Id,
-            Name = habit.Name,
-            Description = habit.Description,
-            CreatedAt = habit.CreatedAt
-        };
-
-        
+    // 2. Eğer alışkanlık bulunamazsa veya kullanıcıya ait değilse, null dön.
+    if (habit == null)
+    {
+        return null;
     }
+
+    // 3. Artık 'habit.HabitCompletions' dolu olduğu için, hesaplamaları yapabiliriz.
+    var completionDates = habit.HabitCompletions.Select(c => c.CompletionDate).ToList();
+    
+    return new HabitDto
+    {
+        Id = habit.Id,
+        Name = habit.Name,
+        Description = habit.Description,
+        CreatedAt = habit.CreatedAt,
+        Completions = completionDates, // <-- Artık burası doğru veriyi içerecek
+        CompletionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7))),
+        CurrentStreak = CalculateStreak(completionDates)
+    };
+}
 
     public async Task<HabitCompletionDto?> MarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId)
     {

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SosyalAliskanlikApp.Configurations")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+afbdc99eaf0e96608496a8c761ca908d6b97990c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c60dbaef632b4f6fc5c9a02390abaa1a0d31fbae")]
 [assembly: System.Reflection.AssemblyProductAttribute("SosyalAliskanlikApp.Configurations")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SosyalAliskanlikApp.Configurations")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
