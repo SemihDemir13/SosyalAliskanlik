@@ -46,6 +46,21 @@ public class AuthController : ControllerBase
         // Başarılı ise 200 OK ve token'ı dön.
         return Ok(result.Value);
     }
+
+    [HttpGet("confirm-email")]
+    public async Task<IActionResult> ConfirmEmail([FromQuery] string userId, [FromQuery] string token)
+    {
+        var result = await _authService.ConfirmEmailAsync(userId, token);
+
+        if (result.IsFailure)
+        {
+            return BadRequest(new { message = result.Error });
+        }
+
+        // You can redirect to a confirmation success page on your frontend
+        return Ok(new { message = "Email confirmed successfully!" });
+    }
+
      [HttpGet("profile")]
     [Authorize] // Bu endpoint'e sadece geçerli bir token ile erişilebilir.
     public IActionResult GetProfile()

@@ -8,7 +8,5 @@ public interface IAuthService
 {
          Task<Result> RegisterUserAsync(RegisterRequestDto request); 
          Task<Result<LoginResponseDto>> LoginAsync(LoginRequestDto request); 
-            
-
-
+         Task<Result> ConfirmEmailAsync(string userId, string token);
 }

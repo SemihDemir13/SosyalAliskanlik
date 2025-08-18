@@ -1,0 +1,22 @@
+# --- AŞAMA 1: Build ---
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Çalışma dizinini /app olarak ayarla
+WORKDIR /app
+
+# Projenin tamamını kopyala
+COPY . .
+
+# 'dotnet restore' komutunu çalıştır
+# .sln dosyası artık /app/SosyalAliskanlik.sln yolunda
+RUN dotnet restore "SosyalAliskanlik.sln"
+
+# Projeyi publish et
+RUN dotnet publish "src/Main.API/Main.API.csproj" -c Release -o /app/publish --no-restore
+
+# --- AŞAMA 2: Final ---
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 8080
+ENTRYPOINT ["dotnet", "Main.API.dll"]

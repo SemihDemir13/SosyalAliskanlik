@@ -3,9 +3,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration; 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens; 
+using Microsoft.IdentityModel.Tokens;
 using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Auth.Application.Services;
+using SosyalAliskanlikApp.Modules.Auth.Infrastructure.Services; // Yeni using ifadesi
 
 namespace SosyalAliskanlikApp.Configurations;
 
@@ -16,6 +17,7 @@ public static class AuthModuleInstaller
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IEmailService, EmailService>(); // Yeni eklenen satır
 
         // --- YENİ EKLENEN BÖLÜM ---
         services.AddAuthentication(options =>

@@ -342,3 +342,10 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikAp
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Web.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\MailKit.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\MimeKit.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Auth.Infrastructure.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Auth.Infrastructure.pdb
