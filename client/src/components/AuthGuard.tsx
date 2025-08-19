@@ -2,29 +2,40 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Box, CircularProgress } from '@mui/material';
+
+const PUBLIC_ROUTES = ['/login', '/register', '/please-confirm', '/confirm-email'];
+
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const pathname = usePathname(); // Mevcut URL yolunu almak için hook
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Bu efekt sadece component ilk yüklendiğinde çalışacak.
+    // Gidilmeye çalışılan sayfa, herkese açık bir sayfa mı?
+    const isPublicPage = PUBLIC_ROUTES.some(path => pathname.startsWith(path));
+    
+    if (isPublicPage) {
+      // Eğer herkese açık bir sayfadaysak, bir şey yapma, yüklemeyi bitir.
+      setIsLoading(false);
+      return;
+    }
+
+    // Korumalı bir sayfaya erişmeye çalışıyor, token'ı kontrol et.
     const token = localStorage.getItem('accessToken');
     
-    if (token) {
-      // TODO: İleride token'ın geçerliliğini API'ye sorarak da kontrol edeceğim
-      // Şimdilik sadece varlığını kontrol etmek yeterli.
-      setIsAuthenticated(true);
+    if (!token) {
+      // Token yoksa ve korumalı bir sayfaya gitmeye çalışıyorsa, login'e yönlendir.
+      router.replace('/login');
     } else {
-      router.replace('/login'); 
+      // Token var, yüklemeyi bitir ve içeriği göster.
+      setIsLoading(false);
     }
-    setIsLoading(false);
-  }, [router]);
+  }, [pathname, router]);
 
-  // Kimlik durumu kontrol edilirken bir yükleme göstergesi göster
+  // Yükleme sırasında animasyon göster
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -32,12 +43,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
       </Box>
     );
   }
-
-  // Eğer kullanıcı kimliği doğrulanmışsa, korumalı içeriği (çocukları) göster
-  if (isAuthenticated) {
-    return <>{children}</>;
-  }
-
-  // Kimlik doğrulanmamışsa ve yönlendirme bekleniyorsa hiçbir şey gösterme
-  return null;
+  
+  // Yükleme bitti, içeriği göster
+  return <>{children}</>;
 }

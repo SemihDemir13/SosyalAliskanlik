@@ -52,11 +52,11 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
 
         // Doğrulama e-postası gönderme
-        var baseUrl = _configuration["ApiBaseUrl"]; // Değeri appsettings'den oku
-        var confirmationLink = $"{baseUrl}/api/auth/confirm-email?userId={newUser.Id}&token={token}";
+       var baseUrl = _configuration["ApiBaseUrl"];
+       var confirmationLink = $"{baseUrl}/auth/confirm-email?userId={newUser.Id}&token={token}"; // DİKKAT: URL'i düzelttim
         var emailBody = $"<h1>Hesabınızı Doğrulayın</h1><p>Lütfen <a href='{confirmationLink}'>buraya</a> tıklayarak e-posta adresinizi doğrulayın.</p>";
         
-        await _emailService.SendEmailAsync(newUser.Email, "Hesap Doğrulama", emailBody);
+       await _emailService.SendEmailAsync(newUser.Email, "Hesap Doğrulama", emailBody);
 
         return Result.Success();
     }
@@ -81,39 +81,51 @@ public class AuthService : IAuthService
         return Result.Success(response);
     }
 
-    public async Task<Result> ConfirmEmailAsync(string userId, string token)
+   public async Task<Result> ConfirmEmailAsync(string userId, string token)
+{
+    if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
     {
-        if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
-        {
-            return Result.Failure("Invalid user ID or token.");
-        }
-
-        var user = await _context.Users.FindAsync(Guid.Parse(userId));
-
-        if (user == null)
-        {
-            return Result.Failure("User not found.");
-        }
-
-        if (user.EmailConfirmationToken != token)
-        {
-            return Result.Failure("Invalid confirmation token.");
-        }
-
-        if (user.ConfirmationTokenExpiry < DateTime.UtcNow)
-        {
-            return Result.Failure("Confirmation token has expired.");
-        }
-
-        user.EmailConfirmed = true;
-        user.EmailConfirmationToken = null; // Token can be cleared after use
-        user.ConfirmationTokenExpiry = null;
-
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-
-        return Result.Success();
+        return Result.Failure("Geçersiz kullanıcı ID'si veya token.");
     }
+
+    if (!Guid.TryParse(userId, out var userGuid))
+    {
+        return Result.Failure("Kullanıcı ID'si formatı geçersiz.");
+    }
+
+    var user = await _context.Users.FindAsync(userGuid);
+
+    if (user == null)
+    {
+        return Result.Failure("Kullanıcı bulunamadı.");
+    }
+
+    // --- HATA AYIKLAMA İÇİN LOGLAMA ---
+    Console.WriteLine("--- E-POSTA DOĞRULAMA KONTROLÜ ---");
+    Console.WriteLine($"Linkten Gelen Token : '{token}' (Uzunluk: {token.Length})");
+    Console.WriteLine($"Veritabanındaki Token: '{user.EmailConfirmationToken}' (Uzunluk: {user.EmailConfirmationToken?.Length})");
+    Console.WriteLine($"Token'lar Eşit mi?    : {user.EmailConfirmationToken == token}");
+    Console.WriteLine("-----------------------------------");
+    // --- BİTTİ ---
+
+    if (user.EmailConfirmationToken != token)
+    {
+        return Result.Failure("Geçersiz doğrulama token'ı.");
+    }
+
+    if (user.ConfirmationTokenExpiry < DateTime.UtcNow)
+    {
+        return Result.Failure("Doğrulama linkinin süresi dolmuş.");
+    }
+
+    user.EmailConfirmed = true;
+    user.EmailConfirmationToken = null;
+    user.ConfirmationTokenExpiry = null;
+
+    await _context.SaveChangesAsync(); // Update demeye gerek yok, EF Core değişikliği anlar.
+
+    return Result.Success();
+}
 
     private string GenerateJwtToken(User user)
     {

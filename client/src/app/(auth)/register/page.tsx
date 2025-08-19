@@ -29,19 +29,20 @@ export default function RegisterPage() {
   });
 
   const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
-    setError(null);
-    setSuccess(null);
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      await axios.post(`${apiUrl}/api/Auth/register`, data);
-      setSuccess('Kaydınız başarıyla oluşturuldu! Giriş sayfasına yönlendiriliyorsunuz...');
-      setTimeout(() => {
-        router.push('/login');
-      }, 2000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Kayıt sırasında bir hata oluştu.');
-    }
-  };
+  setError(null);
+  setSuccess(null);
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    await axios.post(`${apiUrl}/api/Auth/register`, data);
+    
+    // BAŞARILI KAYIT SONRASI YÖNLENDİRME
+    // Artık login'e değil, e-posta onayı bekleme sayfasına yönlendiriyoruz.
+    router.push('/please-confirm');
+
+  } catch (err: any) {
+    setError(err.response?.data?.message || 'Kayıt sırasında bir hata oluştu.');
+  }
+};
 
   return (
     <Container component="main" maxWidth="xs">
