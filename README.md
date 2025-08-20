@@ -37,7 +37,7 @@ Bu projem, tüm servisleri (veritabanı, backend, frontend) ile birlikte tek bir
 
 1.  **Projeyi Klonlayın:**
     ```bash
-    git clone <repo_url>
+    git clone <https://github.com/SemihDemir13/SosyalAliskanlik.git>
     cd SosyalAliskanlik
     ```
 
