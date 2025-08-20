@@ -9,7 +9,7 @@ Sosyal Alışkanlık Takipçisi, kullanıcıların günlük alışkanlıklar bel
 *   **Kullanıcı Yönetimi:** Güvenli kayıt olma, JWT tabanlı giriş yapma ve profil (şifre) güncelleme.
 *   **Alışkanlık Yönetimi:** Tam CRUD işlevselliği (Oluşturma, Okuma, Güncelleme, Silme).
 *   **Günlük Takip:** Alışkanlıkları her gün için "tamamlandı" olarak işaretleme ve kalıcı takvim (heatmap) görünümü.
-*   **Sosyal Etkileşim:** Kullanıcı arama, arkadaşlık isteği gönderme/kabul/reddetme, arkadaş listeleme/çıkarma ve arkadaşların ilerleme özetlerini görüntüleme.
+*   **Sosyal Etkileşim:** Kullanıcı arama (minimum 3 harf girilmeli), arkadaşlık isteği gönderme/kabul/reddetme, arkadaş listeleme/çıkarma ve arkadaşların ilerleme özetlerini görüntüleme.
 *   **İstatistikler:** Kişisel başarıyı özetleyen kartlar ve görsel grafikler içeren bir panel.
 *   **Duyarlı ve Modern Arayüz:** Kullanıcının işletim sistemi temasına (Koyu/Açık Mod) otomatik uyum sağlayan, Material-UI ile geliştirilmiş arayüz.
 
