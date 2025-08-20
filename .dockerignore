@@ -1,0 +1,10 @@
+# .dockerignore
+**/bin/
+**/obj/
+client/node_modules/
+client/.next/
+.git/
+.vscode/
+.env
+
+

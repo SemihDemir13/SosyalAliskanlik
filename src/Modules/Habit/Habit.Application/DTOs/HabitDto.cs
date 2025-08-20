@@ -9,5 +9,7 @@ public class HabitDto
     public DateTime CreatedAt { get; set; }
 
     public List<DateOnly> Completions { get; set; } = new();
+    public int CompletionsLastWeek { get; set; }
+    public int CurrentStreak { get; set; }
 
 }

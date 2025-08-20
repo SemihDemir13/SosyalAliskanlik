@@ -1,0 +1,15 @@
+# Dosya: docker-compose.override.yml (Düzeltilmiş Hali)
+services:
+  backend-ef:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: build
+    # ARTIK 'entrypoint' YERİNE 'command' KULLANIYORUZ
+    command: ["dotnet", "ef", "database", "update", "--project", "src/Main.API/Main.API.csproj", "--startup-project", "src/Main.API/Main.API.csproj"]
+    volumes:
+      - ./src/Persistence/Migrations:/source/src/Persistence/Migrations
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=HabitTrackerDb;Username=postgres;Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - database

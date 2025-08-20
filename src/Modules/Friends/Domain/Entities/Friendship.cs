@@ -11,11 +11,11 @@ public class Friendship : BaseEntity
 {
     // İsteği gönderen kullanıcı
     public Guid RequesterId { get; set; }
-    public User Requester { get; set; } = null!;
+    public  User Requester { get; set; } = null!;
 
     // İsteği alan kullanıcı
     public Guid AddresseeId { get; set; }
-    public User Addressee { get; set; } = null!;
+    public  User Addressee { get; set; } = null!;
 
     // Arkadaşlık durumunu gösteren alan
     public FriendshipStatus Status { get; set; }
