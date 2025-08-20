@@ -1,94 +1,79 @@
 # Sosyal Alışkanlık Takipçisi
 
-Sosyal Alışkanlık Takipçisi, kullanıcıların günlük alışkanlıklar belirleyip takip edebildiği, arkadaş ekleyerek birbirlerini motive edebildiği modern bir web uygulamasıdır. Bu proje, Clean Architecture prensipleriyle modüler bir yapıda geliştirilmiştir.
+Sosyal Alışkanlık Takipçisi, kullanıcıların günlük alışkanlıklar belirleyip takip edebildiği, arkadaş ekleyerek birbirlerini motive edebildiği modern bir web uygulamasıdır. Proje, ASP.NET 8 ve Next.js 14 kullanılarak, Clean Architecture prensipleriyle modüler bir yapıda geliştirilmiş ve Docker ile tamamen konteynerize edilmiştir.
 
 ---
 
 ### ✨ Temel Özellikler
 
 *   **Kullanıcı Yönetimi:** Güvenli kayıt olma, JWT tabanlı giriş yapma ve profil (şifre) güncelleme.
-*   **Alışkanlık Yönetimi:** Yeni alışkanlıklar oluşturma, mevcut olanları listeleme, güncelleme ve silme (CRUD).
-*   **Günlük Takip:** Alışkanlıkları her gün için "tamamlandı" olarak işaretleme ve işareti kaldırma.
-*   **Sosyal Etkileşim:**
-    *   Kullanıcıları arama ve bulma.
-    *   Arkadaşlık isteği gönderme, kabul etme ve reddetme.
-    *   Mevcut arkadaşları listeleme ve arkadaşlıktan çıkarma.
-    *   Arkadaşların alışkanlık özetlerini (gizliliği koruyarak) görüntüleme.
-*   **İstatistikler ve Görselleştirme:** Toplam alışkanlık, tamamlama sayısı gibi temel istatistikleri ve bu verileri gösteren grafikleri içeren kişisel bir panel.
-*   **Duyarlı ve Modern Arayüz:** Kullanıcının işletim sistemi temasına (Koyu/Açık Mod) otomatik olarak uyum sağlayan, Material-UI ile geliştirilmiş bir arayüz.
+*   **Alışkanlık Yönetimi:** Tam CRUD işlevselliği (Oluşturma, Okuma, Güncelleme, Silme).
+*   **Günlük Takip:** Alışkanlıkları her gün için "tamamlandı" olarak işaretleme ve kalıcı takvim (heatmap) görünümü.
+*   **Sosyal Etkileşim:** Kullanıcı arama, arkadaşlık isteği gönderme/kabul/reddetme, arkadaş listeleme/çıkarma ve arkadaşların ilerleme özetlerini görüntüleme.
+*   **İstatistikler:** Kişisel başarıyı özetleyen kartlar ve görsel grafikler içeren bir panel.
+*   **Duyarlı ve Modern Arayüz:** Kullanıcının işletim sistemi temasına (Koyu/Açık Mod) otomatik uyum sağlayan, Material-UI ile geliştirilmiş arayüz.
 
 ---
 
 ### 🚀 Kullanılan Teknolojiler
 
-#### Backend
-*   **.NET 8** & **ASP.NET Core Web API**
-*   **Clean Architecture** & Modüler Monolit Yapısı
-*   **Entity Framework Core 8**
-*   **PostgreSQL** Veritabanı
-*   **JWT (JSON Web Token)** ile Kimlik Doğrulama
-
-#### Frontend
-*   **Next.js 14** (App Router)
-*   **TypeScript**
-*   **Material-UI (MUI)** Component Kütüphanesi
-*   **React Hook Form** & **Zod** ile Form Yönetimi ve Doğrulama
-*   **Chart.js** ile Veri Görselleştirme
-*   **Axios** ile API İletişimi
+*   **Backend:** .NET 8, ASP.NET Core Web API, Entity Framework Core, PostgreSQL
+*   **Frontend:** Next.js 14 (App Router), TypeScript, Material-UI (MUI)
+*   **Containerization:** Docker, Docker Compose
+*   **Kimlik Doğrulama:** JWT (JSON Web Token)
+*   **Form Yönetimi:** React Hook Form & Zod
+*   **Veri Görselleştirme:** Chart.js
 
 ---
 
-### 💻 Kurulum ve Çalıştırma (Geliştirme Ortamı)
+### 💻 Kurulum ve Çalıştırma (Docker ile)
 
-#### Ön Koşullar
-*   [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
-*   [Node.js](https://nodejs.org/en/) (LTS sürümü önerilir)
-*   [PostgreSQL](https://www.postgresql.org/download/)
+Bu projem, tüm servisleri (veritabanı, backend, frontend) ile birlikte tek bir komutla çalıştırılmak üzere tasarlanmıştır.
 
-#### Backend Kurulumu
-1.  Projeyi klonlayın: `git clone <repo_url>`
-2.  Proje ana dizinine gidin: `cd SosyalAliskanlik`
-3.  **User Secrets** yapılandırmasını yapın. Bu, veritabanı şifresi gibi gizli bilgileri güvenli bir şekilde saklamak içindir.
+#### Ön Koşul
+*   Docker Desktop'Un bilgisayarınızda kurulu olması gerekmektedir. Başka hiçbir şeye (.NET, Node.js, PostgreSQL vb.) ihtiyacınız yoktur.
+
+#### Kurulum Adımları
+
+1.  **Projeyi Klonlayın:**
     ```bash
-    # User secrets'ı başlat
-    dotnet user-secrets init --project src/Main.API/Main.API.csproj
+    git clone <repo_url>
+    cd SosyalAliskanlik
+    ```
 
-    # Veritabanı bağlantı dizenizi ekleyin (şifrenizi güncelleyin)
-    dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Host=localhost;Port=5432;Database=HabitTrackerDb;Username=postgres;Password=YOUR_POSTGRES_PASSWORD" --project src/Main.API/Main.API.csproj
+2.  **`.env` Dosyasını Oluşturun:**
+    Projenin ana dizininde `.env` adında yeni bir dosya oluşturun. Bu dosya, Docker servisleri için gerekli olan gizli bilgileri içerecektir. Aşağıdaki şablonu kopyalayın ve `...` ile belirtilen yerleri kendi güvenli değerlerinizle doldurun.
+
+    ```env
+    # .env dosyası içeriği
     
-    # JWT anahtarınızı ekleyin (kendi gizli anahtarınızı oluşturun)
-    dotnet user-secrets set "JwtSettings:Secret" "YOUR_OWN_SUPER_SECRET_KEY_LONGER_THAN_32_CHARS" --project src/Main.API/Main.API.csproj
+    # Docker'da oluşturulacak PostgreSQL veritabanı için bir şifre belirleyin
+    POSTGRES_PASSWORD=gucluBirSifre123
+    
+    # JWT token'ları için en az 32 karakterlik rastgele bir anahtar belirleyin
+    JWT_SECRET=GuvenliVeUzunOlmali
     ```
-4.  Bağımlılıkları yükleyin:
-    ```bash
-    dotnet restore
-    ```
-5.  Veritabanını oluşturun ve migration'ları uygulayın:
-    ```bash
-    cd src/Persistence
-    dotnet ef database update --startup-project ../Main.API/Main.API.csproj
-    cd ../..
-    ```
-6.  Backend'i çalıştırın:
-    ```bash
-    dotnet run --project src/Main.API/Main.API.csproj
-    ```
-    API artık `http://localhost:5282` ve `https://localhost:7101` adreslerinde çalışıyor olmalı.
 
-#### Frontend Kurulumu
-1.  Yeni bir terminal açın ve `client` klasörüne gidin: `cd client`
-2.  `.env.local` adında bir dosya oluşturun ve içine API adresini yazın:
-    ```
-    NEXT_PUBLIC_API_URL=http://localhost:5282
-    ```
-3.  Bağımlılıkları yükleyin:
+3.  **Uygulamayı Başlatın:**
+    Projenin ana dizininde bir terminal açın ve aşağıdaki komutu çalıştırın:
     ```bash
-    npm install
+    docker-compose up --build
     ```
-4.  Frontend'i çalıştırın:
-    ```bash
-    npm run dev
-    ```
-    Uygulamaya tarayıcınızdan `http://localhost:3000` adresi üzerinden erişebilirsiniz.
+    *Bu komut, bilgisayarınıza göre değişkenlik göstererekten biraz uzun sürebilir.*
 
----
+4.  **Veritabanını Hazırlayın:**
+    Uygulama logları stabil hale geldikten sonra, **yeni bir terminal** açın ve veritabanı tablolarını oluşturmak için aşağıdaki komutu çalıştırın:
+    ```bash
+    docker-compose run --rm backend-ef database update
+    ```
+
+#### Uygulamaya Erişim
+
+Kurulum tamamlandıktan sonra:
+*   **Frontend Arayüzü:** Tarayıcınızda **`http://localhost:3000`** adresine gidin.
+*   **Backend API Dokümantasyonu (Swagger):** Tarayıcınızda **`http://localhost:5282/swagger`** adresine gidin.
+
+#### Uygulamayı Durdurma
+
+Uygulamayı durdurmak için, `docker-compose up` komutunu çalıştırdığınız terminale dönüp `Ctrl + C` tuşlarına basın.
+
