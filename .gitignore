@@ -79,3 +79,5 @@ project.assets.json
 *.bak
 *.tmp
 *~
+
+.env
