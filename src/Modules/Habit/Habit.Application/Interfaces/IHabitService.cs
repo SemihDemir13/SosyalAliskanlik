@@ -6,8 +6,9 @@ namespace SosyalAliskanlikApp.Modules.Habit.Application.Interfaces;
 public interface IHabitService
 {
     Task<HabitDto> CreateHabitAsync(CreateHabitRequestDto request, Guid userId); //oluşturma
-    Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId);//hepsini listeleme
-
+    Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId , bool includeArchived = false);//hepsini listeleme
+    Task<Result> ArchiveHabitAsync(string habitId, string userId);
+    Task<Result> UnarchiveHabitAsync(string habitId, string userId);
     Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId);//güncelleme
 
     Task<bool> DeleteHabitAsync(Guid habitId, Guid userId);//silme

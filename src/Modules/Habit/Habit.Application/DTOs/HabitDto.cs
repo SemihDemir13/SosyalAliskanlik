@@ -7,7 +7,7 @@ public class HabitDto
     public required string Name { get; set; }
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
-
+    public bool IsArchived { get; set; }
     public List<DateOnly> Completions { get; set; } = new();
     public int CompletionsLastWeek { get; set; }
     public int CurrentStreak { get; set; }

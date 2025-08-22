@@ -40,42 +40,34 @@ public class HabitService : IHabitService
         };
     }
 
-    public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
+    public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId, bool includeArchived = false)
     {
-        // 1. ADIM: Sadece kullanıcının alışkanlıklarını çek. Hiçbir ilişki (Include) yok.
+        // 1. ADIM: Filtreyi burada uyguluyoruz.
+        // Artık sadece kullanıcının DEĞİL, kullanıcının aktif VEYA arşivlenmiş alışkanlıklarını çekiyoruz.
         var userHabits = await _context.Habits
-            .Where(h => h.UserId == userId)
+            .Where(h => h.UserId == userId && h.IsArchived == includeArchived) 
             .ToListAsync();
 
-        // Eğer hiç alışkanlık yoksa, hemen boş bir liste dön.
         if (!userHabits.Any())
         {
             return new List<HabitDto>();
         }
 
-        // 2. ADIM: Çektiğimiz alışkanlıkların ID'lerini bir listeye al.
         var habitIds = userHabits.Select(h => h.Id).ToList();
 
-        // 3. ADIM: Bu ID'lere ait TÜM tamamlama kayıtlarını AYRI BİR SORGUDAYLA çek.
         var allCompletions = await _context.HabitCompletions
             .Where(hc => habitIds.Contains(hc.HabitId))
             .ToListAsync();
-
-        // 4. ADIM: Tamamlama kayıtlarını, ait oldukları HabitId'ye göre grupla.
-        // Bu, her bir alışkanlığın tamamlamalarına hızlıca erişmemizi sağlar.
+        
         var completionsByHabitId = allCompletions
             .GroupBy(hc => hc.HabitId)
             .ToDictionary(g => g.Key, g => g.Select(hc => hc.CompletionDate).ToList());
 
-        // 5. ADIM: Şimdi, her bir alışkanlık için DTO'yu oluştururken,
-        // bu sözlükten kendi tamamlama kayıtlarını al.
         var resultDtos = userHabits.Select(habit =>
         {
-            // Bu alışkanlığa ait tamamlama listesini sözlükten al. Eğer yoksa, boş bir liste kullan.
             var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
-
             var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
-            var currentStreak = CalculateStreak(completionDates);
+            var currentStreak = CalculateStreak(completionDates); 
 
             return new HabitDto
             {
@@ -83,7 +75,8 @@ public class HabitService : IHabitService
                 Name = habit.Name,
                 Description = habit.Description,
                 CreatedAt = habit.CreatedAt,
-                Completions = completionDates, // <-- Artık burası dolu olacak!
+                IsArchived = habit.IsArchived, 
+                Completions = completionDates,
                 CompletionsLastWeek = completionsLastWeek,
                 CurrentStreak = currentStreak
             };
@@ -91,9 +84,34 @@ public class HabitService : IHabitService
 
         return resultDtos;
     }
+    public async Task<Result> ArchiveHabitAsync(string habitId, string userId)
+    {
+        return await SetArchiveStatusAsync(habitId, userId, true);
+    }
+    
+    public async Task<Result> UnarchiveHabitAsync(string habitId, string userId)
+    {
+        return await SetArchiveStatusAsync(habitId, userId, false);
+    }
 
-    // Bu yardımcı metot, bir alışkanlığın tamamlanma tarihlerini alıp
-    // mevcut serisini (streak) hesaplar.
+    private async Task<Result> SetArchiveStatusAsync(string habitId, string userId, bool isArchived)
+    {
+        if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
+        {
+            return Result.Failure("Geçersiz kimlik formatı.");
+        }
+
+        var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
+        if (habit is null)
+        {
+            return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
+        }
+
+        habit.IsArchived = isArchived;
+        await _context.SaveChangesAsync();
+        return Result.Success();
+    }
+  
     private int CalculateStreak(List<DateOnly> dates)
     {
         // Eğer hiç tamamlama kaydı yoksa, seri 0'dır.

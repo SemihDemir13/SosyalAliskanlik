@@ -42,12 +42,37 @@ public class HabitController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHabits()
+    public async Task<IActionResult> GetHabits([FromQuery] bool includeArchived = false)
     {
         var userId = GetCurrentUserId();
-        var habits = await _habitService.GetHabitsByUserIdAsync(userId);
+        // Servise yeni parametreyi gönderiyoruz
+        var habits = await _habitService.GetHabitsByUserIdAsync(userId, includeArchived);
         return Ok(habits);
     }
+     [HttpPost("{habitId}/archive")]
+    public async Task<IActionResult> ArchiveHabit(string habitId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _habitService.ArchiveHabitAsync(habitId, userId);
+        if (!result.IsSuccess) return BadRequest(result.Error);
+
+        return NoContent(); // Başarılı, ama geri döndürülecek bir içerik yok.
+    }
+
+    [HttpPost("{habitId}/unarchive")]
+    public async Task<IActionResult> UnarchiveHabit(string habitId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null) return Unauthorized();
+
+        var result = await _habitService.UnarchiveHabitAsync(habitId, userId);
+        if (!result.IsSuccess) return BadRequest(result.Error);
+
+        return NoContent(); // Başarılı, ama geri döndürülecek bir içerik yok.
+    }
+
     [HttpPut("{id}")] // Route: PUT /api/habits/{alışkanlık_id}
     public async Task<IActionResult> UpdateHabit(Guid id, [FromBody] UpdateHabitRequestDto request)
     {
