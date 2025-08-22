@@ -40,93 +40,111 @@ public class HabitService : IHabitService
         };
     }
 
-public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId)
-{
-    // 1. ADIM: Sadece kullanıcının alışkanlıklarını çek. Hiçbir ilişki (Include) yok.
-    var userHabits = await _context.Habits
-        .Where(h => h.UserId == userId)
-        .ToListAsync();
-
-    // Eğer hiç alışkanlık yoksa, hemen boş bir liste dön.
-    if (!userHabits.Any())
+    public async Task<IEnumerable<HabitDto>> GetHabitsByUserIdAsync(Guid userId, bool includeArchived = false)
     {
-        return new List<HabitDto>();
-    }
+        // 1. ADIM: Filtreyi burada uyguluyoruz.
+        // Artık sadece kullanıcının DEĞİL, kullanıcının aktif VEYA arşivlenmiş alışkanlıklarını çekiyoruz.
+        var userHabits = await _context.Habits
+            .Where(h => h.UserId == userId && h.IsArchived == includeArchived) 
+            .ToListAsync();
 
-    // 2. ADIM: Çektiğimiz alışkanlıkların ID'lerini bir listeye al.
-    var habitIds = userHabits.Select(h => h.Id).ToList();
-
-    // 3. ADIM: Bu ID'lere ait TÜM tamamlama kayıtlarını AYRI BİR SORGUDAYLA çek.
-    var allCompletions = await _context.HabitCompletions
-        .Where(hc => habitIds.Contains(hc.HabitId))
-        .ToListAsync();
-
-    // 4. ADIM: Tamamlama kayıtlarını, ait oldukları HabitId'ye göre grupla.
-    // Bu, her bir alışkanlığın tamamlamalarına hızlıca erişmemizi sağlar.
-    var completionsByHabitId = allCompletions
-        .GroupBy(hc => hc.HabitId)
-        .ToDictionary(g => g.Key, g => g.Select(hc => hc.CompletionDate).ToList());
-
-    // 5. ADIM: Şimdi, her bir alışkanlık için DTO'yu oluştururken,
-    // bu sözlükten kendi tamamlama kayıtlarını al.
-    var resultDtos = userHabits.Select(habit =>
-    {
-        // Bu alışkanlığa ait tamamlama listesini sözlükten al. Eğer yoksa, boş bir liste kullan.
-        var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
-
-        var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
-        var currentStreak = CalculateStreak(completionDates);
-
-        return new HabitDto
+        if (!userHabits.Any())
         {
-            Id = habit.Id,
-            Name = habit.Name,
-            Description = habit.Description,
-            CreatedAt = habit.CreatedAt,
-            Completions = completionDates, // <-- Artık burası dolu olacak!
-            CompletionsLastWeek = completionsLastWeek,
-            CurrentStreak = currentStreak
-        };
-    });
+            return new List<HabitDto>();
+        }
 
-    return resultDtos;
-}
+        var habitIds = userHabits.Select(h => h.Id).ToList();
 
-// Bu yardımcı metot, bir alışkanlığın tamamlanma tarihlerini alıp
-// mevcut serisini (streak) hesaplar.
-private int CalculateStreak(List<DateOnly> dates)
-{
-    // Eğer hiç tamamlama kaydı yoksa, seri 0'dır.
-    if (dates == null || !dates.Any())
-    {
-        return 0;
+        var allCompletions = await _context.HabitCompletions
+            .Where(hc => habitIds.Contains(hc.HabitId))
+            .ToListAsync();
+        
+        var completionsByHabitId = allCompletions
+            .GroupBy(hc => hc.HabitId)
+            .ToDictionary(g => g.Key, g => g.Select(hc => hc.CompletionDate).ToList());
+
+        var resultDtos = userHabits.Select(habit =>
+        {
+            var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
+            var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
+            var currentStreak = CalculateStreak(completionDates); 
+
+            return new HabitDto
+            {
+                Id = habit.Id,
+                Name = habit.Name,
+                Description = habit.Description,
+                CreatedAt = habit.CreatedAt,
+                IsArchived = habit.IsArchived, 
+                Completions = completionDates,
+                CompletionsLastWeek = completionsLastWeek,
+                CurrentStreak = currentStreak
+            };
+        });
+
+        return resultDtos;
     }
-
-    // Tarihleri en yeniden en eskiye doğru sırala.
-    var sortedDates = dates.OrderByDescending(d => d).ToList();
-    
-    var today = DateOnly.FromDateTime(DateTime.UtcNow);
-    var yesterday = today.AddDays(-1);
-
-    // En son tamamlanan gün, dünden daha eskiyse, seri bozulmuştur.
-    if (sortedDates.First() < yesterday)
+    public async Task<Result> ArchiveHabitAsync(string habitId, string userId)
     {
-        return 0;
-    }
-
-    int streak = 0;
-    // Seriyi saymaya başlayacağımız tarih, ya bugündür ya da dündür.
-    var currentDate = sortedDates.Contains(today) ? today : yesterday;
-    
-    // Geçmişe doğru, tarihler listede olduğu sürece sayacı artır.
-    while (sortedDates.Contains(currentDate))
-    {
-        streak++;
-        currentDate = currentDate.AddDays(-1);
+        return await SetArchiveStatusAsync(habitId, userId, true);
     }
     
-    return streak;
-}
+    public async Task<Result> UnarchiveHabitAsync(string habitId, string userId)
+    {
+        return await SetArchiveStatusAsync(habitId, userId, false);
+    }
+
+    private async Task<Result> SetArchiveStatusAsync(string habitId, string userId, bool isArchived)
+    {
+        if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
+        {
+            return Result.Failure("Geçersiz kimlik formatı.");
+        }
+
+        var habit = await _context.Habits.FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
+        if (habit is null)
+        {
+            return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
+        }
+
+        habit.IsArchived = isArchived;
+        await _context.SaveChangesAsync();
+        return Result.Success();
+    }
+  
+    private int CalculateStreak(List<DateOnly> dates)
+    {
+        // Eğer hiç tamamlama kaydı yoksa, seri 0'dır.
+        if (dates == null || !dates.Any())
+        {
+            return 0;
+        }
+
+        // Tarihleri en yeniden en eskiye doğru sırala.
+        var sortedDates = dates.OrderByDescending(d => d).ToList();
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var yesterday = today.AddDays(-1);
+
+        // En son tamamlanan gün, dünden daha eskiyse, seri bozulmuştur.
+        if (sortedDates.First() < yesterday)
+        {
+            return 0;
+        }
+
+        int streak = 0;
+        // Seriyi saymaya başlayacağımız tarih, ya bugündür ya da dündür.
+        var currentDate = sortedDates.Contains(today) ? today : yesterday;
+
+        // Geçmişe doğru, tarihler listede olduğu sürece sayacı artır.
+        while (sortedDates.Contains(currentDate))
+        {
+            streak++;
+            currentDate = currentDate.AddDays(-1);
+        }
+
+        return streak;
+    }
     public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
     {
         // 1. Güncellenecek alışkanlığı veritabanından bul.
@@ -178,33 +196,33 @@ private int CalculateStreak(List<DateOnly> dates)
 
     }
 
-   public async Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId)
-{
-    // 1. Veritabanından tek bir alışkanlığı, ilişkili tamamlama kayıtlarıyla birlikte çek.
-    var habit = await _context.Habits
-        .Include(h => h.HabitCompletions) // <-- EKSİK OLAN EN ÖNEMLİ SATIR
-        .FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
-
-    // 2. Eğer alışkanlık bulunamazsa veya kullanıcıya ait değilse, null dön.
-    if (habit == null)
+    public async Task<HabitDto?> GetHabitByIdAsync(Guid habitId, Guid userId)
     {
-        return null;
+        // 1. Veritabanından tek bir alışkanlığı, ilişkili tamamlama kayıtlarıyla birlikte çek.
+        var habit = await _context.Habits
+            .Include(h => h.HabitCompletions) // <-- EKSİK OLAN EN ÖNEMLİ SATIR
+            .FirstOrDefaultAsync(h => h.Id == habitId && h.UserId == userId);
+
+        // 2. Eğer alışkanlık bulunamazsa veya kullanıcıya ait değilse, null dön.
+        if (habit == null)
+        {
+            return null;
+        }
+
+        // 3. Artık 'habit.HabitCompletions' dolu olduğu için, hesaplamaları yapabiliriz.
+        var completionDates = habit.HabitCompletions.Select(c => c.CompletionDate).ToList();
+
+        return new HabitDto
+        {
+            Id = habit.Id,
+            Name = habit.Name,
+            Description = habit.Description,
+            CreatedAt = habit.CreatedAt,
+            Completions = completionDates, // <-- Artık burası doğru veriyi içerecek
+            CompletionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7))),
+            CurrentStreak = CalculateStreak(completionDates)
+        };
     }
-
-    // 3. Artık 'habit.HabitCompletions' dolu olduğu için, hesaplamaları yapabiliriz.
-    var completionDates = habit.HabitCompletions.Select(c => c.CompletionDate).ToList();
-    
-    return new HabitDto
-    {
-        Id = habit.Id,
-        Name = habit.Name,
-        Description = habit.Description,
-        CreatedAt = habit.CreatedAt,
-        Completions = completionDates, // <-- Artık burası doğru veriyi içerecek
-        CompletionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7))),
-        CurrentStreak = CalculateStreak(completionDates)
-    };
-}
 
     public async Task<HabitCompletionDto?> MarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId)
     {
@@ -224,7 +242,7 @@ private int CalculateStreak(List<DateOnly> dates)
             // Zaten işaretlenmişse, mevcut kaydı dön. Hiçbir şey yapma.
             return new HabitCompletionDto { Id = existingCompletion.Id, HabitId = existingCompletion.HabitId, CompletionDate = existingCompletion.CompletionDate };
         }
-        
+
         // 3. Yeni bir tamamlama kaydı oluştur ve veritabanına ekle.
         var newCompletion = new HabitCompletion
         {
@@ -240,7 +258,7 @@ private int CalculateStreak(List<DateOnly> dates)
 
     public async Task<bool> UnmarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId)
     {
-         // Silme işlemi için önce alışkanlığın kullanıcıya ait olduğunu doğrulamamız gerekmez,
+        // Silme işlemi için önce alışkanlığın kullanıcıya ait olduğunu doğrulamamız gerekmez,
         // çünkü HabitCompletion kaydını sorgularken zaten HabitId üzerinden dolaylı bir kontrol yapmış olacağız.
         var completionToDelete = await _context.HabitCompletions
             .Include(hc => hc.Habit) // Habit'i de sorguya dahil etme
@@ -248,7 +266,7 @@ private int CalculateStreak(List<DateOnly> dates)
 
         if (completionToDelete == null)
         {
-            return false; 
+            return false;
         }
 
         _context.HabitCompletions.Remove(completionToDelete);
@@ -256,21 +274,21 @@ private int CalculateStreak(List<DateOnly> dates)
         return true;
     }
 
-    public async  Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId)
+    public async Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId)
     {
-          //  alışkanlığın kullanıcıya ait olduğunu doğrula
+        //  alışkanlığın kullanıcıya ait olduğunu doğrula
         var habitExists = await _context.Habits.AnyAsync(h => h.Id == habitId && h.UserId == userId);
         if (!habitExists)
         {
             // Eğer alışkanlık kullanıcıya ait değilse, boş liste
-           
+
             return Enumerable.Empty<DateOnly>();
         }
 
         return await _context.HabitCompletions
             .Where(hc => hc.HabitId == habitId)
             .Select(hc => hc.CompletionDate)
-            .OrderBy(d => d) 
+            .OrderBy(d => d)
             .ToListAsync();
     }
 
@@ -307,8 +325,8 @@ private int CalculateStreak(List<DateOnly> dates)
                                         .Count(hc => hc.CompletionDate >= sevenDaysAgo)
             })
             .ToListAsync();
-        
-         var resultDto = new UserHabitSummaryDto
+
+        var resultDto = new UserHabitSummaryDto
         {
             UserName = targetUser.Name,
             Habits = habitsWithSummary
@@ -316,4 +334,55 @@ private int CalculateStreak(List<DateOnly> dates)
 
         return Result.Success<UserHabitSummaryDto?>(resultDto);
     }
+    
+  public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
+  {
+    // Adım 1: Frontend'den gelen string ID'leri Guid'e dönüştür.
+    // Bu, hem karşılaştırma hem de atama hatalarını engeller.
+    if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
+    {
+        return Result.Failure("Geçersiz kimlik formatı.");
+    }
+
+    // Adım 2: Alışkanlığı Guid kullanarak bul ve sahibinin doğru kullanıcı olduğunu doğrula.
+    // DÜZELTME: Artık Guid'leri karşılaştırıyoruz (string vs Guid hatası çözüldü).
+    var habit = await _context.Habits
+        .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
+
+    if (habit is null)
+    {
+        return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
+    }
+
+    // Adım 3: Bugünün tarihini al.
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+    // Adım 4: Bu alışkanlık için bugüne ait bir tamamlama kaydı var mı diye kontrol et.
+    // DÜZELTME: 'Date' yerine doğru property adı olan 'CompletionDate' kullanıldı.
+    var existingCompletion = await _context.HabitCompletions
+        .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
+
+    if (existingCompletion is not null)
+    {
+        // Varsa: Kaydı sil.
+        _context.HabitCompletions.Remove(existingCompletion);
+    }
+    else
+    {
+        // Yoksa: Yeni bir tamamlama kaydı oluştur.
+        var newCompletion = new HabitCompletion
+        {
+            // DÜZELTME: string yerine Guid atıyoruz.
+            HabitId = habitGuid,
+            // DÜZELTME: 'Date' yerine doğru property adı olan 'CompletionDate' kullanıldı.
+            CompletionDate = today
+        };
+        await _context.HabitCompletions.AddAsync(newCompletion);
+    }
+
+    // Son Adım: Değişiklikleri veritabanına kaydet.
+    await _context.SaveChangesAsync();
+
+    return Result.Success();
+  }
 }
