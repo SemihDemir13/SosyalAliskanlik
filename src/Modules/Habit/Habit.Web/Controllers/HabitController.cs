@@ -8,7 +8,7 @@ namespace SosyalAliskanlikApp.Modules.Habit.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize] // BU TÜM CONTROLLER'I KORUR!
+[Authorize]
 public class HabitController : ControllerBase
 {
     private readonly IHabitService _habitService;
@@ -93,7 +93,7 @@ public class HabitController : ControllerBase
 
         return Ok(result);
     }
-    
+
     // Bir alışkanlığın tamamlanma işaretini kaldırır.
     // DELETE /api/habits/{id}/completions/{date}
     [HttpDelete("{id}/completions/{date}")]
@@ -118,6 +118,25 @@ public class HabitController : ControllerBase
         var userId = GetCurrentUserId();
         var dates = await _habitService.GetHabitCompletionsAsync(id, userId);
         return Ok(dates);
+    }
+    
+     [HttpPost("{habitId}/toggle")]
+    public async Task<IActionResult> ToggleHabitCompletion(string habitId)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _habitService.ToggleHabitCompletionAsync(habitId, userId);
+
+        if (!result.IsSuccess)
+        {
+            return BadRequest(result.Error);
+        }
+
+        return Ok(); // Sadece başarılı olduğunu belirtmek yeterli
     }
     
 }

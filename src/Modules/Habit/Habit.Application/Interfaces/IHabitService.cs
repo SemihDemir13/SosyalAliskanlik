@@ -19,6 +19,8 @@ public interface IHabitService
     Task<bool> UnmarkHabitAsCompletedAsync(Guid habitId, DateOnly date, Guid userId); //yanlışlıkla işaretlenen ,silme
 
     Task<IEnumerable<DateOnly>> GetHabitCompletionsAsync(Guid habitId, Guid userId); //tamamlanma tarihleri
-    
+
     Task<Result<UserHabitSummaryDto?>> GetUserHabitSummaryAsync(Guid targetUserId, Guid currentUserId);
+    
+    Task<Result> ToggleHabitCompletionAsync(string habitId, string userId);
 }
