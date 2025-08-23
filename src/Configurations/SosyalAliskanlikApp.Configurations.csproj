@@ -21,6 +21,7 @@
     <ProjectReference Include="..\Modules\Habit\Habit.Application\Habit.Application.csproj" />
     <ProjectReference Include="..\Modules\Statistics\Application\SosyalAliskanlikApp.Modules.Statistics.Application.csproj" />
     <ProjectReference Include="..\Modules\Friends\Application\SosyalAliskanlikApp.Modules.Friends.Application.csproj" />
+    <ProjectReference Include="..\Modules\Activity\Activity.Application\Activity.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />

@@ -22,6 +22,38 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Activity.Domain.Entities.Activity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RelatedEntityId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Activities");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -134,6 +166,17 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.HasIndex("HabitId");
 
                     b.ToTable("HabitCompletions");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Activity.Domain.Entities.Activity", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Friends.Domain.Entities.Friendship", b =>

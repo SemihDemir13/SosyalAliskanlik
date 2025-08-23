@@ -381,6 +381,20 @@
           }
         }
       },
+      "Activity.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Auth.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Activity.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Activity.Domain.dll": {}
+        }
+      },
       "Auth.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -425,6 +439,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Activity.Domain": "1.0.0",
           "Auth.Domain": "1.0.0",
           "Habit.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
@@ -1043,6 +1058,11 @@
         "system.identitymodel.tokens.jwt.8.13.0.nupkg.sha512",
         "system.identitymodel.tokens.jwt.nuspec"
       ]
+    },
+    "Activity.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Activity/Activity.Domain/Activity.Domain.csproj",
+      "msbuildProject": "../../Activity/Activity.Domain/Activity.Domain.csproj"
     },
     "Auth.Domain/1.0.0": {
       "type": "project",
