@@ -17,8 +17,10 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Domain\obj\Debug\net8
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\Habit.Domain.deps.json
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\Habit.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\Habit.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\Auth.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\bin\Debug\net8.0\Auth.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\obj\Debug\net8.0\Habit.Domain.csproj.AssemblyReference.cache
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\obj\Debug\net8.0\Habit.Domain.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Domain\obj\Debug\net8.0\Habit.Domain.AssemblyInfoInputs.cache

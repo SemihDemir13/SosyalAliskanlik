@@ -5,7 +5,11 @@ using SosyalAliskanlikApp.Modules.Habit.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Habit.Domain.Entities; 
 using SosyalAliskanlikApp.Persistence;
 using SosyalAliskanlikApp.Shared;
+using SosyalAliskanlikApp.Modules.Activity.Application.Interfaces; // DEĞİŞİKLİK: Activity servisini import et
+using SosyalAliskanlikApp.Modules.Activity.Domain.Enums;
+
 using HabitEntity = SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit;
+using SosyalAliskanlikApp.Modules.Activity.Application.Services;
 
 
 namespace SosyalAliskanlikApp.Modules.Habit.Application.Services;
@@ -13,10 +17,13 @@ namespace SosyalAliskanlikApp.Modules.Habit.Application.Services;
 public class HabitService : IHabitService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IActivityService _activityService;
 
-    public HabitService(ApplicationDbContext context)
+     public HabitService(ApplicationDbContext context, IActivityService activityService)
     {
         _context = context;
+        _activityService = activityService; // EKSİK ATAMAYI BURAYA EKLE
+
     }
 
     public async Task<HabitDto> CreateHabitAsync(CreateHabitRequestDto request, Guid userId)
@@ -335,18 +342,17 @@ public class HabitService : IHabitService
         return Result.Success<UserHabitSummaryDto?>(resultDto);
     }
     
-  public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
-  {
-    // Adım 1: Frontend'den gelen string ID'leri Guid'e dönüştür.
-    // Bu, hem karşılaştırma hem de atama hatalarını engeller.
+public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
+{
+    // Adım 1: Gelen ID'leri Doğrula ve Dönüştür
     if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
     {
         return Result.Failure("Geçersiz kimlik formatı.");
     }
 
-    // Adım 2: Alışkanlığı Guid kullanarak bul ve sahibinin doğru kullanıcı olduğunu doğrula.
-    // DÜZELTME: Artık Guid'leri karşılaştırıyoruz (string vs Guid hatası çözüldü).
+    // Adım 2: Gerekli Verileri Tek Sorguda Çek
     var habit = await _context.Habits
+        .Include(h => h.User) // Aktivite açıklaması için kullanıcının adını da getir.
         .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
 
     if (habit is null)
@@ -354,35 +360,44 @@ public class HabitService : IHabitService
         return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
     }
 
-    // Adım 3: Bugünün tarihini al.
+    // Adım 3: Bugünün Tarihini Belirle
     var today = DateOnly.FromDateTime(DateTime.UtcNow);
 
-    // Adım 4: Bu alışkanlık için bugüne ait bir tamamlama kaydı var mı diye kontrol et.
-    // DÜZELTME: 'Date' yerine doğru property adı olan 'CompletionDate' kullanıldı.
+    // Adım 4: Mevcut Tamamlama Kaydını Ara
     var existingCompletion = await _context.HabitCompletions
         .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
 
+
+    // Adım 5: Mantığı Uygula (Ekle veya Sil)
     if (existingCompletion is not null)
     {
-        // Varsa: Kaydı sil.
+        // Durum: Alışkanlık zaten tamamlanmış, şimdi geri alınıyor.
         _context.HabitCompletions.Remove(existingCompletion);
     }
     else
     {
-        // Yoksa: Yeni bir tamamlama kaydı oluştur.
+        // Durum: Alışkanlık tamamlanmamış, şimdi tamamlandı olarak işaretleniyor.
+        // 5a: Yeni tamamlama kaydını oluştur.
         var newCompletion = new HabitCompletion
         {
-            // DÜZELTME: string yerine Guid atıyoruz.
             HabitId = habitGuid,
-            // DÜZELTME: 'Date' yerine doğru property adı olan 'CompletionDate' kullanıldı.
             CompletionDate = today
         };
         await _context.HabitCompletions.AddAsync(newCompletion);
+
+        // 5b: Yeni bir "HABIT_COMPLETED" aktivitesi oluştur.
+        var description = $"{habit.User.Name}, '{habit.Name}' alışkanlığını tamamladı.";
+        await _activityService.CreateActivityAsync(
+            userId: userGuid,
+            activityType: ActivityType.HABIT_COMPLETED,
+            description: description,
+            relatedEntityId: habitGuid
+        );
     }
 
-    // Son Adım: Değişiklikleri veritabanına kaydet.
+    // Adım 6: Tüm Değişiklikleri Tek Seferde Veritabanına Kaydet
     await _context.SaveChangesAsync();
 
     return Result.Success();
-  }
+}
 }

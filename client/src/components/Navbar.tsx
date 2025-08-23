@@ -3,33 +3,47 @@
 
 import { useRouter } from 'next/navigation';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
+import Link from 'next/link';
 
 export default function Navbar() {
   const router = useRouter();
 
   const handleLogout = () => {
-    // Tarayıcı deposundaki token'ı sil
     localStorage.removeItem('accessToken');
-    // Kullanıcıyı giriş sayfasına yönlendir
     router.push('/login');
   };
   
-  return (
+ return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, cursor: 'pointer' }} onClick={() => router.push('/dashboard')}>
+        <Typography 
+          variant="h6" 
+          component="div" 
+          sx={{ flexGrow: 1, cursor: 'pointer' }} 
+          onClick={() => router.push('/home')} // Logoya tıklayınca /home'a gitsin
+        >
           Alışkanlık Takipçisi
         </Typography>
         <Box>
-  <Button color="inherit" onClick={() => router.push('/dashboard')}>
-    Anasayfa
-  </Button>
-  
-  <Button color="inherit" onClick={() => router.push('/statistics')}>  İstatistikler</Button>
-  <Button color="inherit" onClick={() => router.push('/friends')}> Arkadaşlar </Button>
-   <Button color="inherit" onClick={() => router.push('/profile')}>Profilim</Button>
-  <Button color="inherit" onClick={handleLogout}>Çıkış Yap </Button>
-</Box>
+          <Button color="inherit" component={Link} href="/home">
+            Anasayfa
+          </Button>
+          <Button color="inherit" component={Link} href="/dashboard">
+            Dashboard
+          </Button>
+          <Button color="inherit" component={Link} href="/statistics">
+            İstatistikler
+          </Button>
+          <Button color="inherit" component={Link} href="/friends">
+            Arkadaşlar
+          </Button>
+          <Button color="inherit" component={Link} href="/profile">
+            Profilim
+          </Button>
+          <Button color="inherit" onClick={handleLogout}>
+            Çıkış Yap
+          </Button>
+        </Box>
       </Toolbar>
     </AppBar>
   );

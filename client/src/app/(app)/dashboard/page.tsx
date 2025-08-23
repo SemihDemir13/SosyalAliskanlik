@@ -1,4 +1,4 @@
-// Dosya: client/src/app/(app)/dashboard/page.tsx
+// Dosya: client/src/app/(app)/my-habits/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -6,60 +6,49 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import AddHabitModal from '@/components/AddHabitModal';
 import HabitList from '@/components/habits/HabitList';
-import { Habit } from '@/types'; // Merkezi tip tanımını kullan
-
+import { Habit } from '@/types'; 
 import { Container, Typography, Box, CircularProgress, Alert, Fab } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import CssBaseline from '@mui/material/CssBaseline';
 import { useSnackbar } from 'notistack';
 
-export default function DashboardPage() {
+export default function MyHabitsPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
+  
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
 
-  const fetchData = useCallback(async (showLoading = false) => {
-    if (showLoading) setLoading(true);
+  const fetchHabits = useCallback(async () => {
+    setLoading(true);
     const token = localStorage.getItem('accessToken');
     if (!token) {
       router.push('/login');
       return;
     }
-
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.get(`${apiUrl}/api/Habit`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       const todayStr = new Date().toISOString().split('T')[0];
       const habitsWithCompletionStatus = response.data.map((habit: any) => ({
           ...habit,
           isCompletedToday: habit.completions.includes(todayStr)
       }));
-      
       setHabits(habitsWithCompletionStatus);
       setError(null);
     } catch (err) {
       setError('Alışkanlıklar yüklenirken bir hata oluştu.');
     } finally {
-      if (showLoading) setLoading(false);
+      setLoading(false);
     }
   }, [router]);
-
+  
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    if (!token) { router.push('/login'); return; }
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        setUserName(payload.name);
-    } catch (e) { console.error("Token ayrıştırılamadı:", e); }
-    fetchData(true);
-  }, [fetchData, router]);
+    fetchHabits();
+  }, [fetchHabits]);
 
   const handleToggleHabit = async (habitId: string) => {
     const originalHabits = [...habits];
@@ -73,7 +62,7 @@ export default function DashboardPage() {
         await axios.post(`${apiUrl}/api/Habit/${habitId}/toggle`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        await fetchData(false); 
+        await fetchHabits(); // Sadece alışkanlıkları yenile
     } catch (error) {
         setHabits(originalHabits);
         enqueueSnackbar('Hata: İşlem geri alındı.', { variant: 'error' });
@@ -84,7 +73,6 @@ export default function DashboardPage() {
     const originalHabits = [...habits];
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
     enqueueSnackbar('Alışkanlık arşivleniyor...', { variant: 'info' });
-
     try {
         const token = localStorage.getItem('accessToken');
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -98,29 +86,32 @@ export default function DashboardPage() {
     }
   };
   
-  const handleHabitAdded = () => {
-    setIsModalOpen(false);
-    fetchData(true);
-  }
+  const handleHabitAdded = () => { setIsModalOpen(false); fetchHabits(); };
 
   if (loading) {
-    return <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh"><CircularProgress /></Box>;
+    return <Box display="flex" justifyContent="center" alignItems="center" minHeight="calc(100vh - 64px)"><CircularProgress /></Box>;
   }
   
   return (
-    <>
-      <CssBaseline />
-      <Container maxWidth="md">
-        <Box sx={{ my: 4 }}>
-          <Typography variant="h4" component="h1" gutterBottom>Hoş Geldin, {userName || 'Kullanıcı'}!</Typography>
-          {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>{error}</Alert>}
-          <HabitList habits={habits} onToggleHabit={handleToggleHabit} onArchive={handleArchiveHabit} />
+    <Container maxWidth="md">
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Alışkanlıklarım
+        </Typography>
+        <Typography color="text.secondary">
+          Kişisel alışkanlıklarını buradan yönetebilirsin.
+        </Typography>
+        
+        <Box sx={{ mt: 4 }}>
+            {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>{error}</Alert>}
+            <HabitList habits={habits} onToggleHabit={handleToggleHabit} onArchive={handleArchiveHabit} />
         </Box>
-      </Container>
+      </Box>
+      
       <Fab color="secondary" aria-label="add" sx={{ position: 'fixed', bottom: 32, right: 32 }} onClick={() => setIsModalOpen(true)}>
         <AddIcon />
       </Fab>
       <AddHabitModal open={isModalOpen} onClose={() => setIsModalOpen(false)} onHabitAdded={handleHabitAdded} />
-    </>
+    </Container>
   );
 }

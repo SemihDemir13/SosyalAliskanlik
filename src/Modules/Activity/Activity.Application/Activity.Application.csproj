@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Activity.Domain\Activity.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

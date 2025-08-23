@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\SosyalAliskanlikApp.Shared.csproj" />
+    <ProjectReference Include="..\..\Auth\Auth.Domain\Auth.Domain.csproj" /> 
+
   </ItemGroup>
 
   <PropertyGroup>

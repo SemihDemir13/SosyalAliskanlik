@@ -289,6 +289,20 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Activity.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Activity.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Persistence": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Activity.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Activity.Application.dll": {}
+        }
+      },
       "Activity.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -320,6 +334,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Auth.Domain": "1.0.0",
           "SosyalAliskanlikApp.Shared": "1.0.0"
         },
         "compile": {
@@ -816,6 +831,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Activity.Application/1.0.0": {
+      "type": "project",
+      "path": "../../Activity/Activity.Application/Activity.Application.csproj",
+      "msbuildProject": "../../Activity/Activity.Application/Activity.Application.csproj"
+    },
     "Activity.Domain/1.0.0": {
       "type": "project",
       "path": "../../Activity/Activity.Domain/Activity.Domain.csproj",
@@ -849,6 +869,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "Activity.Application >= 1.0.0",
       "Habit.Domain >= 1.0.0",
       "SosyalAliskanlikApp.Modules.Friends.Domain >= 1.0.0",
       "SosyalAliskanlikApp.Persistence >= 1.0.0"
@@ -879,6 +900,9 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Application\\Activity.Application.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Application\\Activity.Application.csproj"
+            },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
             },
