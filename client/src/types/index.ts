@@ -11,3 +11,10 @@ export interface Habit {
   isCompletedToday: boolean;
   isArchived: boolean; 
 }
+
+export interface Activity {
+  id: string;
+  description: string;
+  createdAt: string;
+  userName: string;
+}
