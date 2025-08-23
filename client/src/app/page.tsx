@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, CircularProgress } from '@mui/material';
 
-export default function HomePage() {
+export default function RootPage() {
   const router = useRouter();
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function HomePage() {
 
     if (token) {
       // Eğer token varsa, kullanıcı giriş yapmış demektir. Dashboard'a yönlendir.
-      router.replace('/dashboard');
+      router.replace('/home');
     } else {
       // Eğer token yoksa, kullanıcı giriş yapmamış demektir. Login sayfasına yönlendir.
       router.replace('/login');
