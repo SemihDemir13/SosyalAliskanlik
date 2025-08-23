@@ -342,3 +342,9 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikAp
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Web.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Web.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Activity.Domain.pdb

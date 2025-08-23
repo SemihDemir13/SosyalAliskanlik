@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SosyalAliskanlikApp.Modules.Activity.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Friends.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Habit.Domain.Entities;
@@ -16,6 +17,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Habit> Habits { get; set; }
     public DbSet<HabitCompletion> HabitCompletions { get; set; }
     public DbSet<Friendship> Friendships { get; set; }
+
+    public DbSet<Activity> Activities { get; set; }
     
     
 

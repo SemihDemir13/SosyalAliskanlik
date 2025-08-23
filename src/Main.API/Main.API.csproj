@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Configurations\SosyalAliskanlikApp.Configurations.csproj" />
     <ProjectReference Include="..\Modules\Statistics\Web\SosyalAliskanlikApp.Modules.Statistics.Web.csproj" />
     <ProjectReference Include="..\Modules\Friends\Web\SosyalAliskanlikApp.Modules.Friends.Web.csproj" />
+    <ProjectReference Include="..\Modules\Activity\Activity.Web\Activity.Web.csproj" />
 
   </ItemGroup>
 
