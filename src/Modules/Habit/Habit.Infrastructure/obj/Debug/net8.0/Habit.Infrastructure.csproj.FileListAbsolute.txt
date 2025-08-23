@@ -25,6 +25,7 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Infrastructure\obj\De
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Infrastructure.deps.json
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Infrastructure.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Infrastructure.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Activity.Application.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Activity.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Auth.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Application.dll
@@ -34,6 +35,7 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Activity.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Activity.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Auth.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Habit.Domain.pdb

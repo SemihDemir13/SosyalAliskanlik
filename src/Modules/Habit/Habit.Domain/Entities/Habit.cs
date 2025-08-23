@@ -1,6 +1,7 @@
 // Dosya: src/Modules/Habit/Habit.Domain/Entities/Habit.cs
 using SosyalAliskanlikApp.Shared;
 using SosyalAliskanlikApp.Shared.Entities; // BaseEntity için
+using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
 
 namespace SosyalAliskanlikApp.Modules.Habit.Domain.Entities;
 
@@ -11,6 +12,8 @@ public class Habit : BaseEntity
 
     // Bu alışkanlığın hangi kullanıcıya ait olduğunu belirtir.
     public Guid UserId { get; set; }
+
+    public virtual User User { get; set; } = null!;
     
     public bool IsArchived { get; set; } = false;
 

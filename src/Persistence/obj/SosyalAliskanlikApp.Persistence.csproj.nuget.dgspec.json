@@ -218,6 +218,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Domain\\Auth.Domain.csproj"
+              },
               "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Shared\\SosyalAliskanlikApp.Shared.csproj"
               }

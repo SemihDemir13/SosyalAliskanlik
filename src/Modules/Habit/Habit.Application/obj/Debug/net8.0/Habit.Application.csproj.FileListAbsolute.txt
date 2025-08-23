@@ -23,12 +23,18 @@ C:\Users\yunus\SosyalAliskanlikApp\src\Modules\Habit\Habit.Application\bin\Debug
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Habit.Application.deps.json
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Habit.Application.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Habit.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Auth.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Habit.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Habit.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Persistence.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Auth.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\Habit.Application.csproj.AssemblyReference.cache
@@ -42,7 +48,3 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\obj\Debug\ne
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\refint\Habit.Application.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\Habit.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\obj\Debug\net8.0\ref\Habit.Application.dll
-C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.dll
-C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Domain.pdb
-C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Domain.dll
-C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Application\bin\Debug\net8.0\Activity.Domain.pdb
