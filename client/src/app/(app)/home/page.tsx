@@ -25,18 +25,28 @@ export default function DashboardPage() {
         return;
     }
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-      const response = await axios.get(`${apiUrl}/api/Activity/feed`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setActivities(response.data);
-    } catch (err) {
-      console.error("Akış verisi yüklenirken hata:", err);
-      enqueueSnackbar('Aktivite akışı yüklenirken bir sorun oluştu.', { variant: 'warning' });
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+        const response = await axios.get(`${apiUrl}/api/Activity/feed`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        setActivities(response.data);
+    } catch (err: any) { 
+        console.error("Akış verisi yüklenirken hata:", err);
+
+       
+        if (err.response && err.response.status === 401) {
+            // Eğer 401 hatası aldıysak, token geçersizdir.
+            enqueueSnackbar('Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.', { variant: 'error' });
+            localStorage.removeItem('accessToken'); // Geçersiz token'ı temizle
+            router.push('/login'); // Login sayfasına yönlendir
+        } else {
+            // Diğer hatalar için genel bir mesaj 
+            enqueueSnackbar('Aktivite akışı yüklenirken bir sorun oluştu.', { variant: 'warning' });
+        }
     } finally {
-      setFeedLoading(false);
+        setFeedLoading(false);
     }
-  }, [enqueueSnackbar, router]);
+}, [enqueueSnackbar, router]);
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');

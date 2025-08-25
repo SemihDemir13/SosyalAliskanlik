@@ -1,4 +1,4 @@
-// Dosya: client/src/app/(app)/my-habits/page.tsx
+// Dosya: client/src/app/(app)/dashboard/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -11,7 +11,7 @@ import { Container, Typography, Box, CircularProgress, Alert, Fab } from '@mui/m
 import AddIcon from '@mui/icons-material/Add';
 import { useSnackbar } from 'notistack';
 
-export default function MyHabitsPage() {
+export default function DashboardPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   
@@ -20,8 +20,8 @@ export default function MyHabitsPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchHabits = useCallback(async () => {
-    setLoading(true);
+  const fetchHabits = useCallback(async (showLoading = true) => {
+    if (showLoading) setLoading(true);
     const token = localStorage.getItem('accessToken');
     if (!token) {
       router.push('/login');
@@ -39,15 +39,21 @@ export default function MyHabitsPage() {
       }));
       setHabits(habitsWithCompletionStatus);
       setError(null);
-    } catch (err) {
-      setError('Alışkanlıklar yüklenirken bir hata oluştu.');
+    } catch (err: any) {
+      if (err.response && err.response.status === 401) {
+          enqueueSnackbar('Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.', { variant: 'error' });
+          localStorage.removeItem('accessToken');
+          router.push('/login');
+      } else {
+        setError('Alışkanlıklar yüklenirken bir hata oluştu.');
+      }
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
-  }, [router]);
+  }, [router, enqueueSnackbar]);
   
   useEffect(() => {
-    fetchHabits();
+    fetchHabits(true);
   }, [fetchHabits]);
 
   const handleToggleHabit = async (habitId: string) => {
@@ -62,7 +68,7 @@ export default function MyHabitsPage() {
         await axios.post(`${apiUrl}/api/Habit/${habitId}/toggle`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
-        await fetchHabits(); // Sadece alışkanlıkları yenile
+        await fetchHabits(false);
     } catch (error) {
         setHabits(originalHabits);
         enqueueSnackbar('Hata: İşlem geri alındı.', { variant: 'error' });
@@ -71,8 +77,11 @@ export default function MyHabitsPage() {
 
   const handleArchiveHabit = async (habitId: string) => {
     const originalHabits = [...habits];
+    
+    
     setHabits(prevHabits => prevHabits.filter(h => h.id !== habitId));
     enqueueSnackbar('Alışkanlık arşivleniyor...', { variant: 'info' });
+
     try {
         const token = localStorage.getItem('accessToken');
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -80,13 +89,18 @@ export default function MyHabitsPage() {
             headers: { Authorization: `Bearer ${token}` }
         });
         enqueueSnackbar('Alışkanlık başarıyla arşivlendi.', { variant: 'success' });
+        
     } catch (error) {
+        
         setHabits(originalHabits);
         enqueueSnackbar('Hata: İşlem geri alındı.', { variant: 'error' });
     }
   };
   
-  const handleHabitAdded = () => { setIsModalOpen(false); fetchHabits(); };
+  const handleHabitAdded = () => { 
+    setIsModalOpen(false); 
+    fetchHabits(true); 
+  };
 
   if (loading) {
     return <Box display="flex" justifyContent="center" alignItems="center" minHeight="calc(100vh - 64px)"><CircularProgress /></Box>;
