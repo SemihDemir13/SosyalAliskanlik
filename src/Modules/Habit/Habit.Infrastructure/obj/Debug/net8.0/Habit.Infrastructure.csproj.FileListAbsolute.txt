@@ -52,3 +52,9 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\obj\Debug
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\obj\Debug\net8.0\refint\Habit.Infrastructure.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\obj\Debug\net8.0\Habit.Infrastructure.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\obj\Debug\net8.0\ref\Habit.Infrastructure.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Badge.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Badge.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Core.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Badge.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Badge.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Infrastructure\bin\Debug\net8.0\Core.pdb

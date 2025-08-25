@@ -10,6 +10,9 @@ using SosyalAliskanlikApp.Modules.Activity.Domain.Enums;
 
 using HabitEntity = SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit;
 using SosyalAliskanlikApp.Modules.Activity.Application.Services;
+using SosyalAliskanlikApp.Core.Helpers;
+using SosyalAliskanlikApp.Modules.Badge.Application.Interfaces;
+
 
 
 namespace SosyalAliskanlikApp.Modules.Habit.Application.Services;
@@ -18,11 +21,13 @@ public class HabitService : IHabitService
 {
     private readonly ApplicationDbContext _context;
     private readonly IActivityService _activityService;
+    private readonly IBadgeService _badgeService;
 
-     public HabitService(ApplicationDbContext context, IActivityService activityService)
+    public HabitService(ApplicationDbContext context, IActivityService activityService, IBadgeService badgeService)
     {
         _context = context;
-        _activityService = activityService; // EKSİK ATAMAYI BURAYA EKLE
+        _activityService = activityService;
+        _badgeService = badgeService;
 
     }
 
@@ -74,7 +79,7 @@ public class HabitService : IHabitService
         {
             var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
             var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
-            var currentStreak = CalculateStreak(completionDates); 
+var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişiklik
 
             return new HabitDto
             {
@@ -119,39 +124,7 @@ public class HabitService : IHabitService
         return Result.Success();
     }
   
-    private int CalculateStreak(List<DateOnly> dates)
-    {
-        // Eğer hiç tamamlama kaydı yoksa, seri 0'dır.
-        if (dates == null || !dates.Any())
-        {
-            return 0;
-        }
-
-        // Tarihleri en yeniden en eskiye doğru sırala.
-        var sortedDates = dates.OrderByDescending(d => d).ToList();
-
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-        var yesterday = today.AddDays(-1);
-
-        // En son tamamlanan gün, dünden daha eskiyse, seri bozulmuştur.
-        if (sortedDates.First() < yesterday)
-        {
-            return 0;
-        }
-
-        int streak = 0;
-        // Seriyi saymaya başlayacağımız tarih, ya bugündür ya da dündür.
-        var currentDate = sortedDates.Contains(today) ? today : yesterday;
-
-        // Geçmişe doğru, tarihler listede olduğu sürece sayacı artır.
-        while (sortedDates.Contains(currentDate))
-        {
-            streak++;
-            currentDate = currentDate.AddDays(-1);
-        }
-
-        return streak;
-    }
+   
     public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
     {
         // 1. Güncellenecek alışkanlığı veritabanından bul.
@@ -227,7 +200,7 @@ public class HabitService : IHabitService
             CreatedAt = habit.CreatedAt,
             Completions = completionDates, // <-- Artık burası doğru veriyi içerecek
             CompletionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7))),
-            CurrentStreak = CalculateStreak(completionDates)
+            CurrentStreak = StreakCalculator.Calculate(completionDates)
         };
     }
 
@@ -343,61 +316,55 @@ public class HabitService : IHabitService
     }
     
 public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
-{
-    // Adım 1: Gelen ID'leri Doğrula ve Dönüştür
-    if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
     {
-        return Result.Failure("Geçersiz kimlik formatı.");
-    }
-
-    // Adım 2: Gerekli Verileri Tek Sorguda Çek
-    var habit = await _context.Habits
-        .Include(h => h.User) // Aktivite açıklaması için kullanıcının adını da getir.
-        .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
-
-    if (habit is null)
-    {
-        return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
-    }
-
-    // Adım 3: Bugünün Tarihini Belirle
-    var today = DateOnly.FromDateTime(DateTime.UtcNow);
-
-    // Adım 4: Mevcut Tamamlama Kaydını Ara
-    var existingCompletion = await _context.HabitCompletions
-        .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
-
-
-    // Adım 5: Mantığı Uygula (Ekle veya Sil)
-    if (existingCompletion is not null)
-    {
-        // Durum: Alışkanlık zaten tamamlanmış, şimdi geri alınıyor.
-        _context.HabitCompletions.Remove(existingCompletion);
-    }
-    else
-    {
-        // Durum: Alışkanlık tamamlanmamış, şimdi tamamlandı olarak işaretleniyor.
-        // 5a: Yeni tamamlama kaydını oluştur.
-        var newCompletion = new HabitCompletion
+        if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
         {
-            HabitId = habitGuid,
-            CompletionDate = today
-        };
-        await _context.HabitCompletions.AddAsync(newCompletion);
+            return Result.Failure("Geçersiz kimlik formatı.");
+        }
 
-        // 5b: Yeni bir "HABIT_COMPLETED" aktivitesi oluştur.
-        var description = $"{habit.User.Name}, '{habit.Name}' alışkanlığını tamamladı.";
-        await _activityService.CreateActivityAsync(
-            userId: userGuid,
-            activityType: ActivityType.HABIT_COMPLETED,
-            description: description,
-            relatedEntityId: habitGuid
-        );
+        var habit = await _context.Habits
+            .Include(h => h.User) 
+            .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
+
+        if (habit is null)
+        {
+            return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
+        }
+
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+        var existingCompletion = await _context.HabitCompletions
+            .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
+
+        if (existingCompletion is not null)
+        {
+            _context.HabitCompletions.Remove(existingCompletion);
+        }
+        else
+        {
+            var newCompletion = new HabitCompletion
+            {
+                HabitId = habitGuid,
+                CompletionDate = today
+            };
+            await _context.HabitCompletions.AddAsync(newCompletion);
+
+            var description = $"{habit.User.Name}, '{habit.Name}' alışkanlığını tamamladı.";
+            await _activityService.CreateActivityAsync(
+                userId: userGuid,
+                activityType: ActivityType.HABIT_COMPLETED,
+                description: description,
+                relatedEntityId: habitGuid
+            );
+            
+            // Yeni tamamlama yapıldıktan sonra rozet kontrolünü tetikle
+            // HATA DÜZELTİLDİ: Artık _badgeService tanınıyor.
+            await _badgeService.CheckAndAwardBadgesAsync(userGuid, habitGuid);
+        }
+
+        // Tüm değişiklikleri (HabitCompletion, Activity, UserBadge) tek seferde kaydet
+        await _context.SaveChangesAsync();
+
+        return Result.Success();
     }
-
-    // Adım 6: Tüm Değişiklikleri Tek Seferde Veritabanına Kaydet
-    await _context.SaveChangesAsync();
-
-    return Result.Success();
-}
 }

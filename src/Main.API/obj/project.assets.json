@@ -1300,11 +1300,52 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Badge.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Badge.Domain": "1.0.0",
+          "Core": "1.0.0",
+          "SosyalAliskanlikApp.Persistence": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Badge.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Badge.Application.dll": {}
+        }
+      },
+      "Badge.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Auth.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Badge.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Badge.Domain.dll": {}
+        }
+      },
+      "Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Core.dll": {}
+        }
+      },
       "Habit.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Activity.Application": "1.0.0",
+          "Badge.Application": "1.0.0",
+          "Core": "1.0.0",
           "Habit.Domain": "1.0.0",
           "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Persistence": "1.0.0"
@@ -1461,6 +1502,7 @@
         "dependencies": {
           "Activity.Domain": "1.0.0",
           "Auth.Domain": "1.0.0",
+          "Badge.Domain": "1.0.0",
           "Habit.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
@@ -3987,6 +4029,21 @@
       "type": "project",
       "path": "../Modules/Auth/Auth.Web/Auth.Web.csproj",
       "msbuildProject": "../Modules/Auth/Auth.Web/Auth.Web.csproj"
+    },
+    "Badge.Application/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Badge/Badge.Application/Badge.Application.csproj",
+      "msbuildProject": "../Modules/Badge/Badge.Application/Badge.Application.csproj"
+    },
+    "Badge.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Badge/Badge.Domain/Badge.Domain.csproj",
+      "msbuildProject": "../Modules/Badge/Badge.Domain/Badge.Domain.csproj"
+    },
+    "Core/1.0.0": {
+      "type": "project",
+      "path": "../Core/Core.csproj",
+      "msbuildProject": "../Core/Core.csproj"
     },
     "Habit.Application/1.0.0": {
       "type": "project",
