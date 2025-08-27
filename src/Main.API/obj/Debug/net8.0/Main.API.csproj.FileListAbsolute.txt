@@ -354,3 +354,5 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Application.
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Core.dll
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Core.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Web.pdb

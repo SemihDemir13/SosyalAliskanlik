@@ -1329,6 +1329,22 @@
           "bin/placeholder/Badge.Domain.dll": {}
         }
       },
+      "Badge.Web/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Badge.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Badge.Web.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Badge.Web.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Core/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -4040,6 +4056,11 @@
       "path": "../Modules/Badge/Badge.Domain/Badge.Domain.csproj",
       "msbuildProject": "../Modules/Badge/Badge.Domain/Badge.Domain.csproj"
     },
+    "Badge.Web/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Badge/Badge.Web/Badge.Web.csproj",
+      "msbuildProject": "../Modules/Badge/Badge.Web/Badge.Web.csproj"
+    },
     "Core/1.0.0": {
       "type": "project",
       "path": "../Core/Core.csproj",
@@ -4110,6 +4131,7 @@
     "net8.0": [
       "Activity.Web >= 1.0.0",
       "Auth.Web >= 1.0.0",
+      "Badge.Web >= 1.0.0",
       "Habit.Web >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 8.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.7",
@@ -4155,6 +4177,9 @@
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Web\\Auth.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Web\\Auth.Web.csproj"
+            },
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Badge\\Badge.Web\\Badge.Web.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Badge\\Badge.Web\\Badge.Web.csproj"
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Web\\SosyalAliskanlikApp.Modules.Friends.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Web\\SosyalAliskanlikApp.Modules.Friends.Web.csproj"

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SosyalAliskanlikApp.Core.Helpers;
+using SosyalAliskanlikApp.Modules.Badge.Application.DTOs;
 using SosyalAliskanlikApp.Modules.Badge.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Badge.Domain.Entities;
 using SosyalAliskanlikApp.Persistence;
@@ -17,35 +18,44 @@ public class BadgeService : IBadgeService
 
     public async Task CheckAndAwardBadgesAsync(Guid userId, Guid habitId)
     {
-        // 1. Kullanıcının zaten sahip olduğu rozetlerin kodlarını al.
+       
         var userBadgeCodes = await _context.UserBadges
             .Where(ub => ub.UserId == userId)
             .Select(ub => ub.Badge.Code)
             .ToListAsync();
-
-        // 2. "İlk Adım" rozetini kontrol et.
+    
         await CheckFirstCompletionBadge(userId, userBadgeCodes);
-
-        // 3. "Seri" rozetlerini kontrol et.
+        
         await CheckStreakBadges(userId, habitId, userBadgeCodes);
         
-        // ÖNEMLİ: SaveChangesAsync burada çağrılmıyor. HabitService çağıracak.
+        
     }
-
-    private async Task CheckFirstCompletionBadge(Guid userId, List<string> userBadgeCodes)
+    public async Task<IEnumerable<BadgeDto>> GetUserBadgesAsync(Guid userId)
     {
-        // Eğer kullanıcı bu rozete zaten sahipse, bir şey yapma.
-        if (userBadgeCodes.Contains("FIRST_COMPLETION")) return;
-
-        // Kullanıcının herhangi bir alışkanlık tamamlama kaydı var mı?
-        var hasAnyCompletion = await _context.HabitCompletions
-            .AnyAsync(hc => hc.Habit.UserId == userId);
+        var badges = await _context.UserBadges
+            .Where(ub => ub.UserId == userId)
+            .Select(ub => ub.Badge) // Sadece ilişkili Badge nesnesini al
+            .Select(b => new BadgeDto
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Description = b.Description,
+                IconUrl = b.IconUrl
+            })
+            .Distinct() // Bir rozeti birden fazla kez kazanma ihtimaline karşı
+            .ToListAsync();
             
-        if (hasAnyCompletion)
-        {
-            await AwardBadgeToUser(userId, "FIRST_COMPLETION");
-        }
+        return badges;
     }
+
+   private async Task CheckFirstCompletionBadge(Guid userId, List<string> userBadgeCodes)
+{
+    
+    if (userBadgeCodes.Contains("FIRST_COMPLETION")) return;
+
+    
+    await AwardBadgeToUser(userId, "FIRST_COMPLETION");
+}
 
     private async Task CheckStreakBadges(Guid userId, Guid habitId, List<string> userBadgeCodes)
     {
@@ -78,7 +88,7 @@ public class BadgeService : IBadgeService
     private async Task AwardBadgeToUser(Guid userId, string badgeCode)
     {
         var badge = await _context.Badges.FirstOrDefaultAsync(b => b.Code == badgeCode);
-        if (badge is null) return; // Rozet bulunamadıysa bir şey yapma
+        if (badge is null) return; 
 
         var newUserBadge = new UserBadge
         {
@@ -87,8 +97,7 @@ public class BadgeService : IBadgeService
         };
         await _context.UserBadges.AddAsync(newUserBadge);
         
-        // TODO: Gelecekte burada bir aktivite oluşturabiliriz:
-        // _activityService.CreateActivityAsync(userId, ActivityType.BADGE_AWARDED, ...);
+        
     }
     
    
