@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\SosyalAliskanlikApp.Shared.csproj" />
     <ProjectReference Include="..\..\Auth\Auth.Domain\Auth.Domain.csproj" />
+    <ProjectReference Include="..\..\Habit\Habit.Domain\Habit.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

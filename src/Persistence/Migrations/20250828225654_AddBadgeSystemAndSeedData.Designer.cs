@@ -12,8 +12,8 @@ using SosyalAliskanlikApp.Persistence;
 namespace SosyalAliskanlikApp.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250825143907_SeedInitialBadges")]
-    partial class SeedInitialBadges
+    [Migration("20250828225654_AddBadgeSystemAndSeedData")]
+    partial class AddBadgeSystemAndSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,6 +148,24 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                             Description = "Bir alışkanlıkta 30 günlük seriye ulaştın.",
                             IconUrl = "/badges/streak_30.png",
                             Name = "Usta Takipçi (30 Gün)"
+                        },
+                        new
+                        {
+                            Id = new Guid("4d4d4d4d-4444-4444-8444-444444444444"),
+                            Code = "TOTAL_10_COMPLETIONS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Toplamda 10 kez bir alışkanlığı tamamladın.",
+                            IconUrl = "/badges/total_10.svg",
+                            Name = "Acemi Takipçi"
+                        },
+                        new
+                        {
+                            Id = new Guid("5e5e5e5e-5555-4555-8555-555555555555"),
+                            Code = "TOTAL_50_COMPLETIONS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Toplamda 50 kez bir alışkanlığı tamamladın.",
+                            IconUrl = "/badges/total_50.svg",
+                            Name = "Çırak Takipçi"
                         });
                 });
 
@@ -163,6 +181,9 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("RelatedHabitId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -172,6 +193,8 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BadgeId");
+
+                    b.HasIndex("RelatedHabitId");
 
                     b.HasIndex("UserId");
 
@@ -284,6 +307,10 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", "RelatedHabit")
+                        .WithMany()
+                        .HasForeignKey("RelatedHabitId");
+
                     b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -291,6 +318,8 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Badge");
+
+                    b.Navigation("RelatedHabit");
 
                     b.Navigation("User");
                 });

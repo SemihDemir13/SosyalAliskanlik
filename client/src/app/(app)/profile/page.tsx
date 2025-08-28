@@ -9,7 +9,8 @@ import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import { TextField, Button, Typography, Box, Paper, CircularProgress, Divider } from '@mui/material';
 import HabitList from '@/components/habits/HabitList'; 
-import { Habit } from '@/types'; 
+import BadgeList from '@/components/badges/BadgeList';
+import { Habit, Badge } from '@/types'; 
 
 // Şifre değiştirme formu için Zod şeması
 const passwordSchema = z.object({
@@ -21,12 +22,12 @@ type PasswordFormInputs = z.infer<typeof passwordSchema>;
 
 export default function ProfilePage() {
   const { enqueueSnackbar } = useSnackbar();
-  const [loading, setLoading] = useState(true); // Genel sayfa yüklenme durumu
+  const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<{ name: string; email: string } | null>(null);
-
-  // Arşivlenmiş alışkanlıklar için state'ler
   const [archivedHabits, setArchivedHabits] = useState<Habit[]>([]);
   const [archivedLoading, setArchivedLoading] = useState(true);
+  const [badges, setBadges] = useState<Badge[]>([]);
+  const [badgesLoading, setBadgesLoading] = useState(true);
 
   const {
     register,
@@ -42,57 +43,84 @@ export default function ProfilePage() {
     if (!token) {
         setLoading(false);
         setArchivedLoading(false);
-        // İsteğe bağlı: router.push('/login');
+        setBadgesLoading(false);
         return;
     };
 
-    const fetchAllData = async () => {
-        // Her iki veri çekme işlemi de bittiğinde genel yüklenmeyi durdur
+    // Tüm fetch fonksiyonlarını useEffect içinde tanımlıyoruz.
+    // Bu, "stale closure" sorunlarını engeller ve her zaman güncel state'e erişmelerini sağlar.
+    const fetchProfile = async () => {
         try {
-            // Profil ve Arşiv verilerini paralel olarak çekmeyi dene
-            await Promise.all([
-                (async () => {
-                    try {
-                        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                        const response = await axios.get(`${apiUrl}/api/Auth/profile`, {
-                            headers: { Authorization: `Bearer ${token}` },
-                        });
-                        setCurrentUser(response.data);
-                    } catch (error) {
-                        console.error("Profil bilgileri yüklenirken hata:", error);
-                        enqueueSnackbar('Profil bilgileri yüklenemedi.', { variant: 'error' });
-                    }
-                })(),
-
-                (async () => {
-                    setArchivedLoading(true);
-                    try {
-                        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-                        const response = await axios.get(`${apiUrl}/api/Habit?includeArchived=true`, {
-                            headers: { Authorization: `Bearer ${token}` },
-                        });
-
-                        const todayStr = new Date().toISOString().split('T')[0];
-                        const habitsWithCompletionStatus = response.data.map((habit: any) => ({
-                            ...habit,
-                            isCompletedToday: habit.completions?.includes(todayStr) || false
-                        }));
-                        setArchivedHabits(habitsWithCompletionStatus);
-                    } catch (error) {
-                        console.error("Arşivlenmiş alışkanlıklar yüklenirken hata:", error);
-                        enqueueSnackbar('Arşivlenmiş alışkanlıklar yüklenemedi.', { variant: 'error' });
-                    } finally {
-                        setArchivedLoading(false);
-                    }
-                })()
-            ]);
-        } finally {
-            setLoading(false);
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await axios.get(`${apiUrl}/api/Auth/profile`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setCurrentUser(response.data);
+        } catch (error) {
+            console.error("Profil bilgileri yüklenirken hata:", error);
+            enqueueSnackbar('Profil bilgileri yüklenemedi.', { variant: 'error' });
         }
     };
 
-    fetchAllData();
-  }, [enqueueSnackbar]);
+    const fetchArchivedHabits = async () => {
+        setArchivedLoading(true);
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await axios.get(`${apiUrl}/api/Habit?includeArchived=true`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const todayStr = new Date().toISOString().split('T')[0];
+            const habitsWithCompletionStatus = response.data.map((habit: any) => ({
+                ...habit,
+                isCompletedToday: habit.completions?.includes(todayStr) || false
+            }));
+            setArchivedHabits(habitsWithCompletionStatus);
+        } catch (error) {
+            console.error("Arşivlenmiş alışkanlıklar yüklenirken hata:", error);
+            enqueueSnackbar('Arşivlenmiş alışkanlıklar yüklenemedi.', { variant: 'error' });
+        } finally {
+            setArchivedLoading(false);
+        }
+    };
+    
+    const fetchBadges = async () => {
+        console.log("FETCH_BADGES: Tetiklendi.");
+        setBadgesLoading(true);
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            const response = await axios.get(`${apiUrl}/api/Badges/my`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            console.log("FETCH_BADGES: Yeni veri alındı ->", response.data);
+            setBadges(response.data);
+        } catch (error) {
+            console.error("FETCH_BADGES: Hata ->", error);
+            enqueueSnackbar('Rozetler yüklenemedi.', { variant: 'error' });
+        } finally {
+            setBadgesLoading(false);
+        }
+    };
+
+    // Sayfa ilk yüklendiğinde tüm verileri çek
+    Promise.all([fetchProfile(), fetchArchivedHabits(), fetchBadges()])
+      .finally(() => setLoading(false));
+
+    // Olay dinleyicisi
+    const handleFocus = () => {
+        if (localStorage.getItem('badges_need_refresh') === 'true') {
+            localStorage.removeItem('badges_need_refresh');
+            console.log("HANDLE_FOCUS: Yenileme ihtiyacı tespit edildi, fetchBadges çağrılıyor.");
+            fetchBadges(); // useEffect içindeki güncel fetchBadges fonksiyonunu çağır
+        }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+        window.removeEventListener('focus', handleFocus);
+    };
+  }, [enqueueSnackbar]); // Sadece dışarıdan gelen ve değişmeyen hook'ları bağımlılığa ekliyoruz.
+
 
   const onPasswordSubmit: SubmitHandler<PasswordFormInputs> = async (data) => {
     try {
@@ -140,15 +168,13 @@ export default function ProfilePage() {
       
       <Paper sx={{ p: 3, mt: 3 }}>
         <Typography variant="h6" gutterBottom>Kullanıcı Bilgileri</Typography>
-         <TextField 
+        <TextField 
           variant="outlined" 
           margin="normal" 
           fullWidth 
           label="İsim Soyisim" 
           value={currentUser?.name || ''} 
-          InputProps={{
-            readOnly: true,
-          }}
+          InputProps={{ readOnly: true }}
         />
         <TextField 
           variant="outlined" 
@@ -156,11 +182,14 @@ export default function ProfilePage() {
           fullWidth 
           label="E-posta Adresi" 
           value={currentUser?.email || ''} 
-          InputProps={{
-            readOnly: true,
-          }}
+          InputProps={{ readOnly: true }}
         />
+      </Paper>
 
+      <Paper sx={{ p: 3, mt: 4 }}>
+        <Typography variant="h6" gutterBottom>Kazanılan Rozetler</Typography>
+        <Divider sx={{ my: 2 }} />
+        <BadgeList badges={badges} isLoading={badgesLoading} />
       </Paper>
       
       <Paper sx={{ p: 3, mt: 4 }}>

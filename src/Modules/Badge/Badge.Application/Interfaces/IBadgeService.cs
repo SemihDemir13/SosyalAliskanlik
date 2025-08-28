@@ -8,4 +8,5 @@ public interface IBadgeService
     Task CheckAndAwardBadgesAsync(Guid userId, Guid habitId);
 
     Task<IEnumerable<BadgeDto>> GetUserBadgesAsync(Guid userId);
+    Task RecheckAllBadgesForUserAsync(Guid userId);
 }

@@ -18,11 +18,11 @@ public class BadgesController : ControllerBase
     }
 
     // Kullanıcının kendi rozetlerini getiren endpoint
-    [HttpGet("my")] // GET /api/badges/my
+    [HttpGet("my")] 
     public async Task<IActionResult> GetMyBadges()
     {
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if(userIdString is null || !Guid.TryParse(userIdString, out var userId))
+        if (userIdString is null || !Guid.TryParse(userIdString, out var userId))
         {
             return Unauthorized();
         }
@@ -30,13 +30,28 @@ public class BadgesController : ControllerBase
         var badges = await _badgeService.GetUserBadgesAsync(userId);
         return Ok(badges);
     }
-    
+
     // Başka bir kullanıcının rozetlerini getiren endpoint
-    [HttpGet("user/{userId:guid}")] // GET /api/badges/user/{bir-guid}
+    [HttpGet("user/{userId:guid}")] 
     public async Task<IActionResult> GetUserBadges(Guid userId)
     {
         // TODO: İleride, sadece arkadaşların rozetlerini görme gibi bir yetkilendirme eklenebilir.
         var badges = await _badgeService.GetUserBadgesAsync(userId);
         return Ok(badges);
+    }
+    
+     [HttpPost("recheck")] 
+    public async Task<IActionResult> RecheckBadges()
+    {
+        var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if(userIdString is null || !Guid.TryParse(userIdString, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        await _badgeService.RecheckAllBadgesForUserAsync(userId);
+        
+        
+        return NoContent(); 
     }
 }

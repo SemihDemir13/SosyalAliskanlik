@@ -18,3 +18,11 @@ export interface Activity {
   createdAt: string;
   userName: string;
 }
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  iconUrl: string;
+  relatedHabitName?: string | null;
+}

@@ -65,6 +65,24 @@ public class ApplicationDbContext : DbContext
             IconUrl = "/badges/streak_30.png",
             Code = "STREAK_30_DAYS",
             CreatedAt = seedDate 
+        },
+         new Badge
+         {
+             Id = Guid.Parse("4d4d4d4d-4444-4444-8444-444444444444"),
+             Name = "Acemi Takipçi",
+             Description = "Toplamda 10 kez bir alışkanlığı tamamladın.",
+             IconUrl = "/badges/total_10.svg",
+             Code = "TOTAL_10_COMPLETIONS",
+            CreatedAt = seedDate 
+        },
+        new Badge
+        {
+            Id = Guid.Parse("5e5e5e5e-5555-4555-8555-555555555555"),
+            Name = "Çırak Takipçi",
+            Description = "Toplamda 50 kez bir alışkanlığı tamamladın.",
+            IconUrl = "/badges/total_50.svg",
+            Code = "TOTAL_50_COMPLETIONS",
+            CreatedAt = seedDate 
         }
     );
 
