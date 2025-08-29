@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Modules\Friends\Web\SosyalAliskanlikApp.Modules.Friends.Web.csproj" />
     <ProjectReference Include="..\Modules\Activity\Activity.Web\Activity.Web.csproj" />
     <ProjectReference Include="..\Modules\Badge\Badge.Web\Badge.Web.csproj" />
+    <ProjectReference Include="..\Modules\AI\AI.Web\AI.Web.csproj" />
     
 
   </ItemGroup>
