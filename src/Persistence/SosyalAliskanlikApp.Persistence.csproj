@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Modules\Habit\Habit.Domain\Habit.Domain.csproj" />
     <ProjectReference Include="..\Modules\Friends\Domain\SosyalAliskanlikApp.Modules.Friends.Domain.csproj" />
     <ProjectReference Include="..\Modules\Activity\Activity.Domain\Activity.Domain.csproj" />
+    <ProjectReference Include="..\Modules\Badge\Badge.Domain\Badge.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-// Dosya: client/src/app/(app)/dashboard/page.tsx
+// Dosya: client/src/app/(app)/home/page.tsx
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
@@ -9,7 +9,7 @@ import { Activity } from '@/types';
 import { Container, Typography, Box } from '@mui/material';
 import { useSnackbar } from 'notistack';
 
-export default function DashboardPage() {
+export default function HomePage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   
@@ -30,9 +30,15 @@ export default function DashboardPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       setActivities(response.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Akış verisi yüklenirken hata:", err);
-      enqueueSnackbar('Aktivite akışı yüklenirken bir sorun oluştu.', { variant: 'warning' });
+      if (err.response && err.response.status === 401) {
+          enqueueSnackbar('Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.', { variant: 'error' });
+          localStorage.removeItem('accessToken');
+          router.push('/login');
+      } else {
+        enqueueSnackbar('Aktivite akışı yüklenirken bir sorun oluştu.', { variant: 'warning' });
+      }
     } finally {
       setFeedLoading(false);
     }
@@ -45,9 +51,33 @@ export default function DashboardPage() {
             const payload = JSON.parse(atob(token.split('.')[1]));
             setUserName(payload.name);
         } catch (e) { console.error("Token ayrıştırılamadı:", e); }
+    } else {
+        router.push('/login');
+        return;
     }
+    
+    // Geriye dönük rozet kontrolünü tetikleyen fonksiyon
+    const recheckBadges = async () => {
+        try {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            // Bu istek arka planda çalışır, sonucunu beklememize veya göstermemize gerek yok.
+            // Sadece tetikliyoruz.
+            await axios.post(`${apiUrl}/api/Badges/recheck`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            console.log("Geçmiş başarılar için rozetler yeniden kontrol edildi.");
+            localStorage.setItem('badges_need_refresh', 'true');
+        } catch (error) {
+            console.error("Rozetler yeniden kontrol edilirken hata oluştu:", error);
+        }
+    };
+
+    // Sayfa yüklendiğinde hem akışı çek hem de rozetleri kontrol et
     fetchActivityFeed();
-  }, [fetchActivityFeed]);
+    recheckBadges();
+
+  }, [fetchActivityFeed, router]);
   
   return (
     <Container maxWidth="md">

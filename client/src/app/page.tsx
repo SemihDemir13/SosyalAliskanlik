@@ -9,20 +9,19 @@ export default function RootPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Bu bileşen yüklendiğinde, tarayıcının localStorage'ını kontrol et.
+    
     const token = localStorage.getItem('accessToken');
 
     if (token) {
-      // Eğer token varsa, kullanıcı giriş yapmış demektir. Dashboard'a yönlendir.
+      
       router.replace('/home');
     } else {
-      // Eğer token yoksa, kullanıcı giriş yapmamış demektir. Login sayfasına yönlendir.
+      
       router.replace('/login');
     }
-  }, [router]); // useEffect'in sadece bir kez çalışmasını sağlıyoruz.
+  }, [router]); 
 
-  // Yönlendirme işlemi gerçekleşene kadar ekranda bir yükleme animasyonu göster.
-  // Bu, anlık olarak boş bir sayfa görmeyi engeller.
+  
   return (
     <Box
       display="flex"

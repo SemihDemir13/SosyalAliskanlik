@@ -7,11 +7,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 
-// MUI Bileşenleri (Paper eklendi)
 import { Box, Button, Container, TextField, Typography, Link, Alert, Paper } from '@mui/material';
 import { useState } from 'react';
 
-// Zod şeması
+
 const loginSchema = z.object({
   email: z.string().email('Geçerli bir e-posta girin.'),
   password: z.string().min(1, 'Şifre alanı boş bırakılamaz.'),
@@ -32,7 +31,7 @@ export default function LoginPage() {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await axios.post(`${apiUrl}/api/Auth/login`, data);
       localStorage.setItem('accessToken', response.data.accessToken);
-      router.push('/dashboard');
+      router.push('/home');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Giriş başarısız oldu.');
     }
@@ -52,8 +51,7 @@ export default function LoginPage() {
           Giriş Yap
         </Typography>
 
-        {/* --- YAPIYI DEĞİŞTİRİYORUZ --- */}
-        {/* Formu ve içeriğini Paper bileşeni ile sarmalıyoruz */}
+        
         <Paper elevation={3} sx={{ p: 4, width: '100%', mt: 2 }}>
           <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
             <TextField
@@ -90,7 +88,6 @@ export default function LoginPage() {
             </Button>
           </Box>
         </Paper>
-        {/* --- DEĞİŞİKLİK BİTTİ --- */}
 
         <Box textAlign="center" sx={{ mt: 2 }}>
           <Link href="/register" variant="body2">

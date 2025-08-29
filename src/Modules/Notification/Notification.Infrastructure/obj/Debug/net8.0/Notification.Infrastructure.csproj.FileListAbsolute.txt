@@ -54,3 +54,5 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastruc
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\refint\Notification.Infrastructure.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\Notification.Infrastructure.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastructure\obj\Debug\net8.0\ref\Notification.Infrastructure.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastructure\bin\Debug\net8.0\Badge.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Infrastructure\bin\Debug\net8.0\Badge.Domain.pdb

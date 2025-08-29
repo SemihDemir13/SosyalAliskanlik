@@ -348,3 +348,11 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\refint\Main.API.dl
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\Main.API.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\Main.API.genruntimeconfig.cache
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\obj\Debug\net8.0\ref\Main.API.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Core.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Core.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Badge.Web.pdb

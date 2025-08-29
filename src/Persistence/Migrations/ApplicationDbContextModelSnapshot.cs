@@ -83,6 +83,121 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Badge.Domain.Entities.Badge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("IconUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Badges");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ef70211c-3333-40a2-8233-a3a82f254593"),
+                            Code = "FIRST_COMPLETION",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "İlk alışkanlığını başarıyla tamamladın.",
+                            IconUrl = "/badges/first_step.png",
+                            Name = "İlk Adım"
+                        },
+                        new
+                        {
+                            Id = new Guid("843425f1-3558-4d57-b672-466f9a53f191"),
+                            Code = "STREAK_7_DAYS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bir alışkanlıkta 7 günlük seriye ulaştın.",
+                            IconUrl = "/badges/streak_7.png",
+                            Name = "İstikrar Abidesi (7 Gün)"
+                        },
+                        new
+                        {
+                            Id = new Guid("e838e55e-149a-41d3-a4c3-a36a2656919e"),
+                            Code = "STREAK_30_DAYS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bir alışkanlıkta 30 günlük seriye ulaştın.",
+                            IconUrl = "/badges/streak_30.png",
+                            Name = "Usta Takipçi (30 Gün)"
+                        },
+                        new
+                        {
+                            Id = new Guid("4d4d4d4d-4444-4444-8444-444444444444"),
+                            Code = "TOTAL_10_COMPLETIONS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Toplamda 10 kez bir alışkanlığı tamamladın.",
+                            IconUrl = "/badges/total_10.svg",
+                            Name = "Acemi Takipçi"
+                        },
+                        new
+                        {
+                            Id = new Guid("5e5e5e5e-5555-4555-8555-555555555555"),
+                            Code = "TOTAL_50_COMPLETIONS",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Toplamda 50 kez bir alışkanlığı tamamladın.",
+                            IconUrl = "/badges/total_50.svg",
+                            Name = "Çırak Takipçi"
+                        });
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Badge.Domain.Entities.UserBadge", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BadgeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("RelatedHabitId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BadgeId");
+
+                    b.HasIndex("RelatedHabitId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserBadges");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Friends.Domain.Entities.Friendship", b =>
                 {
                     b.Property<Guid>("Id")
@@ -140,6 +255,8 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Habits");
                 });
 
@@ -179,6 +296,32 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Badge.Domain.Entities.UserBadge", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Badge.Domain.Entities.Badge", "Badge")
+                        .WithMany()
+                        .HasForeignKey("BadgeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", "RelatedHabit")
+                        .WithMany()
+                        .HasForeignKey("RelatedHabitId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Badge");
+
+                    b.Navigation("RelatedHabit");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Friends.Domain.Entities.Friendship", b =>
                 {
                     b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "Addressee")
@@ -196,6 +339,17 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.Navigation("Addressee");
 
                     b.Navigation("Requester");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.HabitCompletion", b =>

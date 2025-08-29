@@ -3,16 +3,17 @@
 
 import HabitCard from './HabitCard'; 
 import { Box, Typography, Paper } from '@mui/material';
-import { Habit } from '@/types'; // Merkezi tip tanımını kullan
+import { Habit, Badge } from '@/types';
 
 interface HabitListProps { 
   habits: Habit[]; 
   onToggleHabit: (habitId: string) => void; 
-  onArchive: (habitId: string) => void; // Prop ismini onArchive olarak standartlaştırdık
-  isArchivePage?: boolean; // Bu sayfanın arşiv sayfası olup olmadığını belirtir (opsiyonel)
+  onArchive: (habitId: string) => void;
+  isArchivePage?: boolean;
+  getBadgesForHabit?: (habitName: string) => Badge[]; // Dashboard'dan gelecek, opsiyonel
 }
 
-export default function HabitList({ habits, onToggleHabit, onArchive, isArchivePage = false }: HabitListProps) {
+export default function HabitList({ habits, onToggleHabit, onArchive, isArchivePage = false, getBadgesForHabit }: HabitListProps) {
   if (!habits || habits.length === 0) {
     return (
       <Paper elevation={0} variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
@@ -30,8 +31,11 @@ export default function HabitList({ habits, onToggleHabit, onArchive, isArchiveP
           key={habit.id}
           habit={habit}
           onToggleCompletion={onToggleHabit}
-          onArchive={onArchive} // onArchive prop'unu HabitCard'a iletiyoruz
-          isArchivePage={isArchivePage} // Bilgiyi HabitCard'a aktarıyoruz
+          onArchive={onArchive}
+          isArchivePage={isArchivePage}
+          // O anki alışkanlığa ait rozetleri bulup HabitCard'a gönderiyoruz.
+          // Eğer getBadgesForHabit fonksiyonu yoksa (profil sayfasındaki gibi), boş dizi gönder.
+          badges={getBadgesForHabit ? getBadgesForHabit(habit.name) : []}
         />
       ))}
     </Box>
