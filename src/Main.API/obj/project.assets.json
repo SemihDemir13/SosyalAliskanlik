@@ -554,10 +554,10 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Configuration.Abstractions/9.0.8": {
+      "Microsoft.Extensions.Configuration.Abstractions/9.0.7": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "9.0.8"
+          "Microsoft.Extensions.Primitives": "9.0.7"
         },
         "compile": {
           "lib/net8.0/Microsoft.Extensions.Configuration.Abstractions.dll": {
@@ -689,7 +689,7 @@
           "buildTransitive/net8.0/Microsoft.Extensions.Options.targets": {}
         }
       },
-      "Microsoft.Extensions.Primitives/9.0.8": {
+      "Microsoft.Extensions.Primitives/9.0.7": {
         "type": "package",
         "compile": {
           "lib/net8.0/Microsoft.Extensions.Primitives.dll": {
@@ -1254,37 +1254,6 @@
           "Microsoft.AspNetCore.App"
         ]
       },
-      "AI.Application/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
-        "dependencies": {
-          "Google.AI.GenerativeAI": "0.4.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "9.0.8",
-          "SosyalAliskanlikApp.Shared": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/AI.Application.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/AI.Application.dll": {}
-        }
-      },
-      "AI.Web/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
-        "dependencies": {
-          "AI.Application": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/AI.Web.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/AI.Web.dll": {}
-        },
-        "frameworkReferences": [
-          "Microsoft.AspNetCore.App"
-        ]
-      },
       "Auth.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -1452,7 +1421,6 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
-          "AI.Application": "1.0.0",
           "Activity.Application": "1.0.0",
           "Auth.Application": "1.0.0",
           "Habit.Application": "1.0.0",
@@ -3001,10 +2969,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Configuration.Abstractions/9.0.8": {
-      "sha512": "yNou2KM35RvzOh4vUFtl2l33rWPvOCoba+nzEDJ+BgD8aOL/jew4WPCibQvntRfOJ2pJU8ARygSMD+pdjvDHuA==",
+    "Microsoft.Extensions.Configuration.Abstractions/9.0.7": {
+      "sha512": "lut/kiVvNsQ120VERMUYSFhpXPpKjjql+giy03LesASPBBcC0o6+aoFdzJH9GaYpFTQ3fGVhVjKjvJDoAW5/IQ==",
       "type": "package",
-      "path": "microsoft.extensions.configuration.abstractions/9.0.8",
+      "path": "microsoft.extensions.configuration.abstractions/9.0.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3024,7 +2992,7 @@
         "lib/net9.0/Microsoft.Extensions.Configuration.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Abstractions.xml",
-        "microsoft.extensions.configuration.abstractions.9.0.8.nupkg.sha512",
+        "microsoft.extensions.configuration.abstractions.9.0.7.nupkg.sha512",
         "microsoft.extensions.configuration.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3263,10 +3231,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Primitives/9.0.8": {
-      "sha512": "tizSIOEsIgSNSSh+hKeUVPK7xmTIjR8s+mJWOu1KXV3htvNQiPMFRMO17OdI1y/4ZApdBVk49u/08QGC9yvLug==",
+    "Microsoft.Extensions.Primitives/9.0.7": {
+      "sha512": "ti/zD9BuuO50IqlvhWQs9GHxkCmoph5BHjGiWKdg2t6Or8XoyAfRJiKag+uvd/fpASnNklfsB01WpZ4fhAe0VQ==",
       "type": "package",
-      "path": "microsoft.extensions.primitives/9.0.8",
+      "path": "microsoft.extensions.primitives/9.0.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -3286,7 +3254,7 @@
         "lib/net9.0/Microsoft.Extensions.Primitives.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Primitives.xml",
-        "microsoft.extensions.primitives.9.0.8.nupkg.sha512",
+        "microsoft.extensions.primitives.9.0.7.nupkg.sha512",
         "microsoft.extensions.primitives.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -4064,16 +4032,6 @@
       "path": "../Modules/Activity/Activity.Web/Activity.Web.csproj",
       "msbuildProject": "../Modules/Activity/Activity.Web/Activity.Web.csproj"
     },
-    "AI.Application/1.0.0": {
-      "type": "project",
-      "path": "../Modules/AI/AI.Application/AI.Application.csproj",
-      "msbuildProject": "../Modules/AI/AI.Application/AI.Application.csproj"
-    },
-    "AI.Web/1.0.0": {
-      "type": "project",
-      "path": "../Modules/AI/AI.Web/AI.Web.csproj",
-      "msbuildProject": "../Modules/AI/AI.Web/AI.Web.csproj"
-    },
     "Auth.Application/1.0.0": {
       "type": "project",
       "path": "../Modules/Auth/Auth.Application/Auth.Application.csproj",
@@ -4172,7 +4130,6 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "AI.Web >= 1.0.0",
       "Activity.Web >= 1.0.0",
       "Auth.Web >= 1.0.0",
       "Badge.Web >= 1.0.0",
@@ -4218,9 +4175,6 @@
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Web\\Activity.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Web\\Activity.Web.csproj"
-            },
-            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\AI\\AI.Web\\AI.Web.csproj": {
-              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\AI\\AI.Web\\AI.Web.csproj"
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Web\\Auth.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Auth\\Auth.Web\\Auth.Web.csproj"
@@ -4301,16 +4255,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.316/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1101",
-      "level": "Error",
-      "message": "Google.AI.GenerativeAI paketi bulunamıyor. Kaynaklarda bu kimliğe sahip paket yok: nuget.org",
-      "libraryId": "Google.AI.GenerativeAI",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  }
 }

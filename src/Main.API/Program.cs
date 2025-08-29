@@ -5,7 +5,6 @@ using SosyalAliskanlikApp.Modules.Statistics.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Friends.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Activity.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Badge.Web.Controllers;
-using SosyalAliskanlikApp.Modules.AI.Web.Controllers;
 
 
 
@@ -35,7 +34,6 @@ builder.Services.AddStatisticsModule();
 builder.Services.AddFriendsModule();
 builder.Services.AddActivityModule();
 builder.Services.AddBadgeModule();
-builder.Services.AddAIModule();
 
 
 // Sadece Controller'ları ve Auth modülünün assembly'sini tanıtıyoruz.
@@ -45,8 +43,7 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(StatisticsController).Assembly)
     .AddApplicationPart(typeof(FriendsController).Assembly)
     .AddApplicationPart(typeof(ActivityController).Assembly)
-    .AddApplicationPart(typeof(BadgesController).Assembly)
-    .AddApplicationPart(typeof(AIController).Assembly);
+    .AddApplicationPart(typeof(BadgesController).Assembly);
 
 
 builder.Services.AddAuthorization();
