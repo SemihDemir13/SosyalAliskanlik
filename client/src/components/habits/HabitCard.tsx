@@ -92,20 +92,20 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                 </CardContent>
                 
                 
-               {badges && badges.length > 0 && (
+                 {badges && badges.length > 0 && (
                     <Box 
                         sx={{ 
                             position: 'absolute', 
                             bottom: 8, 
                             right: 8, 
                             display: 'flex', 
+                            flexDirection: 'row-reverse', // Yeni rozetler sola doğru eklensin
                             gap: 0.5, // ikonlar arası boşluk
                             zIndex: 1
                         }}
                     >
                         {badges.map((badge) => (
                             <Tooltip key={badge.id} title={`${badge.name}: ${badge.description}`}>
-                                {/* İkonları Image olarak göstermek daha esnek olabilir */}
                                 <Box component="img" 
                                     src={badge.iconUrl} 
                                     alt={badge.name}
