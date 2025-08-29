@@ -3,20 +3,21 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Card, CardContent, Typography, Box, Checkbox, Tooltip, Link as MuiLink, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
-import { LocalFireDepartment, MoreVert as MoreVertIcon, Archive as ArchiveIcon, Unarchive as UnarchiveIcon, EmojiEvents as BadgeIcon } from '@mui/icons-material';
+import { Card, CardContent, Typography, Box, Checkbox, Tooltip, Link as MuiLink, IconButton, Menu, MenuItem, ListItemIcon, ListItemText, Divider } from '@mui/material';
+import { LocalFireDepartment, MoreVert as MoreVertIcon, Archive as ArchiveIcon, Unarchive as UnarchiveIcon, EmojiEvents as BadgeIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { Habit, Badge } from '@/types';
 
 interface HabitCardProps {
     habit: Habit;
     onToggleCompletion: (habitId: string) => void;
     onArchive: (habitId: string) => void;
+    onDelete: (habitId: string, habitName: string) => void;
     isArchivePage?: boolean;
     badges: Badge[]; 
 }
 
-export default function HabitCard({ habit, onToggleCompletion, onArchive, isArchivePage = false, badges }: HabitCardProps) {
-    const [anchorEl, setAnchorEl] =  useState<null | HTMLElement>(null);
+export default function HabitCard({ habit, onToggleCompletion, onArchive, onDelete, isArchivePage = false, badges }: HabitCardProps) {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const isMenuOpen = Boolean(anchorEl);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,10 +37,15 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
         handleMenuClose();
     };
 
+    const handleDeleteClick = (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        onDelete(habit.id, habit.name);
+        handleMenuClose();
+    };
+
     return (
-       
         <MuiLink component={Link} href={`/habits/${habit.id}`} underline="none" color="inherit" sx={{ textDecoration: 'none' }}>
-         
             <Card sx={{ 
                 position: 'relative', 
                 height: '100%', 
@@ -48,8 +54,7 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                 transition: 'box-shadow 0.3s',
                 '&:hover': { boxShadow: 6, cursor: 'pointer' } 
             }}>
-                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
-                 
+                <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2, pb: badges.length > 0 ? 6 : 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', flexGrow: 1 }}>
                         <Box>
                             <Typography variant="h5" component="div">{habit.name}</Typography>
@@ -73,7 +78,6 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                         </Box>
                     </Box>
 
-                    {/* ALT KISIM - İSTATİSTİKLER - Değişiklik Yok */}
                     <Box sx={{ pt: 2, mt: 'auto', display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: 1, borderColor: 'divider' }}>
                         <Tooltip title="Mevcut Seri">
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -81,7 +85,6 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                                 <Typography variant="h6">{habit.currentStreak}</Typography>
                             </Box>
                         </Tooltip>
-
                         <Tooltip title="Son 7 Gün">
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Typography variant="body2">Haftalık:</Typography>
@@ -91,30 +94,11 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                     </Box>
                 </CardContent>
                 
-                
-                 {badges && badges.length > 0 && (
-                    <Box 
-                        sx={{ 
-                            position: 'absolute', 
-                            bottom: 8, 
-                            right: 8, 
-                            display: 'flex', 
-                            flexDirection: 'row-reverse', // Yeni rozetler sola doğru eklensin
-                            gap: 0.5, // ikonlar arası boşluk
-                            zIndex: 1
-                        }}
-                    >
+                {badges && badges.length > 0 && (
+                    <Box sx={{ position: 'absolute', bottom: 8, right: 8, display: 'flex', flexDirection: 'row-reverse', gap: 0.5, zIndex: 1 }}>
                         {badges.map((badge) => (
                             <Tooltip key={badge.id} title={`${badge.name}: ${badge.description}`}>
-                                <Box component="img" 
-                                    src={badge.iconUrl} 
-                                    alt={badge.name}
-                                    sx={{ 
-                                        width: 28, 
-                                        height: 28,
-                                        filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.4))'
-                                    }}
-                                />
+                                <Box component="img" src={badge.iconUrl} alt={badge.name} sx={{ width: 28, height: 28, filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.4))' }} />
                             </Tooltip>
                         ))}
                     </Box>
@@ -129,6 +113,14 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                         <><ListItemIcon><ArchiveIcon fontSize="small" /></ListItemIcon><ListItemText>Arşivle</ListItemText></>
                     )}
                 </MenuItem>
+                
+                {!isArchivePage && <Divider />}
+                {!isArchivePage && (
+                    <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
+                        <ListItemIcon><DeleteIcon fontSize="small" sx={{ color: 'error.main' }} /></ListItemIcon>
+                        <ListItemText>Sil</ListItemText>
+                    </MenuItem>
+                )}
             </Menu>
         </MuiLink>
     );

@@ -9,11 +9,12 @@ interface HabitListProps {
   habits: Habit[]; 
   onToggleHabit: (habitId: string) => void; 
   onArchive: (habitId: string) => void;
+  onDelete?: (habitId: string, habitName: string) => void; // Bu prop artık opsiyonel
   isArchivePage?: boolean;
-  getBadgesForHabit?: (habitName: string) => Badge[]; // Dashboard'dan gelecek, opsiyonel
+  getBadgesForHabit?: (habitName: string) => Badge[];
 }
 
-export default function HabitList({ habits, onToggleHabit, onArchive, isArchivePage = false, getBadgesForHabit }: HabitListProps) {
+export default function HabitList({ habits, onToggleHabit, onArchive, onDelete, isArchivePage = false, getBadgesForHabit }: HabitListProps) {
   if (!habits || habits.length === 0) {
     return (
       <Paper elevation={0} variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
@@ -32,9 +33,10 @@ export default function HabitList({ habits, onToggleHabit, onArchive, isArchiveP
           habit={habit}
           onToggleCompletion={onToggleHabit}
           onArchive={onArchive}
+          // onDelete prop'u varsa HabitCard'a ilet, yoksa hiçbir şey yapmayan boş bir fonksiyon ilet.
+          // Bu, ProfilePage gibi onDelete'i kullanmayan yerlerde kodun çökmesini engeller.
+          onDelete={onDelete || (() => {})}
           isArchivePage={isArchivePage}
-          // O anki alışkanlığa ait rozetleri bulup HabitCard'a gönderiyoruz.
-          // Eğer getBadgesForHabit fonksiyonu yoksa (profil sayfasındaki gibi), boş dizi gönder.
           badges={getBadgesForHabit ? getBadgesForHabit(habit.name) : []}
         />
       ))}
