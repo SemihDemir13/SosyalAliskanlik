@@ -38,17 +38,17 @@ public class BadgeService : IBadgeService
 
     public async Task<IEnumerable<BadgeDto>> GetUserBadgesAsync(Guid userId)
     {
-        var badges = await _context.UserBadges
-            .Where(ub => ub.UserId == userId)
-            .Include(ub => ub.Badge)
-            .Include(ub => ub.RelatedHabit)
-            .Select(ub => new BadgeDto
+         var badges = await _context.UserBadges
+        .Where(ub => ub.UserId == userId)
+        .Include(ub => ub.Badge)
+        .Include(ub => ub.RelatedHabit) 
+        .Select(ub => new BadgeDto
             {
                 Id = ub.Badge.Id,
                 Name = ub.Badge.Name,
                 Description = ub.Badge.Description,
                 IconUrl = ub.Badge.IconUrl,
-                RelatedHabitName = ub.RelatedHabit != null ? ub.RelatedHabit.Name : null
+                RelatedHabitName = ub.RelatedHabit != null ? ub.RelatedHabit.Name : null 
             })
             .Distinct()
             .ToListAsync();
@@ -116,8 +116,8 @@ public class BadgeService : IBadgeService
 
     private async Task CheckFirstCompletionBadge(Guid userId, List<string> userBadgeCodes, Guid habitId)
     {
-        if (userBadgeCodes.Contains("FIRST_COMPLETION")) return;
-        await AwardBadgeToUser(userId, "FIRST_COMPLETION", habitId);
+         if (userBadgeCodes.Contains("FIRST_COMPLETION")) return;
+         await AwardBadgeToUser(userId, "FIRST_COMPLETION", habitId);
     }
 
     private async Task CheckStreakBadges(Guid userId, Guid habitId, List<string> userBadgeCodes)
@@ -146,22 +146,27 @@ public class BadgeService : IBadgeService
 
     private async Task AwardBadgeToUser(Guid userId, string badgeCode, Guid? habitId = null)
     {
-        var badge = await _context.Badges.FirstOrDefaultAsync(b => b.Code == badgeCode);
-        if (badge is null) return;
+       var badge = await _context.Badges.FirstOrDefaultAsync(b => b.Code == badgeCode);
+    if (badge is null) return;
+    
+    bool alreadyHasBadge = await _context.UserBadges
+                                 .AnyAsync(ub => ub.UserId == userId && ub.BadgeId == badge.Id);
+    
+    if (alreadyHasBadge && !habitId.HasValue) return;
 
-        // Bu kullanıcı bu rozete, özellikle bu alışkanlık için zaten sahip mi?
-        // Bu, aynı seri rozetinin tekrar tekrar verilmesini engeller.
-        var alreadyHasBadgeForHabit = await _context.UserBadges
+    if (alreadyHasBadge && habitId.HasValue)
+    {
+        bool hasForThisHabit = await _context.UserBadges
             .AnyAsync(ub => ub.UserId == userId && ub.BadgeId == badge.Id && ub.RelatedHabitId == habitId);
-            
-        if (alreadyHasBadgeForHabit) return;
+        if (hasForThisHabit) return;
+    }
 
-        var newUserBadge = new UserBadge
-        {
-            UserId = userId,
-            BadgeId = badge.Id,
-            RelatedHabitId = habitId
-        };
-        await _context.UserBadges.AddAsync(newUserBadge);
+    var newUserBadge = new UserBadge
+    {
+        UserId = userId,
+        BadgeId = badge.Id,
+        RelatedHabitId = habitId
+    };
+    await _context.UserBadges.AddAsync(newUserBadge);
     }
 }

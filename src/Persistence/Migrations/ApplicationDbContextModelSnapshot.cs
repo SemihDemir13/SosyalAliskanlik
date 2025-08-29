@@ -306,7 +306,8 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
 
                     b.HasOne("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", "RelatedHabit")
                         .WithMany()
-                        .HasForeignKey("RelatedHabitId");
+                        .HasForeignKey("RelatedHabitId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
                         .WithMany()

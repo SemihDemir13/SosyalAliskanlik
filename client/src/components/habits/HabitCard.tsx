@@ -3,37 +3,20 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { 
-    Card, 
-    CardContent, 
-    Typography, 
-    Box, 
-    Checkbox, 
-    Tooltip, 
-    Link as MuiLink, 
-    IconButton, 
-    Menu, 
-    MenuItem,
-    ListItemIcon,
-    ListItemText
-} from '@mui/material';
-import { 
-    LocalFireDepartment, 
-    MoreVert as MoreVertIcon, 
-    Archive as ArchiveIcon,
-    Unarchive as UnarchiveIcon
-} from '@mui/icons-material'; // HATA DÜZELTİLDİ: 'G' harfi kaldırıldı
-import { Habit } from '@/types';
+import { Card, CardContent, Typography, Box, Checkbox, Tooltip, Link as MuiLink, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import { LocalFireDepartment, MoreVert as MoreVertIcon, Archive as ArchiveIcon, Unarchive as UnarchiveIcon, EmojiEvents as BadgeIcon } from '@mui/icons-material';
+import { Habit, Badge } from '@/types';
 
 interface HabitCardProps {
     habit: Habit;
     onToggleCompletion: (habitId: string) => void;
     onArchive: (habitId: string) => void;
     isArchivePage?: boolean;
+    badges: Badge[]; 
 }
 
-export default function HabitCard({ habit, onToggleCompletion, onArchive, isArchivePage = false }: HabitCardProps) {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+export default function HabitCard({ habit, onToggleCompletion, onArchive, isArchivePage = false, badges }: HabitCardProps) {
+    const [anchorEl, setAnchorEl] =  useState<null | HTMLElement>(null);
     const isMenuOpen = Boolean(anchorEl);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -54,8 +37,11 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
     };
 
     return (
+       
         <MuiLink component={Link} href={`/habits/${habit.id}`} underline="none" color="inherit" sx={{ textDecoration: 'none' }}>
+         
             <Card sx={{ 
+                position: 'relative', 
                 height: '100%', 
                 display: 'flex',
                 flexDirection: 'column',
@@ -63,67 +49,84 @@ export default function HabitCard({ habit, onToggleCompletion, onArchive, isArch
                 '&:hover': { boxShadow: 6, cursor: 'pointer' } 
             }}>
                 <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <Box sx={{ pr: 1, overflow: 'hidden' }}>
-                            <Typography variant="h6" component="div" noWrap title={habit.name}>{habit.name}</Typography>
-                            <Typography variant="body2" color="text.secondary" noWrap title={habit.description || ''}>{habit.description || 'Açıklama yok.'}</Typography>
+                 
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', flexGrow: 1 }}>
+                        <Box>
+                            <Typography variant="h5" component="div">{habit.name}</Typography>
+                            <Typography variant="body2" color="text.secondary">{habit.description || 'Açıklama yok.'}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Tooltip title={habit.isCompletedToday ? "Geri Al" : "Tamamla"}>
-                                <Checkbox
-                                    checked={habit.isCompletedToday}
-                                    onClick={(event) => {
-                                        event.preventDefault();
-                                        event.stopPropagation();
-                                        onToggleCompletion(habit.id);
-                                    }}
-                                    color="success"
-                                    sx={{ p: 0.5, opacity: isArchivePage ? 0.5 : 1, pointerEvents: isArchivePage ? 'none' : 'auto' }}
-                                    disabled={isArchivePage}
-                                />
-                            </Tooltip>
-                            <Tooltip title="Seçenekler">
-                                <IconButton aria-label="seçenekler" onClick={handleMenuOpen} sx={{ p: 0.5 }}>
-                                    <MoreVertIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <Checkbox
+                                checked={habit.isCompletedToday}
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    onToggleCompletion(habit.id);
+                                }}
+                                color="success"
+                                sx={{ p: 0.5 }}
+                                disabled={isArchivePage}
+                            />
+                            <IconButton aria-label="seçenekler" onClick={handleMenuOpen} sx={{ p: 0.5 }}>
+                                <MoreVertIcon />
+                            </IconButton>
                         </Box>
                     </Box>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box sx={{ pt: 2, mt: 2, display: 'flex', justifyContent: 'space-around', borderTop: 1, borderColor: 'divider' }}>
-                         <Tooltip title="Mevcut Seri">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+
+                    {/* ALT KISIM - İSTATİSTİKLER - Değişiklik Yok */}
+                    <Box sx={{ pt: 2, mt: 'auto', display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: 1, borderColor: 'divider' }}>
+                        <Tooltip title="Mevcut Seri">
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <LocalFireDepartment color={habit.currentStreak > 0 ? "error" : "disabled"} />
-                                <Typography variant="body1" fontWeight="bold">{habit.currentStreak}</Typography>
+                                <Typography variant="h6">{habit.currentStreak}</Typography>
                             </Box>
                         </Tooltip>
-                        <Tooltip title="Son 7 Gündeki Tamamlama Sayısı">
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+
+                        <Tooltip title="Son 7 Gün">
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Typography variant="body2">Haftalık:</Typography>
-                                <Typography variant="body1" fontWeight="bold">{habit.completionsLastWeek}</Typography>
+                                <Typography variant="h6">{habit.completionsLastWeek}</Typography>
                             </Box>
                         </Tooltip>
                     </Box>
                 </CardContent>
+                
+                
+               {badges && badges.length > 0 && (
+                    <Box 
+                        sx={{ 
+                            position: 'absolute', 
+                            bottom: 8, 
+                            right: 8, 
+                            display: 'flex', 
+                            gap: 0.5, // ikonlar arası boşluk
+                            zIndex: 1
+                        }}
+                    >
+                        {badges.map((badge) => (
+                            <Tooltip key={badge.id} title={`${badge.name}: ${badge.description}`}>
+                                {/* İkonları Image olarak göstermek daha esnek olabilir */}
+                                <Box component="img" 
+                                    src={badge.iconUrl} 
+                                    alt={badge.name}
+                                    sx={{ 
+                                        width: 28, 
+                                        height: 28,
+                                        filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.4))'
+                                    }}
+                                />
+                            </Tooltip>
+                        ))}
+                    </Box>
+                )}
             </Card>
 
-            <Menu
-                anchorEl={anchorEl}
-                open={isMenuOpen}
-                onClose={handleMenuClose}
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-            >
+            <Menu anchorEl={anchorEl} open={isMenuOpen} onClose={handleMenuClose} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 <MenuItem onClick={handleArchiveOrUnarchiveClick}>
                     {isArchivePage ? (
-                        <>
-                            <ListItemIcon><UnarchiveIcon fontSize="small" /></ListItemIcon>
-                            <ListItemText>Arşivden Çıkar</ListItemText>
-                        </>
+                        <><ListItemIcon><UnarchiveIcon fontSize="small" /></ListItemIcon><ListItemText>Arşivden Çıkar</ListItemText></>
                     ) : (
-                        <>
-                            <ListItemIcon><ArchiveIcon fontSize="small" /></ListItemIcon>
-                            <ListItemText>Arşivle</ListItemText>
-                        </>
+                        <><ListItemIcon><ArchiveIcon fontSize="small" /></ListItemIcon><ListItemText>Arşivle</ListItemText></>
                     )}
                 </MenuItem>
             </Menu>

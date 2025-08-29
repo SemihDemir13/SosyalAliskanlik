@@ -12,8 +12,8 @@ using SosyalAliskanlikApp.Persistence;
 namespace SosyalAliskanlikApp.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250828225654_AddBadgeSystemAndSeedData")]
-    partial class AddBadgeSystemAndSeedData
+    [Migration("20250828234110_AddBadgeSystemWithSeedingAndRelations")]
+    partial class AddBadgeSystemWithSeedingAndRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -309,7 +309,8 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
 
                     b.HasOne("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", "RelatedHabit")
                         .WithMany()
-                        .HasForeignKey("RelatedHabitId");
+                        .HasForeignKey("RelatedHabitId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
                         .WithMany()

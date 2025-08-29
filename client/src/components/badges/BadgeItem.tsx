@@ -1,6 +1,8 @@
+// Dosya: client/src/components/badges/BadgeItem.tsx
 'use client';
+
 import { Box, Paper, Tooltip, Typography } from '@mui/material';
-import Image from 'next/image'; 
+import Image from 'next/image';
 import { Badge } from '@/types';
 
 interface BadgeItemProps {
@@ -8,12 +10,13 @@ interface BadgeItemProps {
 }
 
 export default function BadgeItem({ badge }: BadgeItemProps) {
-     const tooltipTitle = badge.relatedHabitName 
-        ? `${badge.name} (${badge.relatedHabitName}): ${badge.description}`
+    
+    const tooltipTitle = badge.relatedHabitName 
+        ? `${badge.name} ('${badge.relatedHabitName}' alışkanlığı ile kazanıldı): ${badge.description}`
         : `${badge.name}: ${badge.description}`;
-        
+
     return (
-        <Tooltip title={`${badge.name}: ${badge.description}`} arrow>
+        <Tooltip title={tooltipTitle} arrow>
             <Paper 
                 elevation={2} 
                 sx={{ 
@@ -35,9 +38,6 @@ export default function BadgeItem({ badge }: BadgeItemProps) {
                     alt={badge.name}
                     width={50}
                     height={50}
-                    // Not: Eğer rozet ikonları dış bir kaynaktan geliyorsa,
-                    // next.config.js'de domain'i belirtmek gerekebilir.
-                    // Şimdilik public klasöründe olduğunu varsayıyoruz.
                 />
                 <Typography variant="caption" align="center" sx={{ mt: 1, fontWeight: 'bold' }}>
                     {badge.name}
