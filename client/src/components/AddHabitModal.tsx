@@ -22,9 +22,11 @@ import {
     ListItem,
     ListItemText,
     IconButton,
-    Tooltip
+    Tooltip,
+    Checkbox
 } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 const habitSchema = z.object({
   name: z.string().min(2, 'İsim en az 2 karakter olmalıdır.'),
@@ -49,8 +51,10 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [isSuggesting, setIsSuggesting] = useState(false);
   const [suggestionError, setSuggestionError] = useState<string | null>(null);
+  const [selectedSuggestions, setSelectedSuggestions] = useState<Suggestion[]>([]);
+  const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm<HabitFormInputs>({ resolver: zodResolver(habitSchema) });
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<HabitFormInputs>({ resolver: zodResolver(habitSchema) });
 
   const onSubmit: SubmitHandler<HabitFormInputs> = async (data) => {
     setError(null);
@@ -73,6 +77,8 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
     setSuggestions([]);
     setIsSuggesting(false);
     setSuggestionError(null);
+    setSelectedSuggestions([]);
+    setIsBatchSubmitting(false);
     onClose();
   };
 
@@ -84,6 +90,7 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
     setIsSuggesting(true);
     setSuggestionError(null);
     setSuggestions([]);
+    setSelectedSuggestions([]);
     try {
         const token = localStorage.getItem('accessToken');
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -101,9 +108,35 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
     }
   };
 
-  const handleSelectSuggestion = (suggestion: Suggestion) => {
-    setValue('name', suggestion.name, { shouldValidate: true });
-    setValue('description', suggestion.description || '', { shouldValidate: true });
+  const handleToggleSuggestion = (suggestion: Suggestion) => {
+    setSelectedSuggestions((prevSelected) => {
+        const isAlreadySelected = prevSelected.some(s => s.name === suggestion.name);
+        if (isAlreadySelected) {
+            return prevSelected.filter(s => s.name !== suggestion.name);
+        } else {
+            return [...prevSelected, suggestion];
+        }
+    });
+  };
+
+  const handleAddSelectedSuggestions = async () => {
+    if (selectedSuggestions.length === 0) return;
+    setError(null);
+    setIsBatchSubmitting(true);
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('Yetkilendirme token\'ı bulunamadı.');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      await axios.post(`${apiUrl}/api/Habit/batch-create`, selectedSuggestions, { 
+          headers: { Authorization: `Bearer ${token}` } 
+      });
+      onHabitAdded();
+      handleClose();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Seçilen alışkanlıklar eklenirken bir hata oluştu.');
+    } finally {
+        setIsBatchSubmitting(false);
+    }
   };
 
   return (
@@ -114,66 +147,59 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
             <Typography variant="subtitle1" gutterBottom>Hedefinden Bahset, Sana Yardım Edelim!</Typography>
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <TextField placeholder="Örn: Daha sağlıklı yaşamak" variant="outlined" size="small" fullWidth value={goal} onChange={(e) => setGoal(e.target.value)} />
-                <Button variant="contained" onClick={handleGetSuggestions} disabled={isSuggesting}>
-                    {isSuggesting ? <CircularProgress size={24} /> : 'Öneri Getir'}
+                <Button variant="contained" onClick={handleGetSuggestions} disabled={isSuggesting || isBatchSubmitting}>
+                    {isSuggesting ? <CircularProgress size={24} color="inherit" /> : 'Öneri Getir'}
                 </Button>
             </Box>
             {suggestionError && <Alert severity="error" sx={{ mt: 1 }}>{suggestionError}</Alert>}
             {suggestions.length > 0 && (
                 <List sx={{ mt: 1 }}>
-                    {suggestions.map((suggestion, index) => (
-                        <ListItem key={index} secondaryAction={
-                            <Tooltip title="Bu alışkanlığı ekle">
-                                <IconButton edge="end" onClick={() => handleSelectSuggestion(suggestion)}>
-                                    <AddCircleOutlineIcon color="primary" />
-                                </IconButton>
-                            </Tooltip>
-                        }>
-                            <ListItemText primary={suggestion.name} secondary={suggestion.description} />
-                        </ListItem>
-                    ))}
+                    {suggestions.map((suggestion, index) => {
+                        const isSelected = selectedSuggestions.some(s => s.name === suggestion.name);
+                        return (
+                            <ListItem key={index} secondaryAction={
+                                <Tooltip title={isSelected ? "Seçimi Kaldır" : "Seç"}>
+                                    <Checkbox
+                                        edge="end"
+                                        onChange={() => handleToggleSuggestion(suggestion)}
+                                        checked={isSelected}
+                                        icon={<RadioButtonUncheckedIcon />}
+                                        checkedIcon={<CheckCircleIcon />}
+                                    />
+                                </Tooltip>
+                            }>
+                                <ListItemText primary={suggestion.name} secondary={suggestion.description} />
+                            </ListItem>
+                        );
+                    })}
                 </List>
+            )}
+            {selectedSuggestions.length > 0 && (
+                <Button 
+                    fullWidth 
+                    variant="contained" 
+                    color="secondary" 
+                    sx={{ mt: 2 }}
+                    onClick={handleAddSelectedSuggestions}
+                    disabled={isBatchSubmitting || isSuggesting}
+                >
+                    {isBatchSubmitting ? 'Ekleniyor...' : `${selectedSuggestions.length} Seçili Alışkanlığı Ekle`}
+                </Button>
             )}
         </Box>
         
-        <Divider />
+        <Divider sx={{ my: 3 }}>VEYA</Divider>
 
-        <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle1" gutterBottom>Veya Kendin Oluştur</Typography>
+        <Box>
+            <Typography variant="subtitle1" gutterBottom>Kendin Oluştur</Typography>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            
-            {/* DEĞİŞİKLİK BURADA: InputLabelProps={{ shrink: true }} eklendi */}
-            <TextField 
-                autoFocus 
-                margin="dense" 
-                id="name" 
-                label="Alışkanlık Adı" 
-                type="text" 
-                fullWidth 
-                variant="outlined" 
-                {...register('name')} 
-                error={!!errors.name} 
-                helperText={errors.name?.message} 
-                InputLabelProps={{ shrink: true }} 
-            />
-            <TextField 
-                margin="dense" 
-                id="description" 
-                label="Açıklama (İsteğe Bağlı)" 
-                type="text" 
-                fullWidth 
-                multiline 
-                rows={4} 
-                variant="outlined" 
-                {...register('description')} 
-                InputLabelProps={{ shrink: true }}
-            />
+            <TextField autoFocus margin="dense" id="name" label="Alışkanlık Adı" type="text" fullWidth variant="outlined" {...register('name')} error={!!errors.name} helperText={errors.name?.message} />
+            <TextField margin="dense" id="description" label="Açıklama (İsteğe Bağlı)" type="text" fullWidth multiline rows={4} variant="outlined" {...register('description')} />
         </Box>
-
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>İptal</Button>
-        <Button type="submit" variant="contained" disabled={isSubmitting}>{isSubmitting ? 'Ekleniyor...' : 'Ekle'}</Button>
+        <Button type="submit" variant="contained" disabled={isSubmitting || isBatchSubmitting}>{isSubmitting ? 'Ekleniyor...' : 'Manuel Ekle'}</Button>
       </DialogActions>
     </Dialog>
   );

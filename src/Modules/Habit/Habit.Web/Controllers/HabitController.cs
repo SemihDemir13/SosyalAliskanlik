@@ -49,7 +49,7 @@ public class HabitController : ControllerBase
         var habits = await _habitService.GetHabitsByUserIdAsync(userId, includeArchived);
         return Ok(habits);
     }
-     [HttpPost("{habitId}/archive")]
+    [HttpPost("{habitId}/archive")]
     public async Task<IActionResult> ArchiveHabit(string habitId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -144,8 +144,8 @@ public class HabitController : ControllerBase
         var dates = await _habitService.GetHabitCompletionsAsync(id, userId);
         return Ok(dates);
     }
-    
-     [HttpPost("{habitId}/toggle")]
+
+    [HttpPost("{habitId}/toggle")]
     public async Task<IActionResult> ToggleHabitCompletion(string habitId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -161,7 +161,16 @@ public class HabitController : ControllerBase
             return BadRequest(result.Error);
         }
 
-        return Ok(); // Sadece başarılı olduğunu belirtmek yeterli
+        return Ok(); 
+    }
+     [HttpPost("batch-create")]
+    public async Task<IActionResult> CreateMultipleHabits([FromBody] List<CreateHabitRequestDto> requests)
+    {
+        var userId = GetCurrentUserId();
+        var createdHabits = await _habitService.CreateMultipleHabitsAsync(requests, userId);
+        
+        
+        return StatusCode(201, createdHabits);
     }
     
 }

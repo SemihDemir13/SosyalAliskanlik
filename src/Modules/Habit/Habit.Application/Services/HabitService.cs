@@ -57,7 +57,7 @@ public class HabitService : IHabitService
         // 1. ADIM: Filtreyi burada uyguluyoruz.
         // Artık sadece kullanıcının DEĞİL, kullanıcının aktif VEYA arşivlenmiş alışkanlıklarını çekiyoruz.
         var userHabits = await _context.Habits
-            .Where(h => h.UserId == userId && h.IsArchived == includeArchived) 
+            .Where(h => h.UserId == userId && h.IsArchived == includeArchived)
             .ToListAsync();
 
         if (!userHabits.Any())
@@ -70,7 +70,7 @@ public class HabitService : IHabitService
         var allCompletions = await _context.HabitCompletions
             .Where(hc => habitIds.Contains(hc.HabitId))
             .ToListAsync();
-        
+
         var completionsByHabitId = allCompletions
             .GroupBy(hc => hc.HabitId)
             .ToDictionary(g => g.Key, g => g.Select(hc => hc.CompletionDate).ToList());
@@ -79,7 +79,7 @@ public class HabitService : IHabitService
         {
             var completionDates = completionsByHabitId.GetValueOrDefault(habit.Id, new List<DateOnly>());
             var completionsLastWeek = completionDates.Count(d => d > DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7)));
-var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişiklik
+            var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişiklik
 
             return new HabitDto
             {
@@ -87,7 +87,7 @@ var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişi
                 Name = habit.Name,
                 Description = habit.Description,
                 CreatedAt = habit.CreatedAt,
-                IsArchived = habit.IsArchived, 
+                IsArchived = habit.IsArchived,
                 Completions = completionDates,
                 CompletionsLastWeek = completionsLastWeek,
                 CurrentStreak = currentStreak
@@ -100,7 +100,7 @@ var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişi
     {
         return await SetArchiveStatusAsync(habitId, userId, true);
     }
-    
+
     public async Task<Result> UnarchiveHabitAsync(string habitId, string userId)
     {
         return await SetArchiveStatusAsync(habitId, userId, false);
@@ -123,8 +123,8 @@ var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişi
         await _context.SaveChangesAsync();
         return Result.Success();
     }
-  
-   
+
+
     public async Task<HabitDto?> UpdateHabitAsync(Guid habitId, UpdateHabitRequestDto request, Guid userId)
     {
         // 1. Güncellenecek alışkanlığı veritabanından bul.
@@ -314,8 +314,8 @@ var currentStreak = StreakCalculator.Calculate(completionDates); // <-- Değişi
 
         return Result.Success<UserHabitSummaryDto?>(resultDto);
     }
-    
-public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
+
+    public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
     {
         if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
         {
@@ -323,7 +323,7 @@ public async Task<Result> ToggleHabitCompletionAsync(string habitId, string user
         }
 
         var habit = await _context.Habits
-            .Include(h => h.User) 
+            .Include(h => h.User)
             .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
 
         if (habit is null)
@@ -356,7 +356,7 @@ public async Task<Result> ToggleHabitCompletionAsync(string habitId, string user
                 description: description,
                 relatedEntityId: habitGuid
             );
-            
+
             // Yeni tamamlama yapıldıktan sonra rozet kontrolünü tetikle
             // HATA DÜZELTİLDİ: Artık _badgeService tanınıyor.
             await _badgeService.CheckAndAwardBadgesAsync(userGuid, habitGuid);
@@ -366,5 +366,31 @@ public async Task<Result> ToggleHabitCompletionAsync(string habitId, string user
         await _context.SaveChangesAsync();
 
         return Result.Success();
+    }
+     public async Task<List<HabitDto>> CreateMultipleHabitsAsync(List<CreateHabitRequestDto> requests, Guid userId)
+    {
+        var newHabits = requests.Select(req => new HabitEntity
+        {
+            Name = req.Name,
+            Description = req.Description,
+            UserId = userId
+        }).ToList();
+
+        if (!newHabits.Any())
+        {
+            return new List<HabitDto>();
+        }
+
+        await _context.Habits.AddRangeAsync(newHabits);
+        await _context.SaveChangesAsync();
+
+        // Oluşturulan entity'leri DTO'ya çevirip geri dön
+        return newHabits.Select(h => new HabitDto
+        {
+            Id = h.Id,
+            Name = h.Name,
+            Description = h.Description,
+            CreatedAt = h.CreatedAt
+        }).ToList();
     }
 }
