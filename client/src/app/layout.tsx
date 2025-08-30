@@ -1,15 +1,24 @@
-// Dosya: client/src/app/layout.tsx
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import ThemeRegistry from "@/components/ThemeRegistry";
+import ThemeRegistry from "@/theme/ThemeRegistry"; // YENİ: ThemeRegistry'yi import et
 
-export const metadata: Metadata = { /* ... */ };
+const inter = Inter({ subsets: ["latin"] });
 
-export default function RootLayout({ children }: { children: React.ReactNode; }) {
+export const metadata: Metadata = {
+  title: "Sosyal Alışkanlık App",
+  description: "Alışkanlıklarınızı takip edin ve sosyalleşin.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body>
-        {/* Sadece ThemeRegistry kalacak */}
+      <body className={inter.className}>
+        {/* YENİ: Uygulamanın tamamını ThemeRegistry ile sarmalıyoruz */}
         <ThemeRegistry>
           {children}
         </ThemeRegistry>
