@@ -2,15 +2,22 @@
 using SosyalAliskanlikApp.Shared;
 using SosyalAliskanlikApp.Shared.Entities; // BaseEntity için
 using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace SosyalAliskanlikApp.Modules.Habit.Domain.Entities;
 
 public class Habit : BaseEntity
 {
-    public required string Name { get; set; }
-    public string? Description { get; set; }
 
-    // Bu alışkanlığın hangi kullanıcıya ait olduğunu belirtir.
+     
+    [Required]
+    [MaxLength(50)] 
+    public required string Name { get; set; }
+
+    [MaxLength(150)] 
+     public string? Description { get; set; }
+
+    // Bu alışkanlığın hangi kullanıcıya ait olduğunu belirtecek.
     public Guid UserId { get; set; }
 
     public virtual User User { get; set; } = null!;

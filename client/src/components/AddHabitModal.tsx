@@ -29,8 +29,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 const habitSchema = z.object({
-  name: z.string().min(2, 'İsim en az 2 karakter olmalıdır.'),
-  description: z.string().optional(),
+  name: z.string()
+    .min(2, 'İsim en az 2 karakter olmalıdır.')
+    .max(50, 'İsim 50 karakterden uzun olamaz.'),
+  description: z.string()
+    .max(150, 'Açıklama 150 karakterden uzun olamaz.')
+    .optional(),
 });
 type HabitFormInputs = z.infer<typeof habitSchema>;
 
@@ -54,7 +58,13 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
   const [selectedSuggestions, setSelectedSuggestions] = useState<Suggestion[]>([]);
   const [isBatchSubmitting, setIsBatchSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<HabitFormInputs>({ resolver: zodResolver(habitSchema) });
+  const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<HabitFormInputs>({ 
+    resolver: zodResolver(habitSchema),
+    mode: 'onChange'
+  });
+
+  const nameValue = watch('name', '');
+  const descriptionValue = watch('description', '');
 
   const onSubmit: SubmitHandler<HabitFormInputs> = async (data) => {
     setError(null);
@@ -193,8 +203,33 @@ export default function AddHabitModal({ open, onClose, onHabitAdded }: AddHabitM
         <Box>
             <Typography variant="subtitle1" gutterBottom>Kendin Oluştur</Typography>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            <TextField autoFocus margin="dense" id="name" label="Alışkanlık Adı" type="text" fullWidth variant="outlined" {...register('name')} error={!!errors.name} helperText={errors.name?.message} />
-            <TextField margin="dense" id="description" label="Açıklama (İsteğe Bağlı)" type="text" fullWidth multiline rows={4} variant="outlined" {...register('description')} />
+            <TextField 
+                autoFocus 
+                margin="dense" 
+                id="name" 
+                label="Alışkanlık Adı" 
+                type="text" 
+                fullWidth 
+                variant="outlined" 
+                {...register('name')} 
+                error={!!errors.name} 
+                helperText={errors.name ? errors.name.message : `${(nameValue || '').length} / 50`}
+                inputProps={{ maxLength: 50 }}
+            />
+            <TextField 
+                margin="dense" 
+                id="description" 
+                label="Açıklama (İsteğe Bağlı)" 
+                type="text" 
+                fullWidth 
+                multiline 
+                rows={4} 
+                variant="outlined" 
+                {...register('description')}
+                error={!!errors.description}
+                helperText={errors.description ? errors.description.message : `${(descriptionValue || '').length} / 150`}
+                inputProps={{ maxLength: 200 }}
+            />
         </Box>
       </DialogContent>
       <DialogActions>
