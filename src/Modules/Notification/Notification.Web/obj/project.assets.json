@@ -1,11 +1,66 @@
 {
   "version": 3,
   "targets": {
-    "net8.0": {}
+    "net8.0": {
+      "Notification.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Notification.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Notification.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Notification.Application.dll": {}
+        }
+      },
+      "Notification.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Notification.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Notification.Domain.dll": {}
+        }
+      },
+      "SosyalAliskanlikApp.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/SosyalAliskanlikApp.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SosyalAliskanlikApp.Shared.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Notification.Application/1.0.0": {
+      "type": "project",
+      "path": "../Notification.Application/Notification.Application.csproj",
+      "msbuildProject": "../Notification.Application/Notification.Application.csproj"
+    },
+    "Notification.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Notification.Domain/Notification.Domain.csproj",
+      "msbuildProject": "../Notification.Domain/Notification.Domain.csproj"
+    },
+    "SosyalAliskanlikApp.Shared/1.0.0": {
+      "type": "project",
+      "path": "../../../Shared/SosyalAliskanlikApp.Shared.csproj",
+      "msbuildProject": "../../../Shared/SosyalAliskanlikApp.Shared.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net8.0": []
+    "net8.0": [
+      "Notification.Application >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\yunus\\.nuget\\packages\\": {}
@@ -31,7 +86,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Application\\Notification.Application.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Application\\Notification.Application.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

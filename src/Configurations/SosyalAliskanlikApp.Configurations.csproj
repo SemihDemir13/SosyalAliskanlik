@@ -1,17 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- MEVCUT PROPERTYGROUP BÖLÜMÜ -->
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- === YENİ EKLENECEK BÖLÜM === -->
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-  <!-- ============================== -->
 
   <!-- MEVCUT PROJECTREFERENCE BÖLÜMÜ -->
   <ItemGroup>
@@ -23,6 +20,8 @@
     <ProjectReference Include="..\Modules\Friends\Application\SosyalAliskanlikApp.Modules.Friends.Application.csproj" />
     <ProjectReference Include="..\Modules\Activity\Activity.Application\Activity.Application.csproj" />
     <ProjectReference Include="..\Modules\AI\AI.Application\AI.Application.csproj" />
+    <ProjectReference Include="..\Modules\Notification\Notification.Application\Notification.Application.csproj" />
+    <ProjectReference Include="..\Modules\Notification\Notification.Web\Notification.Web.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />

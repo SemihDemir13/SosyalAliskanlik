@@ -36,6 +36,8 @@ builder.Services.AddFriendsModule();
 builder.Services.AddActivityModule();
 builder.Services.AddBadgeModule();
 builder.Services.AddAIModule();
+builder.Services.AddNotificationModule();
+
 
 
 // Sadece Controller'ları ve Auth modülünün assembly'sini tanıtıyoruz.

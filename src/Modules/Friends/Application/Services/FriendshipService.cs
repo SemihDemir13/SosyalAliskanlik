@@ -6,16 +6,20 @@ using SosyalAliskanlikApp.Modules.Friends.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Friends.Domain.Enums;
 using SosyalAliskanlikApp.Persistence;
 using SosyalAliskanlikApp.Shared;
+using SosyalAliskanlikApp.Modules.Notification.Application.Interfaces;
+
 
 namespace SosyalAliskanlikApp.Modules.Friends.Application.Services;
 
 public class FriendshipService : IFriendshipService
 {
-    private readonly ApplicationDbContext _context;
+   private readonly ApplicationDbContext _context;
+    private readonly IActivityHubClient _activityHubClient;
 
-    public FriendshipService(ApplicationDbContext context)
+    public FriendshipService(ApplicationDbContext context, IActivityHubClient activityHubClient)
     {
         _context = context;
+        _activityHubClient = activityHubClient;
     }
 
     public async Task<Result> AcceptRequestAsync(Guid friendshipId, Guid userId)
@@ -56,14 +60,14 @@ public class FriendshipService : IFriendshipService
 
     public async Task<Result<List<FriendRequestDto>>> GetPendingRequestsAsync(Guid userId)
     {
-        var requests = await _context.Friendships
-        .Where(f => f.AddresseeId == userId && f.Status ==
-        FriendshipStatus.Pending)
-        .Select(f => new FriendRequestDto
+          var requests = await _context.Friendships
+            .Where(f => f.AddresseeId == userId && f.Status == FriendshipStatus.Pending)
+            .Include(f => f.Requester) 
+            .Select(f => new FriendRequestDto
         {
             FriendshipId = f.Id,
             RequesterId = f.RequesterId,
-            RequesterName = f.Requester.Name, // İlişkili Requester'ın adını al
+            RequesterName = f.Requester.Name, 
             RequestedAt = f.CreatedAt
 
         })
@@ -93,7 +97,7 @@ public class FriendshipService : IFriendshipService
 
     if (friendship != null)
     {
-        // Mevcut bir ilişki varsa, durumuna göre işlem yap.
+        
         switch (friendship.Status)
         {
             case FriendshipStatus.Accepted:
@@ -113,14 +117,14 @@ public class FriendshipService : IFriendshipService
                 friendship.RequesterId = requesterId;
                 friendship.AddresseeId = request.AddresseeId;
                 friendship.Status = FriendshipStatus.Pending;
-                friendship.CreatedAt = DateTime.UtcNow; // Tarihi güncelle
+                friendship.CreatedAt = DateTime.UtcNow; 
                 friendship.UpdatedAt = null;
-                break; // Switch'ten çık ve SaveChanges'e git.
+                break; 
         }
     }
     else
     {
-        // Hiçbir ilişki yoksa, yeni bir tane oluştur.
+        
         friendship = new Friendship
         {
             RequesterId = requesterId,
@@ -130,11 +134,31 @@ public class FriendshipService : IFriendshipService
         await _context.Friendships.AddAsync(friendship);
     }
     
-    // Değişiklikleri veritabanına kaydet.
-    await _context.SaveChangesAsync();
+    
+  await _context.SaveChangesAsync();
 
-    return Result.Success();
-}
+        // ADIM 3: BİLDİRİM GÖNDERME KODU
+        // Veritabanı işlemi başarılı olduktan sonra, isteği alan kullanıcıya bildirim gönder.
+        var requester = await _context.Users.FindAsync(requesterId);
+        if (requester != null)
+        {
+            var notificationData = new 
+            {
+                FriendshipId = friendship.Id,
+                RequesterId = requesterId,
+                RequesterName = requester.Name,
+                RequestedAt = friendship.CreatedAt
+            };
+
+            await _activityHubClient.SendNotificationToUserAsync(
+                request.AddresseeId.ToString(), 
+                "ReceiveFriendRequest",         
+                notificationData              
+            );
+        }
+        
+        return Result.Success();
+    }
     public async Task<Result<List<FriendDto>>> GetFriendsAsync(Guid userId)
     {
         var friendsDto = await _context.Friendships

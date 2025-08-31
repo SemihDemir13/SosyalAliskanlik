@@ -1434,9 +1434,38 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Notification.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Notification.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Notification.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Notification.Application.dll": {}
+        }
+      },
+      "Notification.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Notification.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Notification.Domain.dll": {}
+        }
+      },
       "Notification.Web/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Notification.Application": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/Notification.Web.dll": {}
         },
@@ -1456,6 +1485,8 @@
           "Auth.Application": "1.0.0",
           "Habit.Application": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.7",
+          "Notification.Application": "1.0.0",
+          "Notification.Web": "1.0.0",
           "SosyalAliskanlikApp.Modules.Friends.Application": "1.0.0",
           "SosyalAliskanlikApp.Modules.Statistics.Application": "1.0.0",
           "SosyalAliskanlikApp.Persistence": "1.0.0",
@@ -1475,6 +1506,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "Notification.Application": "1.0.0",
           "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Persistence": "1.0.0"
         },
@@ -4122,6 +4154,16 @@
       "type": "project",
       "path": "../Modules/Habit/Habit.Web/Habit.Web.csproj",
       "msbuildProject": "../Modules/Habit/Habit.Web/Habit.Web.csproj"
+    },
+    "Notification.Application/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Notification/Notification.Application/Notification.Application.csproj",
+      "msbuildProject": "../Modules/Notification/Notification.Application/Notification.Application.csproj"
+    },
+    "Notification.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Notification/Notification.Domain/Notification.Domain.csproj",
+      "msbuildProject": "../Modules/Notification/Notification.Domain/Notification.Domain.csproj"
     },
     "Notification.Web/1.0.0": {
       "type": "project",

@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\SosyalAliskanlikApp.Modules.Friends.Domain.csproj" />
     <ProjectReference Include="..\..\..\Persistence\SosyalAliskanlikApp.Persistence.csproj" />
+     <ProjectReference Include="..\..\Notification\Notification.Application\Notification.Application.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
