@@ -22,3 +22,11 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\De
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\Debug\net8.0\refint\Notification.Web.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\Debug\net8.0\Notification.Web.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\Debug\net8.0\ref\Notification.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\Notification.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\Notification.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\Notification.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\Notification.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Shared.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\Debug\net8.0\Notification.Web.csproj.AssemblyReference.cache
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Notification\Notification.Web\obj\Debug\net8.0\Notifica.C2422058.Up2Date

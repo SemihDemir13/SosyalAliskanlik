@@ -4,6 +4,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, CircularProgress } from '@mui/material';
+import { SignalRProvider } from '@/context/SignalRContext';
+
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -33,11 +35,14 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Eğer kullanıcı kimliği doğrulanmışsa, korumalı içeriği (çocukları) göster
-  if (isAuthenticated) {
-    return <>{children}</>;
+   if (isAuthenticated) {
+   
+    return (
+      <SignalRProvider>
+        {children}
+      </SignalRProvider>
+    );
   }
 
-  // Kimlik doğrulanmamışsa ve yönlendirme bekleniyorsa hiçbir şey gösterme
   return null;
 }

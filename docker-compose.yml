@@ -12,6 +12,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
 
+  redis: # <-- BU SERVİSİN BURADA OLDUĞUNDAN EMİN OL
+    image: redis:7-alpine
+    container_name: sosyaliskanlik-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+
   backend:
     container_name: sosyaliskanlik-backend
     build:
@@ -20,13 +29,13 @@ services:
     ports:
       - "5282:8080"
     environment:
+      - ConnectionStrings__Redis=redis:6379
       - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=HabitTrackerDb;Username=postgres;Password=${POSTGRES_PASSWORD}
       - JwtSettings__Secret=${JWT_SECRET}
-      - JwtSettings__Issuer=https://HabitTracker.com
-      - JwtSettings__Audience=https://HabitTracker.com
       - ASPNETCORE_URLS=http://+:8080
     depends_on:
       - database
+      - redis
 
   frontend:
     container_name: sosyaliskanlik-frontend
@@ -44,4 +53,6 @@ services:
 volumes:
   postgres_data:
     driver: local
-    
+  redis_data: 
+    driver: local
+

@@ -6,8 +6,10 @@ using SosyalAliskanlikApp.Modules.Friends.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Activity.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Badge.Web.Controllers;
 using SosyalAliskanlikApp.Modules.AI.Web.Controllers;
-
-
+// --- GEREKLİ ---
+// Bu iki using direktifi olmadan Hub ve Redis yapılandırması çalışmaz.
+using SosyalAliskanlikApp.Modules.Notification.Web.Hubs;
+using StackExchange.Redis;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,10 +21,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          // Frontend'in çalıştığı adrese izin veriyoruz.
                           policy.WithOrigins("http://localhost:3000") 
                                 .AllowAnyHeader()
-                                .AllowAnyMethod();
+                                .AllowAnyMethod()
+                                // --- GEREKLİ ---
+                                // Bu satır olmadan frontend'den JWT token ile bağlantı kurulamaz.
+                                .AllowCredentials(); 
                       });
 });
 
@@ -38,9 +42,16 @@ builder.Services.AddBadgeModule();
 builder.Services.AddAIModule();
 builder.Services.AddNotificationModule();
 
+// --- GEREKLİ ---
+// SignalR servislerini ekler ve Redis backplane'i yapılandırır.
+builder.Services.AddSignalR()
+    .AddStackExchangeRedis(builder.Configuration.GetConnectionString("Redis")!, options =>
+    {
+        options.Configuration.ChannelPrefix = RedisChannel.Literal("SosyalAliskanlikApp");
+    });
 
 
-// Sadece Controller'ları ve Auth modülünün assembly'sini tanıtıyoruz.
+// Controller'ları tanıtır.
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AuthController).Assembly)
     .AddApplicationPart(typeof(HabitController).Assembly)
@@ -50,12 +61,11 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(BadgesController).Assembly)
     .AddApplicationPart(typeof(AIController).Assembly);
 
-
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // Swagger'ın JWT'yi tanıması için bir güvenlik tanımı ekliyoruz.
+    // ... (Swagger yapılandırması doğru, burası aynı kalabilir) ...
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -65,8 +75,6 @@ builder.Services.AddSwaggerGen(options =>
         In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\""
     });
-
-    // Bu güvenlik tanımını tüm endpoint'lere uygulayabilmek için bir gereksinim ekliyoruz.
     options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
     {
         {
@@ -99,5 +107,8 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
+
+
+app.MapHub<ActivityHub>("/hubs/activity");
 
 app.Run();
