@@ -13,8 +13,8 @@ export interface FriendRequest {
 }
 
 interface FriendRequestsProps {
-  requests: FriendRequest[];
-  onAction: () => void; // Bir aksiyon alındığında ana sayfaya haber vermek için
+   requests: FriendRequest[];
+  onAction: (friendshipId: string) => void;
 }
 
 export default function FriendRequests({ requests, onAction }: FriendRequestsProps) {
@@ -29,7 +29,7 @@ export default function FriendRequests({ requests, onAction }: FriendRequestsPro
       });
       
       enqueueSnackbar(`İstek ${action === 'accept' ? 'kabul edildi' : 'reddedildi'}.`, { variant: 'success' });
-      onAction(); // Listeyi yenilemek için ana bileşene haber ver
+       onAction(friendshipId);// Listeyi yenilemek için ana bileşene haber ver
     } catch (error: any) {
       enqueueSnackbar(error.response?.data?.message || 'İşlem başarısız.', { variant: 'error' });
     }
