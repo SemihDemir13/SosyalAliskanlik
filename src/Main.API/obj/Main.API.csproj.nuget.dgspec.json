@@ -300,6 +300,15 @@
               "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Domain\\Activity.Domain.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Activity\\Activity.Domain\\Activity.Domain.csproj"
               },
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Application\\SosyalAliskanlikApp.Modules.Friends.Application.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Application\\SosyalAliskanlikApp.Modules.Friends.Application.csproj"
+              },
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Friends\\Domain\\SosyalAliskanlikApp.Modules.Friends.Domain.csproj"
+              },
+              "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Application\\Notification.Application.csproj": {
+                "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Application\\Notification.Application.csproj"
+              },
               "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj": {
                 "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Persistence\\SosyalAliskanlikApp.Persistence.csproj"
               }

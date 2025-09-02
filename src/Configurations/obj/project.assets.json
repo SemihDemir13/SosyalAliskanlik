@@ -439,6 +439,9 @@
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "Activity.Domain": "1.0.0",
+          "Notification.Application": "1.0.0",
+          "SosyalAliskanlikApp.Modules.Friends.Application": "1.0.0",
+          "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Persistence": "1.0.0"
         },
         "compile": {

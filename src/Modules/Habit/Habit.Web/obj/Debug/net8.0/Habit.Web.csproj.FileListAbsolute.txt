@@ -58,3 +58,9 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Bad
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Core.dll
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Badge.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Core.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.pdb

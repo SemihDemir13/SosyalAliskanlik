@@ -6,18 +6,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens; 
 using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Auth.Application.Services;
+using System.Threading.Tasks;
 
 namespace SosyalAliskanlikApp.Configurations;
 
 public static class AuthModuleInstaller
 {
-    // Metot imzasını IConfiguration alacak şekilde değiştir.
     public static IServiceCollection AddAuthModule(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUserService, UserService>();
 
-        // --- YENİ EKLENEN BÖLÜM ---
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -35,8 +34,24 @@ public static class AuthModuleInstaller
                 ValidAudience = configuration["JwtSettings:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Secret"]!))
             };
+              options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+
+                    var path = context.HttpContext.Request.Path;
+
+                    if (!string.IsNullOrEmpty(accessToken) &&
+                        (path.StartsWithSegments("/hubs"))) 
+                    {
+                        context.Token = accessToken;
+                    }
+                    
+                    return Task.CompletedTask;
+                }
+            };
         });
-        // --- BİTTİ ---
 
         return services;
     }

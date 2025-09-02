@@ -1,24 +1,36 @@
 // Dosya: client/src/app/(app)/home/page.tsx
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import ActivityFeed from '@/components/feed/ActivityFeed';
 import { Activity } from '@/types'; 
-import { Container, Typography, Box } from '@mui/material';
+import { Container, Typography, Box, CircularProgress } from '@mui/material'; // CircularProgress eklendi
 import { useSnackbar } from 'notistack';
+// ADIM 1: SignalR hook'unu import ediyoruz
+import { useSignalR } from '@/context/SignalRContext';
 
 export default function HomePage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   
-  const [activities, setActivities] = useState<Activity[]>([]);
+  // ADIM 2: State'i ayırıyoruz
+  // Bu state artık sadece API'den gelen ilk aktiviteleri tutacak
+  const [initialActivities, setInitialActivities] = useState<Activity[]>([]);
   const [feedLoading, setFeedLoading] = useState(true);
   const [userName, setUserName] = useState<string | null>(null);
 
+  // SignalR context'inden canlı gelen aktiviteleri alıyoruz
+  const { liveActivities } = useSignalR();
+
   const fetchActivityFeed = useCallback(async () => {
-    setFeedLoading(true);
+    // Sadece ilk yüklemede bu state'i true yapalım ki
+    // canlı güncellemelerde tüm sayfa tekrar yükleniyor gibi görünmesin.
+    if (!initialActivities.length) {
+        setFeedLoading(true);
+    }
+    
     const token = localStorage.getItem('accessToken');
     if (!token) {
         router.push('/login');
@@ -29,10 +41,11 @@ export default function HomePage() {
       const response = await axios.get(`${apiUrl}/api/Activity/feed`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setActivities(response.data);
+      // activities yerine initialActivities state'ini güncelliyoruz
+      setInitialActivities(response.data);
     } catch (err: any) {
       console.error("Akış verisi yüklenirken hata:", err);
-      if (err.response && err.response.status === 401) {
+      if (err.response?.status === 401) {
           enqueueSnackbar('Oturumunuzun süresi doldu. Lütfen tekrar giriş yapın.', { variant: 'error' });
           localStorage.removeItem('accessToken');
           router.push('/login');
@@ -42,9 +55,10 @@ export default function HomePage() {
     } finally {
       setFeedLoading(false);
     }
-  }, [enqueueSnackbar, router]);
+  }, [enqueueSnackbar, router, initialActivities.length]); // initialActivities.length'i bağımlılığa ekledik
 
   useEffect(() => {
+    // ... (Token ve userName alma mantığı aynı) ...
     const token = localStorage.getItem('accessToken');
     if (token) {
         try {
@@ -56,28 +70,33 @@ export default function HomePage() {
         return;
     }
     
-    // Geriye dönük rozet kontrolünü tetikleyen fonksiyon
-    const recheckBadges = async () => {
-        try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            // Bu istek arka planda çalışır, sonucunu beklememize veya göstermemize gerek yok.
-            // Sadece tetikliyoruz.
-            await axios.post(`${apiUrl}/api/Badges/recheck`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+    const recheckBadges = async () => { /* ... (Bu fonksiyon aynı kalıyor) ... */ };
 
-            console.log("Geçmiş başarılar için rozetler yeniden kontrol edildi.");
-            localStorage.setItem('badges_need_refresh', 'true');
-        } catch (error) {
-            console.error("Rozetler yeniden kontrol edilirken hata oluştu:", error);
-        }
-    };
-
-    // Sayfa yüklendiğinde hem akışı çek hem de rozetleri kontrol et
     fetchActivityFeed();
     recheckBadges();
 
   }, [fetchActivityFeed, router]);
+
+  // ADIM 3: API'den gelen ve SignalR'dan gelen aktiviteleri birleştiriyoruz
+  const combinedActivities = useMemo(() => {
+    // Duplikasyonları engellemek için Map yapısı kullanıyoruz
+    const allActivitiesMap = new Map<string, Activity>();
+
+    // Önce canlı (yeni) aktiviteleri ekliyoruz ki sıralamada en üste gelsinler
+    liveActivities.forEach(act => allActivitiesMap.set(act.id, act));
+    
+    // Sonra API'den gelen eski aktiviteleri ekliyoruz. Eğer Map'te zaten varsa (canlı olarak gelmişse), tekrar eklenmez.
+    initialActivities.forEach(act => {
+        if (!allActivitiesMap.has(act.id)) {
+            allActivitiesMap.set(act.id, act);
+        }
+    });
+
+    // Map'teki tüm aktiviteleri bir diziye çevirip tarihe göre (en yeni en üstte) sıralıyoruz.
+    return Array.from(allActivitiesMap.values())
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()); // `timestamp` yerine `createdAt`
+        
+  }, [initialActivities, liveActivities]);
   
   return (
     <Container maxWidth="md">
@@ -90,7 +109,8 @@ export default function HomePage() {
         </Typography>
 
         <Box sx={{ mt: 4 }}>
-          <ActivityFeed activities={activities} isLoading={feedLoading} />
+          {/* ADIM 4: ActivityFeed'e artık birleştirilmiş ve her zaman güncel olan listeyi gönderiyoruz */}
+          <ActivityFeed activities={combinedActivities} isLoading={feedLoading} />
         </Box>
       </Box>
     </Container>

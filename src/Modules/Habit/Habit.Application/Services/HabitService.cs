@@ -22,14 +22,15 @@ public class HabitService : IHabitService
     private readonly ApplicationDbContext _context;
     private readonly IActivityService _activityService;
     private readonly IBadgeService _badgeService;
+   
 
-    public HabitService(ApplicationDbContext context, IActivityService activityService, IBadgeService badgeService)
-    {
-        _context = context;
-        _activityService = activityService;
-        _badgeService = badgeService;
-
-    }
+    public HabitService( ApplicationDbContext context, IActivityService activityService, IBadgeService badgeService)
+        {
+            _context = context;
+            _activityService = activityService;
+            _badgeService = badgeService;
+            
+        }
 
     public async Task<HabitDto> CreateHabitAsync(CreateHabitRequestDto request, Guid userId)
     {
@@ -315,58 +316,60 @@ public class HabitService : IHabitService
         return Result.Success<UserHabitSummaryDto?>(resultDto);
     }
 
-    public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
+  public async Task<Result> ToggleHabitCompletionAsync(string habitId, string userId)
+{
+    if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
     {
-        if (!Guid.TryParse(habitId, out var habitGuid) || !Guid.TryParse(userId, out var userGuid))
-        {
-            return Result.Failure("Geçersiz kimlik formatı.");
-        }
-
-        var habit = await _context.Habits
-            .Include(h => h.User)
-            .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
-
-        if (habit is null)
-        {
-            return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
-        }
-
-        var today = DateOnly.FromDateTime(DateTime.UtcNow);
-
-        var existingCompletion = await _context.HabitCompletions
-            .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
-
-        if (existingCompletion is not null)
-        {
-            _context.HabitCompletions.Remove(existingCompletion);
-        }
-        else
-        {
-            var newCompletion = new HabitCompletion
-            {
-                HabitId = habitGuid,
-                CompletionDate = today
-            };
-            await _context.HabitCompletions.AddAsync(newCompletion);
-
-            var description = $"{habit.User.Name}, '{habit.Name}' alışkanlığını tamamladı.";
-            await _activityService.CreateActivityAsync(
-                userId: userGuid,
-                activityType: ActivityType.HABIT_COMPLETED,
-                description: description,
-                relatedEntityId: habitGuid
-            );
-
-            // Yeni tamamlama yapıldıktan sonra rozet kontrolünü tetikle
-            // HATA DÜZELTİLDİ: Artık _badgeService tanınıyor.
-            await _badgeService.CheckAndAwardBadgesAsync(userGuid, habitGuid);
-        }
-
-        // Tüm değişiklikleri (HabitCompletion, Activity, UserBadge) tek seferde kaydet
-        await _context.SaveChangesAsync();
-
-        return Result.Success();
+        return Result.Failure("Geçersiz kimlik formatı.");
     }
+
+    var habit = await _context.Habits
+        .Include(h => h.User) 
+        .FirstOrDefaultAsync(h => h.Id == habitGuid && h.UserId == userGuid);
+
+    if (habit is null)
+    {
+        return Result.Failure("Alışkanlık bulunamadı veya bu işlem için yetkiniz yok.");
+    }
+
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+    var existingCompletion = await _context.HabitCompletions
+        .FirstOrDefaultAsync(c => c.HabitId == habitGuid && c.CompletionDate == today);
+
+    if (existingCompletion is not null)
+    {
+        
+        _context.HabitCompletions.Remove(existingCompletion);
+    }
+    else
+    {
+        // Yeni bir tamamlama ekleniyor.
+        var newCompletion = new HabitCompletion
+        {
+            HabitId = habitGuid,
+            CompletionDate = today
+        };
+        await _context.HabitCompletions.AddAsync(newCompletion);
+
+       
+        var description = $"{habit.User.Name}, '{habit.Name}' alışkanlığını tamamladı.";
+       
+        await _activityService.CreateActivityAsync(
+            userId: userGuid,
+            activityType: ActivityType.HABIT_COMPLETED,  
+            description: description,
+            relatedEntityId: habitGuid
+        );
+
+        // Yeni tamamlama yapıldıktan sonra rozet kontrolünü tetik
+        await _badgeService.CheckAndAwardBadgesAsync(userGuid, habitGuid);
+    }
+
+    await _context.SaveChangesAsync();
+
+    return Result.Success();
+}
      public async Task<List<HabitDto>> CreateMultipleHabitsAsync(List<CreateHabitRequestDto> requests, Guid userId)
     {
         var newHabits = requests.Select(req => new HabitEntity
@@ -384,7 +387,6 @@ public class HabitService : IHabitService
         await _context.Habits.AddRangeAsync(newHabits);
         await _context.SaveChangesAsync();
 
-        // Oluşturulan entity'leri DTO'ya çevirip geri dön
         return newHabits.Select(h => new HabitDto
         {
             Id = h.Id,
