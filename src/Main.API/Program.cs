@@ -6,8 +6,7 @@ using SosyalAliskanlikApp.Modules.Friends.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Activity.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Badge.Web.Controllers;
 using SosyalAliskanlikApp.Modules.AI.Web.Controllers;
-// --- GEREKLİ ---
-// Bu iki using direktifi olmadan Hub ve Redis yapılandırması çalışmaz.
+using SosyalAliskanlikApp.Modules.Messaging.Web.Controllers;
 using SosyalAliskanlikApp.Modules.Notification.Web.Hubs;
 using StackExchange.Redis;
 
@@ -24,8 +23,6 @@ builder.Services.AddCors(options =>
                           policy.WithOrigins("http://localhost:3000") 
                                 .AllowAnyHeader()
                                 .AllowAnyMethod()
-                                // --- GEREKLİ ---
-                                // Bu satır olmadan frontend'den JWT token ile bağlantı kurulamaz.
                                 .AllowCredentials(); 
                       });
 });
@@ -41,9 +38,8 @@ builder.Services.AddActivityModule();
 builder.Services.AddBadgeModule();
 builder.Services.AddAIModule();
 builder.Services.AddNotificationModule();
+builder.Services.AddMessagingModule();
 
-// --- GEREKLİ ---
-// SignalR servislerini ekler ve Redis backplane'i yapılandırır.
 builder.Services.AddSignalR()
     .AddStackExchangeRedis(builder.Configuration.GetConnectionString("Redis")!, options =>
     {
@@ -51,7 +47,6 @@ builder.Services.AddSignalR()
     });
 
 
-// Controller'ları tanıtır.
 builder.Services.AddControllers()
     .AddApplicationPart(typeof(AuthController).Assembly)
     .AddApplicationPart(typeof(HabitController).Assembly)
@@ -59,13 +54,13 @@ builder.Services.AddControllers()
     .AddApplicationPart(typeof(FriendsController).Assembly)
     .AddApplicationPart(typeof(ActivityController).Assembly)
     .AddApplicationPart(typeof(BadgesController).Assembly)
-    .AddApplicationPart(typeof(AIController).Assembly);
+    .AddApplicationPart(typeof(AIController).Assembly)
+    .AddApplicationPart(typeof(MessagingController).Assembly);
 
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    // ... (Swagger yapılandırması doğru, burası aynı kalabilir) ...
     options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
     {
         Name = "Authorization",

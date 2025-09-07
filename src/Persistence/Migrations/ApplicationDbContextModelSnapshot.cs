@@ -287,6 +287,70 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.ToTable("HabitCompletions");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Conversation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("User2Id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Conversations");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Activity.Domain.Entities.Activity", b =>
                 {
                     b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User")
@@ -365,9 +429,52 @@ namespace SosyalAliskanlikApp.Persistence.Migrations
                     b.Navigation("Habit");
                 });
 
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Conversation", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User1");
+
+                    b.Navigation("User2");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Message", b =>
+                {
+                    b.HasOne("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SosyalAliskanlikApp.Modules.Auth.Domain.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("SosyalAliskanlikApp.Modules.Habit.Domain.Entities.Habit", b =>
                 {
                     b.Navigation("HabitCompletions");
+                });
+
+            modelBuilder.Entity("SosyalAliskanlikApp.Modules.Messaging.Domain.Entities.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

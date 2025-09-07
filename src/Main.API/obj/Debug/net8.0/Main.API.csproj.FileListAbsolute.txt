@@ -370,3 +370,9 @@ C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Notification.Appli
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Notification.Domain.dll
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Notification.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Notification.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Domain.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Application.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Web.dll
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Web.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Main.API\bin\Debug\net8.0\Messaging.Application.pdb

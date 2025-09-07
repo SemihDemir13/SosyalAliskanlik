@@ -1,9 +1,12 @@
+// Dosya: src/Persistence/ApplicationDbContext.cs
+
 using Microsoft.EntityFrameworkCore;
 using SosyalAliskanlikApp.Modules.Activity.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Auth.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Badge.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Friends.Domain.Entities;
 using SosyalAliskanlikApp.Modules.Habit.Domain.Entities;
+using SosyalAliskanlikApp.Modules.Messaging.Domain.Entities;
 using System.Reflection;
 
 namespace SosyalAliskanlikApp.Persistence;
@@ -21,28 +24,67 @@ public class ApplicationDbContext : DbContext
     public DbSet<Activity> Activities { get; set; }
     public DbSet<Badge> Badges { get; set; }
     public DbSet<UserBadge> UserBadges { get; set; }
+    public DbSet<Conversation> Conversations { get; set; }
+    public DbSet<Message> Messages { get; set; }
 
-
-
-   protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        // Bu, projedeki IEntityTypeConfiguration implementasyonlarını otomatik olarak bulur ve uygular.
-        // Eğer varsa, bu satır kalmalı. Yoksa silebilirsiniz.
+
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        
         modelBuilder.Entity<Badge>().HasIndex(b => b.Code).IsUnique();
-        
+
+        modelBuilder.Entity<Friendship>()
+            .HasOne(f => f.Requester)
+            .WithMany()
+            .HasForeignKey(f => f.RequesterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Friendship>()
+            .HasOne(f => f.Addressee)
+            .WithMany()
+            .HasForeignKey(f => f.AddresseeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<HabitCompletion>()
+            .HasOne(hc => hc.Habit)
+            .WithMany(h => h.HabitCompletions)
+            .HasForeignKey(hc => hc.HabitId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         modelBuilder.Entity<UserBadge>()
             .HasOne(ub => ub.RelatedHabit) 
             .WithMany() 
             .HasForeignKey(ub => ub.RelatedHabitId) 
-            .OnDelete(DeleteBehavior.SetNull); 
+            .OnDelete(DeleteBehavior.SetNull);
 
-        
+        modelBuilder.Entity<Conversation>(entity =>
+        {
+            entity.HasOne(c => c.User1)
+                  .WithMany()
+                  .HasForeignKey(c => c.User1Id)
+                  .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(c => c.User2)
+                  .WithMany()
+                  .HasForeignKey(c => c.User2Id)
+                  .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasOne(m => m.Conversation)
+                  .WithMany(c => c.Messages)
+                  .HasForeignKey(m => m.ConversationId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(m => m.Sender)
+                  .WithMany()
+                  .HasForeignKey(m => m.SenderId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
         SeedBadges(modelBuilder);
     }
 
@@ -97,33 +139,5 @@ public class ApplicationDbContext : DbContext
                 CreatedAt = seedDate
             }
         );
-
-
-
-        modelBuilder.Entity<Friendship>()
-            .HasOne(f => f.Requester)
-            .WithMany()
-            .HasForeignKey(f => f.RequesterId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<Friendship>()
-            .HasOne(f => f.Addressee)
-            .WithMany()
-            .HasForeignKey(f => f.AddresseeId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<HabitCompletion>()
-        .HasOne(hc => hc.Habit)
-        .WithMany(h => h.HabitCompletions)
-        .HasForeignKey(hc => hc.HabitId)
-        .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<UserBadge>()
-        .HasOne(ub => ub.RelatedHabit) 
-        .WithMany() 
-        .HasForeignKey(ub => ub.RelatedHabitId) 
-        .OnDelete(DeleteBehavior.SetNull); 
-
-    
     }
 }

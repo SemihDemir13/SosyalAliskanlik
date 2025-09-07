@@ -4,21 +4,18 @@ using System.Security.Claims;
 
 namespace SosyalAliskanlikApp.Modules.Notification.Web.Hubs;
 
-// Bu attribute, sadece kimliği doğrulanmış (giriş yapmış) kullanıcıların
-// bu Hub'a bağlanabilmesini sağlar.
+
 [Authorize]
 public class ActivityHub : Hub
 {
-    // Bir kullanıcı bağlandığında bu metot otomatik olarak çalışır.
     public override async Task OnConnectedAsync()
     {
-        // Kullanıcının JWT token'ından kimliğini (UserId) alıyoruz.
         var userId = Context.User?.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (!string.IsNullOrEmpty(userId))
         {
-            // Kullanıcıyı, kendi Id'sine sahip özel bir gruba ekliyoruz.
-            // Bu sayede daha sonra "sadece bu kullanıcıya" mesaj gönderebiliriz.
+            // Kullanıcıyı, kendi Id'sine sahip özel bir gruba ekleme
+            // Bu sayede daha sonra "sadece bu kullanıcıya" mesaj gönderme
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
         }
 

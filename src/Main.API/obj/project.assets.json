@@ -1548,6 +1548,52 @@
           "Microsoft.AspNetCore.App"
         ]
       },
+      "Messaging.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Messaging.Domain": "1.0.0",
+          "Notification.Application": "1.0.0",
+          "SosyalAliskanlikApp.Persistence": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Messaging.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Messaging.Application.dll": {}
+        }
+      },
+      "Messaging.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Auth.Domain": "1.0.0",
+          "SosyalAliskanlikApp.Shared": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Messaging.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Messaging.Domain.dll": {}
+        }
+      },
+      "Messaging.Web/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Messaging.Application": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Messaging.Web.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Messaging.Web.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Notification.Application/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -1598,6 +1644,7 @@
           "Activity.Application": "1.0.0",
           "Auth.Application": "1.0.0",
           "Habit.Application": "1.0.0",
+          "Messaging.Application": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "8.0.7",
           "Notification.Application": "1.0.0",
           "Notification.Web": "1.0.0",
@@ -1698,6 +1745,7 @@
           "Auth.Domain": "1.0.0",
           "Badge.Domain": "1.0.0",
           "Habit.Domain": "1.0.0",
+          "Messaging.Domain": "1.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "9.0.4",
           "SosyalAliskanlikApp.Modules.Friends.Domain": "1.0.0",
           "SosyalAliskanlikApp.Shared": "1.0.0"
@@ -4413,6 +4461,21 @@
       "path": "../Modules/Habit/Habit.Web/Habit.Web.csproj",
       "msbuildProject": "../Modules/Habit/Habit.Web/Habit.Web.csproj"
     },
+    "Messaging.Application/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Messaging/Messaging.Application/Messaging.Application.csproj",
+      "msbuildProject": "../Modules/Messaging/Messaging.Application/Messaging.Application.csproj"
+    },
+    "Messaging.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Messaging/Messaging.Domain/Messaging.Domain.csproj",
+      "msbuildProject": "../Modules/Messaging/Messaging.Domain/Messaging.Domain.csproj"
+    },
+    "Messaging.Web/1.0.0": {
+      "type": "project",
+      "path": "../Modules/Messaging/Messaging.Web/Messaging.Web.csproj",
+      "msbuildProject": "../Modules/Messaging/Messaging.Web/Messaging.Web.csproj"
+    },
     "Notification.Application/1.0.0": {
       "type": "project",
       "path": "../Modules/Notification/Notification.Application/Notification.Application.csproj",
@@ -4476,6 +4539,7 @@
       "Auth.Web >= 1.0.0",
       "Badge.Web >= 1.0.0",
       "Habit.Web >= 1.0.0",
+      "Messaging.Web >= 1.0.0",
       "Microsoft.AspNetCore.OpenApi >= 8.0.7",
       "Microsoft.AspNetCore.SignalR.StackExchangeRedis >= 8.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.7",
@@ -4533,6 +4597,9 @@
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Web\\Habit.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Habit\\Habit.Web\\Habit.Web.csproj"
+            },
+            "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Messaging\\Messaging.Web\\Messaging.Web.csproj": {
+              "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Messaging\\Messaging.Web\\Messaging.Web.csproj"
             },
             "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Web\\Notification.Web.csproj": {
               "projectPath": "C:\\Users\\yunus\\SosyalAliskanlik\\src\\Modules\\Notification\\Notification.Web\\Notification.Web.csproj"

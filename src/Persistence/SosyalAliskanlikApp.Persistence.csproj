@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+   <RootNamespace>SosyalAliskanlikApp.Persistence</RootNamespace>
+
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +19,9 @@
     <ProjectReference Include="..\Modules\Friends\Domain\SosyalAliskanlikApp.Modules.Friends.Domain.csproj" />
     <ProjectReference Include="..\Modules\Activity\Activity.Domain\Activity.Domain.csproj" />
     <ProjectReference Include="..\Modules\Badge\Badge.Domain\Badge.Domain.csproj" />
+    <ProjectReference Include="..\Modules\Messaging\Messaging.Domain\Messaging.Domain.csproj" />
+
+
   </ItemGroup>
 
 </Project>

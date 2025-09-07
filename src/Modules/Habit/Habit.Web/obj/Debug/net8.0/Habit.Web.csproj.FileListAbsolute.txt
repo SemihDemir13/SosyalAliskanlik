@@ -64,3 +64,5 @@ C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Sos
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Application.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Notification.Domain.pdb
 C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\SosyalAliskanlikApp.Modules.Friends.Application.pdb
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Messaging.Domain.dll
+C:\Users\yunus\SosyalAliskanlik\src\Modules\Habit\Habit.Web\bin\Debug\net8.0\Messaging.Domain.pdb
