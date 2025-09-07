@@ -40,3 +40,33 @@ a {
     color-scheme: dark;
   }
 }
+
+/* Scrollbar'ın kendisi (genişliği veya yüksekliği) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Scrollbar'ın üzerinde hareket ettiği yol (track) */
+::-webkit-scrollbar-track {
+  /* Arkaplanı, ana gövde arkaplanıyla aynı veya şeffaf yaparak görünmez hale getiriyoruz */
+  background: transparent;
+  margin: 4px; /* Kenarlardan küçük bir boşluk bırakarak daha zarif görünmesini sağlar */
+}
+
+/* Sürüklenen kısım (thumb) */
+::-webkit-scrollbar-thumb {
+  /* Uygulamanın temasıyla uyumlu, yarı saydam ve yumuşak bir gri tonu */
+  background-color: rgba(0, 0, 0, 0.25);
+  /* Kenarları tamamen yuvarlak yapıyoruz */
+  border-radius: 10px;
+  /* "Floating" (yüzen) bir görünüm için içe doğru boşluk efekti veriyoruz */
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Sürüklenen kısmın üzerine gelindiğindeki hali */
+::-webkit-scrollbar-thumb:hover {
+  /* Rengi biraz daha belirgin hale getiriyoruz */
+  background-color: rgba(0, 0, 0, 0.4);
+}
