@@ -26,3 +26,21 @@ export interface Badge {
   iconUrl: string;
   relatedHabitName?: string | null;
 }
+
+export interface MessageDto {
+  id: string; 
+  conversationId: string;
+  senderId: string;
+  content: string;
+  createdAt: string; 
+  isRead: boolean;
+}
+
+export interface ConversationDto {
+  id: string;
+  otherUserId: string;
+  otherUserName: string;
+  lastMessage?: string;
+  lastMessageTimestamp?: string;
+  unreadCount: number;
+}
