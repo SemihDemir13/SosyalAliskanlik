@@ -137,27 +137,26 @@ export default function ConversationPage() {
     return <Box display="flex" justifyContent="center" sx={{ mt: 4 }}><CircularProgress /></Box>;
   }
 
-  return (
-    <Container maxWidth="md">
-      <Paper sx={{ my: 4, height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
-          <IconButton onClick={() => router.push('/messages')}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h6" sx={{ ml: 1 }}>{otherUser?.name || 'Sohbet'}</Typography>
-        </Box>
+ return (
+    // <Container> ve <Paper> sarmalayıcıları kaldırıldı.
+    <>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
+        <IconButton onClick={() => router.push('/messages')}>
+          <ArrowBackIcon />
+        </IconButton>
+        <Typography variant="h6" sx={{ ml: 1 }}>{otherUser?.name || 'Sohbet'}</Typography>
+      </Box>
 
-        <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2 }}>
-          {messages.map((msg) => (
-            <MessageBubble key={msg.id} message={msg} isOwnMessage={msg.senderId === currentUserId} />
-          ))}
-          <div ref={messagesEndRef} />
-        </Box>
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2 }}>
+        {messages.map((msg) => (
+          <MessageBubble key={msg.id} message={msg} isOwnMessage={msg.senderId === currentUserId} />
+        ))}
+        <div ref={messagesEndRef} />
+      </Box>
 
-        <Box sx={{ flexShrink: 0 }}>
-            <MessageInput onSendMessage={handleSendMessage} />
-        </Box>
-      </Paper>
-    </Container>
+      <Box sx={{ flexShrink: 0 }}>
+          <MessageInput onSendMessage={handleSendMessage} />
+      </Box>
+    </>
   );
 }
