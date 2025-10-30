@@ -30,6 +30,9 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+[Bb]uild/
+[Rr]elease/
+[Dd]ebug/
 
 # Visual Studio 2019 cache/options directory
 .vs/
@@ -74,6 +77,11 @@ Thumbs.db
 # Dotnet files
 project.lock.json
 project.assets.json
+
+# Loglar ve geçici dosyalar
+Logs/
+*.log
+*.tmp
 
 # Miscellaneous
 *.bak
