@@ -66,8 +66,10 @@ export const SignalRProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+        if (typeof window === "undefined") return;
+
     const token = localStorage.getItem('accessToken');
-    if (!token || typeof window === "undefined") return;
+    if (!token || connection) return;
 
     const newConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${process.env.NEXT_PUBLIC_API_URL}/hubs/activity`, { accessTokenFactory: () => token })
