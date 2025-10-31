@@ -11,6 +11,7 @@ import { useSignalR } from '@/context/SignalRContext';
 import { MessageDto, ConversationDto } from '@/types';
 import MessageBubble from '@/components/messaging/MessageBubble';
 import MessageInput from '@/components/messaging/MessageInput';
+import apiClient from '@/utils/apiClient';
 
 export default function ConversationPage() {
   const params = useParams();
@@ -47,21 +48,23 @@ export default function ConversationPage() {
 
   const fetchInitialData = useCallback(async () => {
     setLoading(true);
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
+    
+    // Güvenlik olarak token'ın varlığı kontrol
+    const tokenExists = typeof window !== 'undefined' && localStorage.getItem('accessToken');
+    if (!tokenExists) {
       router.push('/login');
+      setLoading(false);
       return;
     }
     
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = JSON.parse(atob(localStorage.getItem('accessToken')!.split('.')[1]));
       setCurrentUserId(payload.sub);
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       
       const [messagesRes, convsRes] = await Promise.all([
-        axios.get(`${apiUrl}/api/Messaging/conversations/${conversationId}/messages`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${apiUrl}/api/Messaging/conversations`, { headers: { Authorization: `Bearer ${token}` } })
+        apiClient.get(`/api/Messaging/conversations/${conversationId}/messages`),
+        apiClient.get(`/api/Messaging/conversations`)
       ]);
 
       setMessages(messagesRes.data);
@@ -69,18 +72,29 @@ export default function ConversationPage() {
       const currentConv = convsRes.data.find((c: ConversationDto) => c.id === conversationId);
       if (currentConv) {
         setOtherUser({ id: currentConv.otherUserId, name: currentConv.otherUserName });
+      } else {
+        enqueueSnackbar('Konuşma bulunamadı.', { variant: 'warning' });
+        router.push('/messages');
+        return;
       }
 
-      await axios.post(`${apiUrl}/api/Messaging/conversations/${conversationId}/mark-as-read`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      await apiClient.post(`/api/Messaging/conversations/${conversationId}/mark-as-read`, {});
       
-      const updatedConvsRes = await axios.get(`${apiUrl}/api/Messaging/conversations`, { headers: { Authorization: `Bearer ${token}` } });
+      // Okunmamış mesaj sayacını global olarak güncellemek için konuşmaları tekrar çek.
+      const updatedConvsRes = await apiClient.get(`/api/Messaging/conversations`);
       const totalUnread = updatedConvsRes.data.reduce((sum: number, conv: ConversationDto) => sum + conv.unreadCount, 0);
       setUnreadMessageCount(totalUnread);
 
     } catch (error) {
       console.error("Sohbet verileri çekilirken hata oluştu:", error);
-      enqueueSnackbar('Sohbet yüklenirken bir hata oluştu.', { variant: 'error' });
-      router.push('/messages');
+      
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        enqueueSnackbar('Oturumunuz sonlanmış, lütfen tekrar giriş yapın.', { variant: 'error' });
+        router.push('/login');
+      } else {
+        enqueueSnackbar('Sohbet yüklenirken bir hata oluştu.', { variant: 'error' });
+        router.push('/messages');
+      }
     } finally {
       setLoading(false);
     }
@@ -138,7 +152,6 @@ export default function ConversationPage() {
   }
 
  return (
-    // <Container> ve <Paper> sarmalayıcıları kaldırıldı.
     <>
       <Box sx={{ p: 2, display: 'flex', alignItems: 'center', borderBottom: 1, borderColor: 'divider', flexShrink: 0 }}>
         <IconButton onClick={() => router.push('/messages')}>

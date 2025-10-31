@@ -1,8 +1,11 @@
+// Dosya: src/Modules/Auth/Web/Controllers/AuthController.cs
+
 using Microsoft.AspNetCore.Mvc;
-using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces; // Bu satırı ekleyin
+using SosyalAliskanlikApp.Modules.Auth.Application.Interfaces;
 using SosyalAliskanlikApp.Modules.Auth.Application.DTOs;
-using Microsoft.AspNetCore.Authorization; // Bu using ifadesini en üste eklediğinden emin ol
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims; 
+using Microsoft.Extensions.Logging;
 
 namespace SosyalAliskanlikApp.Modules.Auth.Web.Controllers;
 
@@ -11,62 +14,68 @@ namespace SosyalAliskanlikApp.Modules.Auth.Web.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IAuthService authService)
+    public AuthController(IAuthService authService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _logger = logger;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
     {
+        _logger.LogInformation("Yeni kullanıcı kaydı deneniyor: Email {Email}", request.Email);
+
         var result = await _authService.RegisterUserAsync(request);
 
         if (result.IsFailure)
         {
-            // Servis bir hata döndürdüyse, 400 Bad Request ve hata mesajını dön.
+            _logger.LogWarning("Kayıt denemesi başarısız: Email {Email}, Hata: {Error}", request.Email, result.Error);
             return BadRequest(new { message = result.Error });
         }
 
-        // Başarılı ise 200 OK dön.
+        _logger.LogInformation("Yeni kullanıcı başarıyla kaydedildi: Email {Email}", request.Email);
         return Ok(new { message = "User registered successfully!" });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {
+        _logger.LogInformation("Giriş denemesi yapılıyor: Email {Email}", request.Email);
+
         var result = await _authService.LoginAsync(request);
 
         if (result.IsFailure)
         {
-            // Servis bir hata döndürdüyse, bu sefer 401 Unauthorized dönelim.
+            _logger.LogWarning("Başarısız giriş denemesi: Email {Email}, Sebep: {Error}", request.Email, result.Error);
             return Unauthorized(new { message = result.Error });
         }
 
-        // Başarılı ise 200 OK ve token'ı dön.
+        _logger.LogInformation("Kullanıcı başarıyla giriş yaptı: Email {Email}", request.Email);
         return Ok(result.Value);
     }
-     [HttpGet("profile")]
-    [Authorize] // Bu endpoint'e sadece geçerli bir token ile erişilebilir.
+
+    [HttpGet("profile")]
+    [Authorize]
     public IActionResult GetProfile()
     {
-        // [Authorize] attribute'ü sayesinde, bu metoda gelindiğinde
-        // User nesnesinin içi token'dan gelen bilgilerle doldurulmuş olur.
-
-        // Token'ın içindeki 'sub' (subject) claim'inden kullanıcı ID'sini oku.
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // Eğer bir sebepten ötürü token'da ID bulunamazsa (çok nadir), hata dön.
         if (string.IsNullOrEmpty(userId))
         {
+            // Bu durum normalde [Authorize] yüzünden pek olası değil, ama olursa önemli bir hatadır.
+            _logger.LogError("Yetkilendirilmiş bir istekte kullanıcı ID'si (sub claim) bulunamadı.");
             return Unauthorized();
         }
-        
-        // Diğer bilgileri de oku.
-        var userEmail = User.FindFirstValue(ClaimTypes.Email);
-        var userName = User.FindFirstValue("name"); // Bu, token'ı oluştururken eklediğimiz özel claim.
 
-        // Okunan bilgileri anonim bir nesne olarak frontend'e dön.
+        // LOG: Profil bilgisi getirme işlemini logla
+        _logger.LogInformation("Kullanıcı {UserId} için profil bilgileri getiriliyor.", userId);
+        
+        var userEmail = User.FindFirstValue(ClaimTypes.Email);
+        var userName = User.FindFirstValue("name");
+
+        _logger.LogInformation("Kullanıcı {UserId} için profil bilgileri başarıyla getirildi.", userId);
         return Ok(new 
         { 
             Id = userId, 
@@ -74,5 +83,4 @@ public class AuthController : ControllerBase
             Name = userName 
         });
     }
-    
 }
