@@ -9,24 +9,18 @@ import { SignalRProvider } from '@/context/SignalRContext';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Bu efekt sadece component ilk yüklendiğinde çalışacak.
     const token = localStorage.getItem('accessToken');
     
     if (token) {
-      // TODO: İleride token'ın geçerliliğini API'ye sorarak da kontrol edeceğim
-      // Şimdilik sadece varlığını kontrol etmek yeterli.
-      setIsAuthenticated(true);
+      setIsLoading(false);
     } else {
       router.replace('/login'); 
     }
-    setIsLoading(false);
   }, [router]);
 
-  // Kimlik durumu kontrol edilirken bir yükleme göstergesi göster
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
@@ -35,14 +29,9 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-   if (isAuthenticated) {
-   
-    return (
-      <SignalRProvider>
-        {children}
-      </SignalRProvider>
-    );
-  }
-
-  return null;
+  return (
+    <SignalRProvider>
+      {children}
+    </SignalRProvider>
+  );
 }
